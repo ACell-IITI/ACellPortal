@@ -1,0 +1,30 @@
+.typewriter {
+  font-family:'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+  white-space: nowrap;
+  overflow: hidden;
+  border-right: 0px ;
+  display: inline-block;
+  font-size: 6rem;
+ background: radial-gradient(circle at 50% 50%, #ff6a00, #ee0979, #bd6e8c);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  color: transparent;
+  font-weight:bolder;
+}
+@media (max-width: 1270px){
+
+.typewriter {
+    
+    font-size: 4rem;
+   
+    
+}
+}
+
+@media (max-width: 900px){
+ .typewriter { font-size: 3rem; }
+}
+@media (max-width: 600px){
+ .typewriter { font-size: 4rem; }
+}

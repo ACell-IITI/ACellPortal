@@ -1,0 +1,143 @@
+/* Carousel Container */
+.program-container {
+  position: relative;               
+  width: 100vw;
+  height: fit-content;
+  margin-right: 2rem;
+  padding: 80px;
+  /* box-sizing: border-box; */
+  /* overflow-x: hidden; */
+  gap: 2vw;
+}
+
+/* Each Slide */
+.program-slide {
+   height: 100%; 
+  max-width: 350px;
+  min-width: 90px;
+   padding: 50px;
+}
+
+/* Card */
+.program-card {
+ background: url('/Media/instant-settlement-bg.svg') no-repeat center center, #4FA095;
+background-size: cover;
+  border-radius: 1.5vw;
+  box-shadow: 0 0.8vw 1.5vw rgba(0, 0, 0, 0.1);
+  width: 20vw;
+  height: fit-content;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.program-card:hover {
+  background: url('/Media/instant-settlement-bghover.svg') no-repeat center center, #4FA095;
+background-size: cover;
+  transform: translateY(-0.6vw);
+  box-shadow: 0 1vw 2.5vw rgba(0, 0, 0, 0.15);
+}
+
+/* Image */
+.program-image {
+  display: block;
+  margin-top: 2vw;
+  width: 80%;
+  height: 18vw;
+  border-radius: 1vw;
+  object-fit: cover;
+}
+
+/* Content */
+.program-content {
+  padding: clamp(8px, 1vw, 16px);
+}
+
+.program-title {
+  margin: clamp(4px, 0.5vw, 8px);
+  font-size: clamp(0.8rem, 1.2vw, 1.3rem);
+  font-weight: bold;
+  color: #fff;
+}
+
+.program-date,
+.program-time,
+.program-venue {
+  margin: 0;
+  font-size: clamp(0.5rem, 1vw, 1rem);
+  color: #f0f0f0;
+}
+
+/* Arrows */
+.slick-prev,
+.slick-next {
+  z-index: 10;
+  width: 60px;
+  height: 60px;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+/*  Arrow Icons */
+.slick-prev:before,
+.slick-next:before {
+  font-size: 3rem;
+  color: #4FA095;
+  opacity: 1;
+  transition: color 0.3s ease, transform 0.3s ease;
+}
+
+/* Hover on Arrows */
+.slick-prev:hover:before,
+.slick-next:hover:before {
+  color: #2d6a57;
+  transform: scale(1.1);
+}
+
+/* Position Arrows */
+.slick-prev {
+  left: -65px;
+}
+
+.slick-next {
+  right: -65px;
+}
+
+@media (max-width: 768px) {
+  .slick-prev {
+    left: 35%;
+    top: 100%;
+  }
+
+  .slick-next {
+    right: 35%;
+    top: 100%;
+  }
+  .program-container {
+  padding: 5px;
+
+ }
+}
+@media (max-width: 370px) {
+  .slick-prev {
+    left: 20%;
+    top: 120%;
+  }
+
+  .slick-next {
+    right: 20%;
+    top: 120%;
+  }
+  .program-container {
+  margin: 6px;
+  margin-right: 6px;
+  padding: 2px;
+
+ }
+ .program-slide {
+  padding: 10px;
+ }
+}
+
+

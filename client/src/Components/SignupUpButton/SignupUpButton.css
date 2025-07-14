@@ -1,0 +1,84 @@
+.signupup-btn {
+  position: relative;
+  display: inline-block;
+  background: #1882f7;
+  color: #fff;
+  font-family: sans-serif;
+  font-size: 0.69rem;
+  padding: 0.2em;
+  padding-right: 2rem;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: 500;
+  letter-spacing: 1px;
+  /* width: 50px; */
+  height: 35px;
+  width: 140px;
+  box-shadow: 0 2px 8px rgba(24,130,247,0.08);
+  overflow: visible;
+  transition: background 0.2s, transform 0.15s;
+  will-change: transform;
+
+}
+
+.signupup-btn:hover {
+  background: #176fd1;
+  transform: scale(1.06);
+}
+
+.signupup-btn .label {
+  position: relative;
+  z-index: 2;
+  font-size: clamp(0.7rem,2vw,0.9rem) ;
+  font-weight: 500;
+}
+
+.signupup-btn .accent {
+  position: absolute;
+  top: 50%;
+  right: 10px;
+  width: 2.2em;
+  height: 3.5em;
+  background: #2ed89b;
+  transform: translateY(-50%) skew(-15deg);
+  z-index: 1;
+  box-shadow: 0 2px 8px rgba(44, 203, 148, 0.13);
+  border-radius: 2px;
+}
+
+.signupup-btn .arrow1 {
+  position: absolute;
+  top: 50%;
+  right: 20px;
+  width: 12px;
+  height: 12px;
+  z-index: 3;
+  transform: translateY(-50%) rotate(-45deg);
+  border: solid #fff;
+  border-width: 0 3px 3px 0;
+  padding: 3px;
+  background: transparent;
+  display: inline-block;
+}
+
+@media (max-width: 346px) {
+  .signupup-btn {
+    font-size: 1rem;
+    min-width: 90px;
+    padding-right: 2.2em;
+    padding-bottom: 1.8em;
+    gap: 1rem;
+  }
+  .signupup-btn .accent {
+    width: 1.2em;
+    height: 2.5em;
+    right: 15px;
+  }
+  .signupup-btn .arrow1 {
+    right: 22px;
+    width: 6px;
+  height: 6px;
+  }
+ 
+}
