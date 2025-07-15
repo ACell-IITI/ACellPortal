@@ -1,0 +1,125 @@
+/* === Input Group Container === */
+.lp-input-group {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  gap: 2rem;
+  font-size: 1rem;
+  font-weight: 600;
+  width: 100%;
+  max-width: 75%;
+  
+}
+
+.lp-input-group label {
+  width: 100px;
+  min-width: 100px;
+  flex-shrink: 0;
+  text-align: left;
+  color: #fff;
+  font-size: 1.2rem;
+  font-weight: bold;
+}
+
+/* === Common Input Styling === */
+.lp-input-group input,
+.lp-input-with-icon {
+  padding: 10px 40px 10px 15px;
+  border: none;
+  border-radius: 20px;
+  background-color: #F6F6C9;
+  box-shadow: 4px 4px 4px rgba(0, 0, 0, 0.25);
+  color: black;
+  width: 100%;
+  max-width: 100%;
+  font-size: 1rem;
+  box-sizing: border-box;
+  outline: none;
+}
+
+/* === Wrapper for Password Input + Icon === */
+.lp-input-wrapper {
+  position: relative;
+  width: 100%;
+  max-width: 100%;
+  flex-grow: 1;
+}
+
+/* === Eye Icon (inside password input) === */
+.lp-icon-inside-input {
+  position: absolute;
+  top: 50%;
+  right: 15px;
+  transform: translateY(-50%);
+  font-size: 1.2rem;
+  color: #555;
+  cursor: pointer;
+  z-index: 1;
+}
+
+
+
+/* === Mobile & Tablet Breakpoints === */
+@media screen and (max-width: 768px) {
+  .lp-input-group {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.75rem;
+    font-size: 1rem;
+  }
+
+  .lp-input-group label {
+    width: 100%;
+    font-size: 0.95rem;
+    margin-bottom: 0.25rem;
+  }
+
+  .lp-input-wrapper {
+    width: 100%;
+  }
+
+  .lp-input-group input,
+  .lp-input-with-icon {
+    max-width: 100%;
+    font-size: 0.95rem;
+  }
+
+  .lp-icon-inside-input {
+    right: 12px;
+    font-size: 1.1rem;
+  }
+
+  .login-title {
+    font-size: 1.6rem;
+  }
+
+  .submit-button {
+    font-size: 1rem;
+    max-width: 100%;
+  }
+}
+
+@media screen and (max-width: 480px) {
+  .login-container {
+    padding: 1rem;
+    margin: 1rem;
+  }
+
+  .login-title {
+    font-size: 1.4rem;
+  }
+
+  .lp-input-group {
+    gap: 0.5rem;
+  }
+
+  .lp-input-group input,
+  .lp-input-with-icon {
+    font-size: 0.9rem;
+  }
+
+  .submit-button {
+    font-size: 0.95rem;
+  }
+}
