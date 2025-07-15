@@ -17,7 +17,7 @@ const navLinks = [
     ],
   },
   {
-    name: "CV Review",path: "/events"
+    name: "CV Review",path: "/cv-review"
    
   },
 ];
