@@ -1,4 +1,6 @@
 import bcrypt from 'bcrypt';
+import { Alumni_db } from '../Models/User_model';
+import Mentorship_db from '../Models/Mentorship_model';
 
 export const addMentorProfile = async (req, res) => {
   try {

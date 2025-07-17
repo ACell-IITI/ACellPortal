@@ -1,3 +1,5 @@
+import KYA_db from "../Models/KYA_model.js";
+
 export const addKyaProfile = async (req, res) => {
   try {
     const { Name, Batch, CurrRole, Achievment, ShortBio } = req.body;
