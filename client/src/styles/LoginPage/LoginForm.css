@@ -67,6 +67,25 @@
   padding: 5px;
   object-fit: contain;
 }
+.login-footer{
+  display: flex;
+  justify-content: center;
+  /* align-items: center; */
+  padding-top: 20px;
+}
+.signup-warning{
+  font-size: 1rem;
+  font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+.signup-link {
+  color: #7cb6f3;
+  cursor: pointer;
+  text-decoration: underline;
+}
+
+.signup-link:hover {
+  color: #4d9bef;
+}
 
 /* === Responsive Layouts === */
 @media screen and (max-width: 768px) {
