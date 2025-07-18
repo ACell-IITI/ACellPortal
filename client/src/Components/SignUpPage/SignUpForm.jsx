@@ -1,11 +1,13 @@
 import React, { useRef } from "react";
-import InputField from "./InputField";
-import PasswordField from "./PasswordField";
+import InputField from "../LoginPage/InputField";
+import PasswordField from "../LoginPage/PasswordField";
+// import "../../styles/LoginPage/SignUpForm.css";
 import "../../styles/LoginPage/LoginForm.css";
 import { Link } from 'react-router-dom';
 
 
-const LoginForm = () => {
+
+const SignUpForm = () => {
   const nameRef = useRef(null);
   const emailRef = useRef(null);
   const passwordRef = useRef(null);
@@ -21,17 +23,17 @@ const LoginForm = () => {
     <div className="login-container">
       <div className="login-header">
         <img src="/assets/alumni cell logo.jpg" alt="Alumni Logo" className="logo-img" />
-        <h2 className="login-title">LOGIN PORTAL</h2>
+        <h2 className="login-title">SIGN UP PORTAL</h2>
         <img src="/assets/IIT_Indore_Logo.png" alt="IIT Logo" className="logo-img"/>
       </div>
 
       <form className="login-form">
-        {/* <InputField
+        <InputField
           label="Full Name"
           type="text"
           inputRef={nameRef}
           onKeyDown={(e) => handleKeyDown(e, emailRef)}
-        /> */}
+        />
         <InputField
           label="Email ID"
           type="email"
@@ -44,13 +46,12 @@ const LoginForm = () => {
         />
         <button className="submit-button" type="submit">Submit</button>
       </form>
-
       <div className="login-footer">
         <h6 className="signup-warning">
-          Not a Member? <Link to="/signup" className="signup-link">Sign-Up Now</Link></h6>
+          Already a member? <Link to="/Login" className="signup-link">Login Now</Link></h6>
       </div>
     </div>
   );
 };
 
-export default LoginForm;
+export default SignUpForm;
