@@ -8,26 +8,21 @@ import RegistrationForm from './Components/RegistrationForm/RegistrationForm';
 import LoginPage from './pages/LoginPage';
 import CVReviewPage from './pages/CVReviewPage';
 import SignUpPage from './pages/SignUpPage';
-function App() {
 
+function App() {
   return (
     <>
-     <BrowserRouter>
-     <Navbar/>
-    <Routes>
-      <Route path="/" element={<Home />} />
-      <Route path="/RegistrationForm" element={<RegistrationForm />} />
-      
-      <Route path ='/cv-review' element={<CVReviewPage/>} />
-      <Route path='/Login' element={<LoginPage />} />
-      <Route path ='/SignUp' element={<SignUpPage/>} />
-      
-
-    </Routes>
-    
-    <Footer/>
-  </BrowserRouter>
-       
+      <BrowserRouter>
+        <Navbar />
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/RegistrationForm" element={<RegistrationForm />} />
+          <Route path="/cv-review" element={<CVReviewPage />} />
+          <Route path="/Login" element={<LoginPage />} />
+          <Route path="/SignUp" element={<SignUpPage />} />
+        </Routes>
+        <Footer />
+      </BrowserRouter>
     </>
   )
 }
