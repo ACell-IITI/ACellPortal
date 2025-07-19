@@ -13,6 +13,10 @@ import LoginPage from './pages/LoginPage';
 import CVReviewPage from './pages/CVReviewPage';
 import SignUpPage from './pages/SignUpPage';
 
+import KYA from "./components/KYA";
+import Team from "./components/TeamPage";
+import TeamSection from "./components/TeamPage";
+
 
 function App() {
   return (
@@ -27,6 +31,8 @@ function App() {
       <Route path ='/cv-review' element={<CVReviewPage/>} />
       <Route path ='/Newsletter' element={<NewsletterPage/>} />
       <Route path='/Magazine' element={<MagazinePage/>} />  
+      <Route path='/team' element={<TeamSection/>} />
+      <Route path='/KYA' element={<KYA />}/>
     </Routes>
     <Footer/>
   </BrowserRouter>
@@ -35,3 +41,4 @@ function App() {
 }
 
 export default App
+
