@@ -9,6 +9,7 @@ import LoginForm from "./Components/LoginPage/LoginForm";
 import CVReviewForm from "./Components/CVReviewPage/CVReviewForm";
 import KYA from "./pages/KYA";
 import Newsletter from "./pages/Newsletter";
+import Magazine from "./pages/Magazine";
 function App() {
   return (
     <>
@@ -21,6 +22,7 @@ function App() {
           <Route path="/cv-review" element={<CVReviewForm />} />
           <Route path="/kya" element={<KYA />}></Route>
           <Route path="/newsletters" element={<Newsletter />}></Route>
+          <Route path="/magazine" element={<Magazine />} />
         </Routes>
         <Footer />
       </BrowserRouter>
