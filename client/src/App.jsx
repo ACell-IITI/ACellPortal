@@ -14,7 +14,6 @@ import CVReviewPage from './pages/CVReviewPage';
 import SignUpPage from './pages/SignUpPage';
 
 import KYA from "./components/KYA";
-import Team from "./components/TeamPage";
 import TeamSection from "./components/TeamPage";
 
 
