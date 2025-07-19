@@ -1,0 +1,184 @@
+ /* blue polygon on top */
+.banner {
+  position: relative;
+  width: 100%;
+  height: 800px;
+  overflow: hidden;
+  background-color: #4FA095;
+  clip-path: polygon(0 0, 100% 0, 100% 75%, 85% 100%, 0% 75%);
+ margin-bottom: 40px;
+}
+/* welcome.....typing */
+.textbox {
+  max-width:fit-content;
+  min-width: 300px;
+
+}
+/* program and events title */
+.titlec{
+
+    text-align: center;
+    font-size: clamp(0.9rem, 2vw, 5rem);
+    margin: 1rem;
+    overflow: hidden;
+}
+/* img and text in banner */
+.content-wrapper {
+  padding: 30px;
+  position: absolute;
+  width: 100%;
+  justify-content: space-around;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 10;
+  display: flex;
+  flex-direction: row;
+  gap: 1.5rem;
+}
+.iitabhi1{
+  position: relative;
+   animation: float 1s ease-in-out infinite;
+    max-width: 450px;
+    max-height: 550px;
+    border-radius: 20px;
+    overflow: hidden;
+     box-shadow: 0 4px 12px rgba(0, 0, 0, 2);
+}
+@keyframes float {
+      0% {
+        transform: translateY(0);
+      }
+      50% {
+        transform: translateY(-3px); 
+      }
+      100% {
+        transform: translateY(0); 
+      }
+    }
+.text{
+    font-size: 7rem;
+    font-family:'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+    color: #ffffff;
+}
+@media (max-width: 1270px){
+
+.text{
+    
+    font-size: 5rem;
+}
+.banner{
+  clip-path: polygon(0 0, 100% 0, 100% 75%, 85% 90%, 0% 75%);
+}
+
+}
+@media (max-width: 900px){
+
+.text{
+    
+    font-size: 3rem;
+}
+
+
+
+}
+@media (max-width: 600px){
+.iitabhi1{
+  display: none;
+}
+.banner{
+  clip-path: polygon(0 0, 100% 0, 100% 75%, 85% 85%, 0% 75%);
+}
+
+ .polygon-wrapper {
+        height: 32vw;
+        min-height: 80px;
+      }
+}
+/* polygon before program */
+.polygon-wrapper {
+      position: relative;
+      width: 100vw;
+      max-width: 100%;
+      height: 28vw;        
+      overflow: hidden;
+    }
+    .polygon-shadow {
+      position: absolute;
+      left: 0;
+      width: 100%;
+      height: 70%;
+      background: #BAD1C2;
+      z-index: 1;
+      clip-path: polygon(
+       0% 10%, 
+       40% 20%,   /* top left */
+        100% 15%,  /* top right */
+        100% 68%, /* bottom right */
+        90% 100%, /* bottom mid */
+        0% 82%,  /* left mid */
+        0% 65%    /* bottom left */
+      );
+    }
+   
+    .polygon-main {
+      margin-bottom: 60px;
+      position: absolute;
+     
+      display: flex;
+      align-items: center;
+      flex-direction: column;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 73%;
+      background: #1a2132; 
+      z-index: 2;
+      clip-path: polygon(
+        0% 15%,    /* top left */
+        100% 0%,  /* top right */
+        100% 60%, /* bottom right */
+        60% 100%, /* bottom mid */
+        35% 70%,  /* left mid */
+        0% 75%    /* bottom left */
+      );
+    }
+
+.saathih{
+    display: flex;
+    justify-content: center;
+    padding: 40px;
+    overflow: hidden;
+}
+
+.saathih img {
+  min-width: 140px;
+  max-width: 950px; 
+  height: auto;
+}
+.bubble{
+  display: flex;
+  position: absolute;
+  left: 0;
+  justify-items: left;
+  width:20vw;
+  z-index: -1;
+}
+.bubble1{
+  display: flex;
+  position: absolute;
+  right: 0;
+  justify-items: left;
+  width:20vw;
+  z-index: -1;
+}
+@media (max-width: 370px) {
+  .titlec{
+    margin-top: 5rem;
+  }
+}
+@media (max-width: 768px) {
+  .titlec{
+    margin-top: 3rem;
+  }
+}

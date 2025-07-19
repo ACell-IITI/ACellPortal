@@ -1,0 +1,108 @@
+.custom-select-wrapper {
+  position: relative;
+  width: 100%;
+}
+
+.custom-select-display {
+  padding: 10px 40px 10px 15px;
+  color:rgb(117, 117, 117);
+  cursor: pointer;
+  user-select: none;
+  position: relative;
+  background: linear-gradient(90deg, #F6F6C9 0%, #ffffff 120.98%);
+  box-shadow: 5px 4px 4px rgba(0, 0, 0, 0.25);
+  border-radius: 32px;
+  outline: none; 
+
+}
+
+
+.select-icon {
+  position: absolute;
+  top: 50%;
+  right: 15px;
+  transform: translateY(-50%);
+  color: #555;
+  pointer-events: none;
+}
+
+.custom-select-options {
+  list-style: none;
+  padding: 0;
+  margin: 4px 0 0 0;
+  border-radius: 20px;
+  background-color: #ffffff;
+  box-shadow: 4px 4px 8px rgba(0, 0, 0, 0.15);
+  position: absolute;
+  width: 100%;
+  z-index: 10;
+  overflow: hidden;
+  background: linear-gradient(90deg, #F6F6C9 0%, #ffffff 120.98%);
+  box-shadow: 5px 4px 4px rgba(0, 0, 0, 0.25);
+  border-radius: 32px;
+  color:rgb(106, 106, 106);
+
+}
+
+.custom-option {
+  position: relative;
+  padding: 6px 20px;
+  cursor: pointer;
+  transition: background 0.2s ease;
+
+}
+.custom-option:not(:last-child)::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 15px;   
+  right: 15px;  
+  height: 2px;
+  background-color: #a6a6a6;
+}
+
+.custom-option:hover {
+  background-color: #f6f6c9;
+}
+
+.custom-option.selected {
+  background-color: #e8e8b5;
+}
+
+.custom-select-display:focus,
+.custom-select-display.active {
+  outline: 1px solid #ffffff;  
+  border: 2px solid rgb(0, 0, 0);
+}
+.custom-select-display {
+  transition: outline 0.2s ease;
+}
+
+.custom-select-options {
+  animation: slideDown 0.3s ease-out;
+}
+
+.custom-select-display:focus {
+  transform: scale(1.02);
+  box-shadow: 0 0 8px rgba(0, 120, 255, 0.4);
+  transition: all 0.2s ease;
+}
+
+@keyframes slideDown {
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@media screen and (max-width: 450px) {
+
+.cv-input-group input,
+  .custom-select-display {
+    font-size: 0.85rem;
+    padding: 8px 30px 8px 12px;
+  }
+
+  .select-icon {
+    right: 10px;
+    font-size: 0.9rem;
+  }
+}
