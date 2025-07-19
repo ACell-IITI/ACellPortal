@@ -21,11 +21,10 @@ const Newsletter = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    // Simulated "upload" for now
     const newNewsletter = {
       ...formData,
       _id: Date.now().toString(),
-      FileURL: URL.createObjectURL(formData.File), // temporary preview link
+      FileURL: URL.createObjectURL(formData.File),
     };
 
     setNewsletters([...newsletters, newNewsletter]);
@@ -37,7 +36,6 @@ const Newsletter = () => {
       File: null,
     });
 
-    // Reset file input
     document.getElementById("fileInput").value = "";
   };
 
