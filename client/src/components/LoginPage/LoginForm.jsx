@@ -2,6 +2,8 @@ import React, { useRef } from "react";
 import InputField from "./InputField";
 import PasswordField from "./PasswordField";
 import "../../styles/LoginPage/LoginForm.css";
+import { Link } from 'react-router-dom';
+
 
 const LoginForm = () => {
   const nameRef = useRef(null);
@@ -24,12 +26,12 @@ const LoginForm = () => {
       </div>
 
       <form className="login-form">
-        <InputField
+        {/* <InputField
           label="Full Name"
           type="text"
           inputRef={nameRef}
           onKeyDown={(e) => handleKeyDown(e, emailRef)}
-        />
+        /> */}
         <InputField
           label="Email ID"
           type="email"
@@ -42,6 +44,11 @@ const LoginForm = () => {
         />
         <button className="submit-button" type="submit">Submit</button>
       </form>
+
+      <div className="login-footer">
+        <h6 className="signup-warning">
+          Not a Member? <Link to="/signup" className="signup-link">Sign-Up Now</Link></h6>
+      </div>
     </div>
   );
 };

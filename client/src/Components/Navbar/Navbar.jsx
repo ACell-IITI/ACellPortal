@@ -6,7 +6,7 @@ import SignUpButton from "../SignupUpButton/SignupUpButton";
 const navLinks = [
   { name: "Home", path: "/" },
   {
-    name: "KYA", path: "/publications" 
+    name: "KYA", path: "/KYA" 
     
   },
   { name: "Team", path: "/team" },
