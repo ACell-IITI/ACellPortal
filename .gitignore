@@ -4,4 +4,4 @@ server/.env.production
 
 
 
-client/node_modules
+client/node_modules.env
