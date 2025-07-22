@@ -2,14 +2,29 @@ import mongoose from 'mongoose';
 
 // Alumni model
 const AlumniSchema = new mongoose.Schema({
-  AlumniEmail: {
+  alumniName: {
     type: String,
     required: true,
   },
-  AlumniPassword: {
+  alumniEmail: {
     type: String,
     required: true,
   },
+  alumniPassword: {
+    type: String,
+  },
+  alumniProfilePic: {
+    type: String,
+  },
+  authProvider: {
+    type: String,
+    enum: ['custom', 'google'], 
+    default: 'custom',
+  },
+  isInstituteEmail: {
+    type: Boolean,
+    default: false
+  }
 }, { timestamps: true });
 
 // Admin model
@@ -24,8 +39,7 @@ const AdminSchema = new mongoose.Schema({
   },
 });
 
-const Alumni_db = mongoose.model('Alumni_db', AlumniSchema);
-const Admin_db = mongoose.model('Admin_db', AdminSchema);
+const Alumni_db = mongoose.models.Alumni_db || mongoose.model('Alumni_db', AlumniSchema);
+const Admin_db = mongoose.models.Admin_db || mongoose.model('Admin_db', AdminSchema);
 
-// Named export in ESM
 export { Alumni_db, Admin_db };
