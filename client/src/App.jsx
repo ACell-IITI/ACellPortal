@@ -1,3 +1,6 @@
+const apiUrl = import.meta.env.VITE_API_URL;
+console.log("API URL:", apiUrl);
+
 import { useState } from "react";
 import "./App.css";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
