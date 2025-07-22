@@ -1,0 +1,248 @@
+.navbar-root {
+  background: #1a2132;
+  box-shadow: 0 3px 8px rgba(0,0,0,0.10);
+  padding: 0;
+  position: relative;
+  z-index: 200;
+}
+
+.navbar-container {
+  max-width: 100%;
+  padding: 0 32px;
+  display: flex;
+  align-items: center;
+  height: 90px;
+  justify-content: space-between;
+  position: relative;
+}
+
+.navbar-logo-title {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  
+}
+
+.navbar-logo {
+  width: 90px;
+  height: 90px;
+  object-fit: contain;
+}
+
+.navbar-title {
+  font-weight: 600;
+  font-size: 1.2rem;
+  color: #fff;
+  margin-bottom: 2px;
+}
+
+.navbar-subtitle {
+  font-size: 0.85rem;
+  color: #c5c8d7;
+}
+
+.navbar-hamburger {
+  display: none;
+  background: none;
+  border: none;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 38px;
+  height: 38px;
+  cursor: pointer;
+  z-index: 300;
+  margin-left: 16px;
+}
+
+.navbar-hamburger span {
+  display: block;
+  width: 26px;
+  height: 3px;
+  background: #fff;
+  margin: 4px 0;
+  border-radius: 2px;
+  transition: 0.3s;
+}
+
+.navbar-hamburger.open span:nth-child(1) {
+  transform: translateY(7px) rotate(45deg);
+}
+.navbar-hamburger.open span:nth-child(2) {
+  opacity: 0;
+}
+.navbar-hamburger.open span:nth-child(3) {
+  transform: translateY(-7px) rotate(-45deg);
+}
+
+.navbar-links {
+  display: flex;
+  align-items: center;
+  gap: 36px;
+  list-style: none;
+  
+  padding: 0;
+  transition: all 0.3s;
+}
+
+.navbar-link {
+  position: relative;
+  font-size: 1rem;
+}
+
+.navbar-dropdown {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.navbar-link-text,
+.navbar-dropdown-link {
+  color: #fff;
+  cursor: pointer;
+  padding: 8px 0;
+  font-weight: 500;
+  text-decoration: none;
+  background: none;
+  border: none;
+  display: inline-block;
+  transition: color 0.18s;
+}
+
+.navbar-dropdown-arrow {
+  font-size: 0.7em;
+  margin-left: 6px;
+}
+
+.dropdown-parent, .dropdown-hover-wrapper {
+  position: relative;
+}
+
+.navbar-dropdown {
+  display: none;
+  position: absolute;
+  top: 38px;
+  left: 0;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(15px);
+  border-radius: 6px;
+  box-shadow: 0 6px 16px rgba(0,0,0,0.13);
+  min-width: 170px;
+  z-index: 10;
+  padding: 8px 0;
+}
+
+.navbar-dropdown.open {
+  display: block;
+}
+
+.navbar-dropdown-link {
+  display: block;
+  color: #fdfdfd;
+  padding: 10px 24px;
+  font-size: 1rem;
+  cursor: pointer;
+  white-space: nowrap;
+  text-decoration: none;
+  background: none;
+  border: none;
+  transition: background 0.18s, color 0.18s;
+}
+
+.navbar-dropdown-link:hover,
+.navbar-link-text:hover {
+  color: #1976ed;
+  /* background: #2e3448; */
+}
+
+.navbar-link-text.active,
+.navbar-dropdown-link.active {
+  color: #1976ed;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.navbar-underline {
+  display: none !important;
+}
+
+@media (max-width: 960px) {
+  .navbar-container {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    height: auto;
+    padding: 16px;
+    gap: 0;
+    position: relative;
+    width: 100%;
+  }
+  .navbar-logo-title {
+    margin-bottom: 0;
+  }
+  .navbar-hamburger {
+    display: flex;
+    margin-left: auto;
+    margin-right: 0;
+    position: relative;
+    z-index: 300;
+  }
+  .navbar-links {
+    flex-direction: column;
+    gap: 0;
+    width: 100%;
+    background: #1a2132;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    z-index: 100;
+    display: none;
+    padding: 0;
+    margin: 0;
+  }
+  .navbar-links.open {
+    display: flex;
+  }
+  .navbar-link {
+    width: 100%;
+    border-bottom: 1px solid #232a3d;
+    margin: 0;
+  }
+  .navbar-link:last-child {
+    border-bottom: none;
+  }
+  .navbar-link-text,
+  .navbar-dropdown-link {
+    width: 100%;
+    text-align: left;
+    padding: 14px 22px;
+  }
+  .navbar-dropdown {
+    position: static;
+    background: #232a3d;
+    box-shadow: none;
+    border-radius: 0;
+    min-width: 100%;
+    padding-left: 20px;
+    display: none;
+  }
+  .navbar-dropdown.open {
+    display: block;
+  }
+  .dropdown-hover-wrapper {
+    width: 100%;
+  }
+}
+@media (max-width:450px) {
+  .navbar-title{
+    display: none;
+  }
+  .navbar-subtitle{
+     display: none;
+  }
+}
+@media (min-width:1700px){
+  .navbar-links {margin-right: -40vw;}
+  
+}

@@ -1,0 +1,177 @@
+/* === Login Container === */
+.login-container {
+  width: 90%;
+  max-width: 800px;
+  margin: 3rem auto;
+  padding: 2.5rem;
+  border-radius: 28px;
+  background-color: #153462;
+  color: white;
+  box-shadow: 12px 12px 3px rgba(5, 94, 227, 0.25);
+  box-sizing: border-box;
+}
+
+/* === Header Section === */
+.login-header {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2.8rem;
+  gap: 1rem;
+}
+
+/* === Title === */
+.login-title {
+  flex: 1;
+  text-align: center;
+  font-weight: bold;
+  font-size: 2rem;
+}
+
+/* === Form === */
+.login-form {
+  margin-top: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+  align-items: center;
+}
+
+/* === Submit Button === */
+.submit-button {
+  background-color: black;
+  color: white;
+  font-weight: bold;
+  padding: 12px 20px;
+  border: 2px solid #ffffff;
+  border-radius: 10px;
+  /* box-shadow: 0.5px 0.5px 2px #F6F6C9; */
+  cursor: pointer;
+  font-size: 1.2rem;
+  width: 100%;
+  max-width: 200px;
+  align-self: center;
+  transition: background-color 0.3s ease;
+}
+
+.submit-button:hover {
+  background-color: #323131;
+}
+
+.logo-img {
+  width: 5.6rem;
+  height: 5.6rem;
+  background: white;
+  border-radius: 10px;
+  padding: 5px;
+  object-fit: contain;
+}
+.login-footer{
+  display: flex;
+  justify-content: center;
+  /* align-items: center; */
+  padding-top: 20px;
+}
+.signup-warning{
+  font-size: 1rem;
+  font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+.signup-link {
+  color: #7cb6f3;
+  cursor: pointer;
+  text-decoration: underline;
+}
+
+.signup-link:hover {
+  color: #4d9bef;
+}
+
+/* === Responsive Layouts === */
+@media screen and (max-width: 768px) {
+  .login-container {
+    width: 75%;
+    padding: 2rem;
+  }
+
+  .login-header {
+    flex-direction: row;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  .login-title {
+    font-size: 1.6rem;
+    text-align: center;
+  }
+
+  .submit-button {
+    font-size: 1rem;
+    max-width: 100%;
+  }
+}
+
+@media screen and (max-width: 480px) {
+  .login-container {
+    margin: 1rem;
+    padding: 1.5rem;
+  }
+
+  .login-title {
+    font-size: 1.4rem;
+  }
+
+  .submit-button {
+    font-size: 0.95rem;
+  }
+}
+@media screen and (max-width: 380px) {
+  .login-container {
+    margin: 0.5rem;
+    padding: 1rem;
+    border-radius: 20px;
+  }
+
+  .login-header {
+    gap: 0.5rem;
+  }
+
+  .login-title {
+    font-size: 1.2rem;
+    margin: 0.5rem 0;
+  }
+
+  .submit-button {
+    font-size: 0.9rem;
+    padding: 10px;
+  }
+
+  .login-form {
+    gap: 20px;
+  }
+}
+@media screen and (max-width: 480px) {
+  .login-title {
+    font-size: 1.5rem;
+  }
+
+  .input-group {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+
+  .input-group label {
+    width: auto;
+  }
+
+  .logo-img {
+    width: 4rem;
+    height: 4rem;
+  }
+
+  .submit-button {
+    font-size: 1rem;
+    padding: 10px;
+  }
+}

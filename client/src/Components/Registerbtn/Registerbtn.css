@@ -1,0 +1,15 @@
+.register-button{
+ min-width: 10px;
+font-weight: 550;
+font-size: clamp(7px, 2vw, 20px);
+  background: linear-gradient(75deg, #ff6f00, #f0aa56);
+  border: none;
+  border-radius: 5px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: absolute;
+  bottom: 13%; 
+  left: 56%; 
+  
+}
