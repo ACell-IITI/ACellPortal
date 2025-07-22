@@ -1,7 +1,3 @@
-const apiUrl = import.meta.env.VITE_API_URL;
-console.log("API URL:", apiUrl);
-
-import { useState } from "react";
 import "./App.css";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 
@@ -9,7 +5,6 @@ import Home from "./Home/Home";
 import Footer from "./Components/Footer/Footer";
 import Navbar from "./Components/Navbar/Navbar";
 import RegistrationForm from "./Components/RegistrationForm/RegistrationForm";
-
 
 import KYA from "./pages/KYA";
 
