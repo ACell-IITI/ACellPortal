@@ -130,7 +130,12 @@ export const googleAuth = async (req, res) => {
         sameSite: 'Lax',
         maxAge: 7* 24 * 60 * 60 * 1000,
     });
-    return res.status(200).json({ user });
+    const finalUser = {
+        id: user._id,
+        alumniName: user.alumniName,
+        alumniEmail: user.alumniEmail,
+    };
+    return res.status(200).json({ finalUser });
   } catch (err) {
     console.error('Google Auth Error', err);
     res.status(401).json({ message: 'Invalid Google token' });
