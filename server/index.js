@@ -1,4 +1,5 @@
 import "dotenv/config";
+import cookieParser from 'cookie-parser';
 import express from "express";
 import mongoose from "mongoose";
 import allRoutes from "./routes/index.js";
@@ -12,6 +13,7 @@ app.use(cors({
 }));
 app.use(express.json());
 app.use(express.urlencoded({extended: true}));
+app.use(cookieParser());
 
 app.use("/", allRoutes);
 
@@ -26,5 +28,5 @@ mongoose
     console.error("Error connecting to MongoDB:", err);
   });
 
-const PORT = process.env.PORT | 8000;
+const PORT = process.env.PORT || 8000;
 app.listen(PORT, () => console.log(`Server started at PORT ${PORT}`));
