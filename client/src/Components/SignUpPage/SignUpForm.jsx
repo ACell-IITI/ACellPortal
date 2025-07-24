@@ -3,7 +3,7 @@ import InputField from "../LoginPage/InputField";
 import PasswordField from "../LoginPage/PasswordField";
 // import "../../styles/LoginPage/SignUpForm.css";
 import "../../styles/LoginPage/LoginForm.css";
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { GoogleLogin } from "@react-oauth/google";
 import axios from "axios";
 
