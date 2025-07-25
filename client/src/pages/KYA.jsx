@@ -11,12 +11,15 @@ const KYA = () => {
     ShortBio: "",
   });
   useEffect(() => {
-    fetchProfiles();
+    //fetchProfiles();
+    console.log("KYa comeponet loaded");
   }, []);
 
   const fetchProfiles = async () => {
     try {
-      const res = await axios.get("/api/alumni/get/mentor-profiles");
+      const res = await axios.get(
+        "http://localhost:8000/api/alumni/get/mentor-profiles"
+      );
       console.log("Fetched profiles:", res.data);
       setProfiles(res.data);
     } catch (err) {
@@ -31,7 +34,10 @@ const KYA = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await axios.post("/api/alumni/add/mentor-profile", formData);
+      await axios.post(
+        "http://localhost:8000/api/alumni/add/mentor-profile",
+        formData
+      );
       fetchProfiles();
       setFormData({
         Name: "",
@@ -51,7 +57,9 @@ const KYA = () => {
     if (!confirmed) return;
 
     try {
-      await axios.delete(`/api/alumni/delete/mentor-profile/${id}`);
+      await axios.delete(
+        `http://localhost:8000/api/alumni/delete/mentor-profile/${id}`
+      );
       fetchProfiles();
     } catch (err) {
       console.error("Error deleting profile", err);

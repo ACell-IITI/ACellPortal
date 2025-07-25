@@ -6,19 +6,20 @@ import SignUpButton from "../SignupUpButton/SignupUpButton";
 const navLinks = [
   { name: "Home", path: "/" },
   {
-    name: "KYA", path: "/publications" 
-    
+    name: "KYA",
+    path: "/kya",
   },
   { name: "Team", path: "/team" },
-  { name: "Publications",
+  {
+    name: "Publications",
     dropdown: [
       { name: "Newsletter", path: "/Newsletter" },
       { name: "Magazine", path: "/Magazine" },
     ],
   },
   {
-    name: "CV Review",path: "/cv-review"
-   
+    name: "CV Review",
+    path: "/cv-review",
   },
 ];
 
@@ -47,7 +48,7 @@ export default function Navbar() {
             </div>
           </div>
         </div>
-        
+
         <button
           className={`navbar-hamburger${menuOpen ? " open" : ""}`}
           onClick={() => setMenuOpen((open) => !open)}
@@ -125,10 +126,8 @@ export default function Navbar() {
             )
           )}
         </ul>
-        <SignUpButton/>
+        <SignUpButton />
       </div>
     </nav>
   );
 }
-
-
