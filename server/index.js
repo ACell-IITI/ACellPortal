@@ -28,5 +28,7 @@ mongoose
     console.error("Error connecting to MongoDB:", err);
   });
 
+
 const PORT = process.env.PORT || 8000;
 app.listen(PORT, () => console.log(`Server started at PORT ${PORT}`));
+
