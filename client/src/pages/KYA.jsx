@@ -14,7 +14,7 @@ const KYA = () => {
   useEffect(() => {
     fetchProfiles();
     //console.log({ Name, Batch, CurrRole, Achievement, ShortBio });
-    console.log("KYa comeponents loaded");
+    console.log("KYA comeponents loaded");
   }, []);
 
   const years = [];
