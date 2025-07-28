@@ -2,33 +2,49 @@ import "dotenv/config";
 import cookieParser from 'cookie-parser';
 import express from "express";
 import mongoose from "mongoose";
-import allRoutes from "./routes/index.js";
+import cors from "cors";
 
-import cors from "cors"
+// Routes
+import authRoutes from "./routes/auth.js";
+import adminRoute from "./routes/admin.route.js";
+import alumniRoute from "./routes/alumni.route.js";
+// Optional: if you have other grouped routes
+// import allRoutes from "./routes/index.js";
+
 const app = express();
 
+// Middleware
 app.use(cors({
-  origin: 'http://localhost:5173',
+  origin: "http://localhost:5173",
+  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
   credentials: true,
 }));
 app.use(express.json());
-app.use(express.urlencoded({extended: true}));
+app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
-app.use("/", allRoutes);
+// Test route
+app.get("/", (req, res) => {
+  return res.send("Hello Server");
+});
 
-const mongodbLink = process.env.MONGODB_LINK;
+// Use individual routes
+app.use("/auth", authRoutes);
+app.use("/api", adminRoute);
+app.use("/alumni", alumniRoute);
+
+// MongoDB connection
+const mongodbLink = process.env.MONGO_URI || process.env.MONGODB_LINK;
+console.log("Mongo URI:", mongodbLink);
 
 mongoose
-  .connect(mongodbLink)
-  .then(() => {
-    console.log("Connected to MongoDB successfully.");
+  .connect(mongodbLink, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
   })
-  .catch((err) => {
-    console.error("Error connecting to MongoDB:", err);
-  });
+  .then(() => console.log("Connected to MongoDB successfully."))
+  .catch((err) => console.error("MongoDB connection error", err));
 
-
+// Start server
 const PORT = process.env.PORT || 8000;
 app.listen(PORT, () => console.log(`Server started at PORT ${PORT}`));
-

@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+import { getKyaProfiles, addKyaProfile, deleteKyaProfile } from "../api/alumni";
 
 const KYA = () => {
   const [profiles, setProfiles] = useState([]);
@@ -12,13 +13,18 @@ const KYA = () => {
   });
   useEffect(() => {
     fetchProfiles();
+    //console.log({ Name, Batch, CurrRole, Achievement, ShortBio });
+    console.log("KYA comeponents loaded");
   }, []);
 
+  const years = [];
+  for (let year = 2013; year <= 2025; year++) {
+    years.push(year);
+  }
   const fetchProfiles = async () => {
     try {
-      const res = await axios.get("/api/alumni/get/mentor-profiles");
-      console.log("Fetched profiles:", res.data);
-      setProfiles(res.data);
+      const data = await getKyaProfiles();
+      setProfiles(data);
     } catch (err) {
       console.error("Error fetching profiles", err);
       setProfiles([]);
@@ -31,7 +37,7 @@ const KYA = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await axios.post("/api/alumni/add/mentor-profile", formData);
+      await addKyaProfile(formData);
       fetchProfiles();
       setFormData({
         Name: "",
@@ -51,12 +57,13 @@ const KYA = () => {
     if (!confirmed) return;
 
     try {
-      await axios.delete(`/api/alumni/delete/mentor-profile/${id}`);
+      await deleteKyaProfile(id);
       fetchProfiles();
     } catch (err) {
       console.error("Error deleting profile", err);
     }
   };
+
   return (
     <div style={styles.container}>
       <h2 style={styles.heading}>Add Alumni Profile</h2>
@@ -69,15 +76,21 @@ const KYA = () => {
           required
           style={styles.input}
         />
-        <input
+        <label htmlFor="Batch">Batch: </label>
+        <select
           name="Batch"
+          id="batch"
           value={formData.Batch}
           onChange={handleChange}
-          placeholder="Batch"
-          required
-          type="number"
-          style={styles.input}
-        />
+          className=""
+        >
+          <option value="">Select Batch</option>
+          {years.map((year) => (
+            <option key={year} value={year}>
+              {year}
+            </option>
+          ))}
+        </select>
         <input
           name="CurrRole"
           value={formData.CurrRole}
@@ -110,7 +123,7 @@ const KYA = () => {
       <h3 style={styles.heading}>Existing Profiles</h3>
       <ul style={styles.profileList}>
         {profiles.map((profile) => (
-          <li key={profile.id} style={styles.profileItem}>
+          <li key={profile._id} style={styles.profileItem}>
             <strong>{profile.Name}</strong>(Batch{profile.Batch})-
             {profile.CurrRole}
             <p>{profile.Achievement}</p>
