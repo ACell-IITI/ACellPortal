@@ -1,45 +1,48 @@
 import "dotenv/config";
+import cookieParser from 'cookie-parser';
 import express from "express";
 import mongoose from "mongoose";
 import cors from "cors";
 
+// Routes
 import authRoutes from "./routes/auth.js";
 import adminRoute from "./routes/admin.route.js";
 import alumniRoute from "./routes/alumni.route.js";
+// Optional: if you have other grouped routes
+// import allRoutes from "./routes/index.js";
 
 const app = express();
 
 // Middleware
+app.use(cors({
+  origin: "http://localhost:5173",
+  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+  credentials: true,
+}));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(
-  cors({
-    origin: "http://localhost:5173",
-    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-    credentials: true,
-  })
-);
+app.use(cookieParser());
 
-// Routes
+// Test route
 app.get("/", (req, res) => {
   return res.send("Hello Server");
 });
 
+// Use individual routes
 app.use("/auth", authRoutes);
 app.use("/api", adminRoute);
 app.use("/alumni", alumniRoute);
 
 // MongoDB connection
 const mongodbLink = process.env.MONGO_URI || process.env.MONGODB_LINK;
-
-console.log("MONGO_URI is:", mongodbLink);
+console.log("Mongo URI:", mongodbLink);
 
 mongoose
   .connect(mongodbLink, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
   })
-  .then(() => console.log("Connected to MongoDB"))
+  .then(() => console.log("Connected to MongoDB successfully."))
   .catch((err) => console.error("MongoDB connection error", err));
 
 // Start server

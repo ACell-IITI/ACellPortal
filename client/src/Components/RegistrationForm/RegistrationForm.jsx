@@ -1,17 +1,17 @@
 import React, { useState } from 'react';
 import './RegistrationForm.css';
+import axios from 'axios';
 
 const RegistrationForm = () => {
   const [formData, setFormData] = useState({
     title: '',
-    yourName: '',
-    degreeDeptYear: '',
-    rollNumber: '',
+    name: '',
     email: '',
+    degreeBranchYear: '',
     contactNumber: '',
-    city: '',
-    state: '',
-    country: ''
+    about: '',
+    skills: '',
+    linkedinId: '',
   });
 
   const [errors, setErrors] = useState({});
@@ -19,36 +19,76 @@ const RegistrationForm = () => {
   const handleChange = (e) => {
     setFormData({
       ...formData,
-      [e.target.name]: e.target.value
+      [e.target.name]: e.target.value,
     });
   };
 
   const validate = () => {
     const newErrors = {};
-    if (!formData.yourName) newErrors.yourName = 'Name is required';
-    if (!formData.email) newErrors.email = 'Email is required';
-    if (!formData.contactNumber) newErrors.contactNumber = 'Contact number is required';
+
+    if (!formData.name) {
+      newErrors.name = 'Name is required';
+    }
+
+    if (!formData.email) {
+      newErrors.email = 'Email is required';
+    } else {
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(formData.email)) {
+        newErrors.email = 'Invalid email format';
+      }
+    }
+
+    if (!formData.contactNumber) {
+      newErrors.contactNumber = 'Contact number is required';
+    } else {
+      const phoneRegex = /^\d{10}$/;
+      if (!phoneRegex.test(formData.contactNumber)) {
+        newErrors.contactNumber = 'Enter a valid 10-digit phone number';
+      }
+    }
+
+    if (!formData.about) {
+      newErrors.about = 'About field is required';
+    }
+
+    if (!formData.skills) {
+      newErrors.skills = 'Skills field is required';
+    }
+
+    if (!formData.linkedinId) {
+      newErrors.linkedinId = 'LinkedIn ID is required';
+    }
+
     return newErrors;
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     const validationErrors = validate();
     setErrors(validationErrors);
 
     if (Object.keys(validationErrors).length === 0) {
-      console.log('Form submitted:', formData);
-      alert('Thank you for registering!');
+      try {
+        const res = await axios.post(
+          'http://localhost:8000/alumni/add-mentor',
+          formData,
+          { withCredentials: true }
+        );
+        alert(res.data.message);
+      } catch (error) {
+        console.log('Error while sending req to add mentor: ', error);
+        alert('Operation Failed!');
+      }
       setFormData({
         title: '',
-        yourName: '',
-        degreeDeptYear: '',
-        rollNumber: '',
+        name: '',
+        degreeBranchYear: '',
         email: '',
         contactNumber: '',
-        city: '',
-        state: '',
-        country: ''
+        about: '',
+        skills: '',
+        linkedinId: '',
       });
     }
   };
@@ -57,7 +97,6 @@ const RegistrationForm = () => {
     <div className="form-container">
       <h2>Mentorship Registration</h2>
       <form onSubmit={handleSubmit}>
-
         <div className="form-group">
           <label>Title:</label>
           <select name="title" value={formData.title} onChange={handleChange}>
@@ -71,50 +110,98 @@ const RegistrationForm = () => {
         </div>
 
         <div className="form-group">
-          <label>Your Name:</label>
-          <input type="text" name="yourName" value={formData.yourName} onChange={handleChange} />
-          {errors.yourName && <p className="error">{errors.yourName}</p>}
+          <label>
+            Your Name: <span className="required">*</span>
+          </label>
+          <input
+            type="text"
+            name="name"
+            value={formData.name}
+            onChange={handleChange}
+          />
+          {errors.name && <p className="error">{errors.name}</p>}
         </div>
 
         <div className="form-group">
-          <label>Degree/Dept./Year (Applicable for Alumni of IITI):</label>
-          <input type="text" name="degreeDeptYear" value={formData.degreeDeptYear} onChange={handleChange} />
-        </div>
-
-        <div className="form-group">
-          <label>Roll Number:</label>
-          <input type="text" name="rollNumber" value={formData.rollNumber} onChange={handleChange} />
-        </div>
-
-        <div className="form-group">
-          <label>Email <span className="required">*</span>:</label>
-          <input type="email" name="email" value={formData.email} onChange={handleChange} />
+          <label>
+            Email: <span className="required">*</span>
+          </label>
+          <input
+            type="email"
+            name="email"
+            value={formData.email}
+            onChange={handleChange}
+          />
           {errors.email && <p className="error">{errors.email}</p>}
         </div>
 
         <div className="form-group">
-          <label>Contact Number <span className="required">*</span>:</label>
-          <input type="tel" name="contactNumber" value={formData.contactNumber} onChange={handleChange} />
-          {errors.contactNumber && <p className="error">{errors.contactNumber}</p>}
+          <label>
+            Degree/Branch/Year (Applicable for Alumni of IITI):{' '}
+            <span className="required">*</span>
+          </label>
+          <input
+            type="text"
+            name="degreeBranchYear"
+            value={formData.degreeBranchYear}
+            onChange={handleChange}
+          />
         </div>
 
         <div className="form-group">
-          <label>City:</label>
-          <input type="text" name="city" value={formData.city} onChange={handleChange} />
+          <label>
+            Contact Number: <span className="required">*</span>
+          </label>
+          <input
+            type="tel"
+            name="contactNumber"
+            value={formData.contactNumber}
+            onChange={handleChange}
+          />
+          {errors.contactNumber && (
+            <p className="error">{errors.contactNumber}</p>
+          )}
         </div>
 
         <div className="form-group">
-          <label>State:</label>
-          <input type="text" name="state" value={formData.state} onChange={handleChange} />
+          <label>
+            About Yourself: <span className="required">*</span>
+          </label>
+          <input
+            type="text"
+            name="about"
+            value={formData.about}
+            onChange={handleChange}
+          />
         </div>
 
         <div className="form-group">
-          <label>Country:</label>
-          <input type="text" name="country" value={formData.country} onChange={handleChange} />
+          <label>
+            LinkedIn ID (Link): <span className="required">*</span>
+          </label>
+          <input
+            type="text"
+            name="linkedinId"
+            value={formData.linkedinId}
+            onChange={handleChange}
+          />
         </div>
 
-        <button type="submit" className="submit-button">Submit</button>
+        <div className="form-group">
+          <label>
+            Skills/Expertise: <span className="required">*</span>
+          </label>
+          <input
+            type="text"
+            name="skills"
+            value={formData.skills}
+            onChange={handleChange}
+          />
+        </div>
 
+        <button type="submit" className="submit-button">
+          Submit
+        </button>
       </form>
     </div>
   );

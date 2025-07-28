@@ -5,14 +5,22 @@ const CV_ReviewSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  Roll_No: {
+    type: Number,
+    required: true,
+  },
   Student_Email: {
     type: String,
     required: true,
   },
-  CV: {
+  CV_link: {
     type: String,
     required: true,
   },
+  Target_Profile: {
+    type: String,
+    required: true
+  }
 }, { timestamps: true });
 
 const CV_Review_db = mongoose.model('Mentorship_db', CV_ReviewSchema);
