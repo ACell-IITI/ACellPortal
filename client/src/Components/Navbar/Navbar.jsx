@@ -3,6 +3,9 @@ import './Navbar.css';
 import { NavLink, useLocation } from 'react-router-dom';
 import SignUpButton from '../SignupUpButton/SignupUpButton';
 import axios from 'axios';
+import { Fade as Hamburger } from 'hamburger-react'
+import { Link } from 'react-router-dom';
+
 
 export default function Navbar() {
   const [dropdownOpen, setDropdownOpen] = useState(null);
@@ -54,16 +57,24 @@ export default function Navbar() {
   if (role === 'admin') {
     navLinks.push({ name: 'Dashboard', path: '/admin-dashboard' });
   }
+  
 
   return (
     <nav className="navbar-root">
       <div className="navbar-container">
         <div className="navbar-logo-title">
-          <img
-            src="/Media/acell.png"
-            alt="Alumni Cell Logo"
-            className="navbar-logo"
-          />
+         <div className="logo-wrapper">
+  <div className="box box1"></div>
+  <div className="box box2"></div>
+
+  <Link to="/" className="logo-link">
+    <img
+      src="/Media/cell.jpg"
+      alt="Alumni Cell Logo"
+      className="navbar-logo"
+    />
+  </Link>
+</div>
           <div>
             <div className="navbar-title">Alumni Cell</div>
             <div className="navbar-subtitle">
@@ -72,15 +83,9 @@ export default function Navbar() {
           </div>
         </div>
 
-        <button
-          className={`navbar-hamburger${menuOpen ? ' open' : ''}`}
-          onClick={() => setMenuOpen((open) => !open)}
-          aria-label="Toggle menu"
-        >
-          <span />
-          <span />
-          <span />
-        </button>
+       <div className={`navbar-hamburger`}>
+  <Hamburger toggled={menuOpen} toggle={setMenuOpen} />
+</div>
         <ul className={`navbar-links${menuOpen ? ' open' : ''}`}>
           {navLinks.map((link) =>
             link.dropdown ? (
@@ -149,7 +154,8 @@ export default function Navbar() {
             )
           )}
         </ul>
-        <SignUpButton />
+        <div className="signupbtn"><SignUpButton /></div>
+        
       </div>
     </nav>
   );
