@@ -22,7 +22,6 @@
   margin: 3rem 0 1rem 0;
   color: #333;
   text-transform: uppercase;
-  letter-spacing: 1px;
   overflow: hidden;
 }
 
@@ -53,24 +52,14 @@
 }
 .iitabhi1{
   position: relative;
-   animation: float 1s ease-in-out infinite;
+   
     max-width: 450px;
     max-height: 550px;
     border-radius: 20px;
     overflow: hidden;
      box-shadow: 0 4px 12px rgba(0, 0, 0, 2);
 }
-@keyframes float {
-      0% {
-        transform: translateY(0);
-      }
-      50% {
-        transform: translateY(-3px); 
-      }
-      100% {
-        transform: translateY(0); 
-      }
-    }
+
 .text{
    font-size: clamp(2rem, 5vw, 8rem);
     font-family:'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
@@ -145,4 +134,11 @@
    font-size: clamp(2rem, 5vw, 8rem);
   color: #153462;
   font-weight:bolder;
+}
+
+
+/* events section */
+.event-section{
+  padding: 10px 0;
+  background-color: #f2f2f2;
 }
