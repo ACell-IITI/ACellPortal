@@ -57,8 +57,9 @@ const socialIcons = [
 const Footer = () => (
 <>
   <footer className="footer">
-    <div className="footer2"></div>
-    <div className="footer1"><div className="footer-content">
+    
+    <div className="footer1">
+      <div className="footer-content">
       <div className="footer-section logo-section">
         <img src={logoUrl} alt="IIT Indore Logo" />
         <div>

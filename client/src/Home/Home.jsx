@@ -1,7 +1,5 @@
 import React from 'react'
-import Typewriter from '../Components/Typewriter/Typewriter'
 import './Home.css'
-import Introtext from '../Components/Introtext/Introtext'
 import Eventh from '../Components/Eventh/Eventh'
 import Program from '../Components/ProgramH/ProgramH'
 import { gsap } from 'gsap';
@@ -9,6 +7,7 @@ import { useGSAP } from '@gsap/react';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import Registerbtn from '../Components/Registerbtn/Registerbtn'
 import RegistrationForm from '../Components/RegistrationForm/RegistrationForm'
+import { Link } from "react-router-dom";
 
 gsap.registerPlugin(useGSAP);
 gsap.registerPlugin(ScrollTrigger);
@@ -73,7 +72,13 @@ const Home = () => {
         
           <div className="textbox">
             <h2 className="text ">Welcome To</h2>
-            <Typewriter />
+            <div className="typewriter">Alumni Cell</div>
+            <h1 className="cell-desc">Connecting Legacies, Inspiring Futures — Where Alumni Meet, Memories Live, and New Journeys Begin.</h1>
+            <Link to="/Signup">
+      <button className="join-btn">
+        Join the Alumni Network
+      </button>
+    </Link>
           </div>
           <img
            src="/Media/iitiabhi1.jpg"
@@ -82,18 +87,20 @@ const Home = () => {
           />
         </div>
         </div>
-        <Introtext />
-        <div className="polygon-wrapper">
-    <div className="polygon-shadow"></div>
-    <div className="polygon-main">
-    </div>
-  </div>
+        
   <img className='bubble' src='/Media/bubble.png'></img>
     <img className='bubble1' src='/Media/bubble.png'></img>
-  <p className='titlec pr'>PROGRAM & WEBINARS</p>
-  <Program/>
-    <p className='titlec eve'>EVENTS</p>
-   <Eventh/>
+<p className="titlec pr">PROGRAM & WEBINARS</p>
+<p className="subtitlec pr">
+  Explore our upcoming sessions and expert-led discussions to boost your professional journey.
+</p>
+<Program />
+
+<p className="titlec eve">EVENTS</p>
+<p className="subtitlec eve">
+  Stay updated on recent and future events held at IIT Indore and beyond.
+</p>
+<Eventh />
 
    <div  className="saathih"> <img className='bubble' src='/Media/bubble.png'></img>
     <img className='bubble1' src='/Media/bubble.png'></img>
