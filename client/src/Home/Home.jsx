@@ -14,57 +14,49 @@ gsap.registerPlugin(ScrollTrigger);
 
 const Home = () => {
   useGSAP(() => {
-		// gsap code here...
-		gsap.from('.pr', 
-      
-      {
-      y:50,
-      opacity:0,
-      duration:0.8,
-      delay:0.5,
-      stagger:0.15,
-       scrollTrigger: {
-        trigger: '.pr',
-        scroller: 'body',
-        start: 'top 60%', 
-        end:'top 60%',
-        scrub:2,}
+  gsap.from('.pr', {
+    y: 50,
+    opacity: 0,
+    duration: 0.8,
+    delay: 0.5,
+    stagger: 0.15,
+    scrollTrigger: {
+      trigger: '.pr',
+      scroller: 'body',
+      start: 'top 60%',
+      toggleActions: 'play none none none'  // play once on entering trigger, no reverse
+    }
+  });
 
-      }); 
-      
-      gsap.from('.eve', 
-      
-      {
-      y:50,
-      opacity:0,
-      duration:1,
-      delay:1,
-      stagger:0.15,
-       scrollTrigger: {
-        trigger: '.eve',
-        scroller: 'body',
-        start: 'top 80%', 
-        end:'top 70%',
-        scrub:2,}
+  gsap.from('.eve', {
+    y: 50,
+    opacity: 0,
+    duration: 0.8,
+    delay: 0.5,
+    stagger: 0.15,
+    scrollTrigger: {
+      trigger: '.eve',
+      scroller: 'body',
+      start: 'top 80%',
+      toggleActions: 'play none none none'
+    }
+  });
 
-      });
-      gsap.from('.saathih', 
-      
-      {
-      y:100,
-      opacity:0,
-      duration:1,
-      delay:1,
-      stagger:0.15,
-       scrollTrigger: {
-        trigger: '.saathih',
-        scroller: 'body',
-        start: 'top 80%',
-        end:'top 40%',
-        scrub:2,}
+  gsap.from('.saathih', {
+    y: 100,
+    opacity: 0,
+    duration: 1,
+    delay: 0.5,
+    stagger: 0.15,
+    scrollTrigger: {
+      trigger: '.saathih',
+      scroller: 'body',
+      start: 'top 80%',
+      toggleActions: 'play none none none'
+    }
+  });
+});
 
-      });
-	},);
   return (
     <>
     <div className="banner">
