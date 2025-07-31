@@ -4,7 +4,6 @@ import { Alumni_db } from "../Models/User_model.js";
 export const getVerifiedMentors = async (req, res) => {
   try {
     const alumnis = await Alumni_db.find({ status: 'verified', role: 'alumni' });
-
     const alumniEmails = alumnis.map((alumni) => alumni.alumniEmail);
 
     const mentors = await Mentorship_db.find({ email: { $in: alumniEmails } });
