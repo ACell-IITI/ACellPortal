@@ -98,8 +98,7 @@ const settings = {
            trigger: '.program-container',
            scroller: 'body',
            start: 'top 40%', // Animation starts when top of the card reaches 60% of the viewport
-           end:'top 50%',
-           scrub:2,
+           toggleActions: 'play none none none'
          } 
    
          }); // <-- automatically reverted

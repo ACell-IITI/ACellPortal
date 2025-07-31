@@ -98,8 +98,7 @@ const settings = {
            trigger: '.carousel-container',
            scroller: 'body',
            start: 'top 80%', 
-           end:'top 60%',
-           scrub:2,
+            toggleActions: 'play none none none'
          } 
    
          }); 
