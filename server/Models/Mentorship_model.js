@@ -39,6 +39,10 @@ const MentorSchema = new mongoose.Schema(
       required: true,
       trim: true,
     },
+    profilePic: {
+      type: String,
+      default: '',
+    },
   },
   { timestamps: true }
 );

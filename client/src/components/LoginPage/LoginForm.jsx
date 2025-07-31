@@ -9,6 +9,7 @@ import axios from 'axios';
 const LoginForm = () => {
   const emailRef = useRef(null);
   const passwordRef = useRef(null);
+  const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -25,6 +26,7 @@ const LoginForm = () => {
         { withCredentials: true }
       );
       console.log('Logged in successfully:', res.data);
+      navigate('/');
     } catch (err) {
       console.error('Login failed:', err.response?.data || err.message);
     }

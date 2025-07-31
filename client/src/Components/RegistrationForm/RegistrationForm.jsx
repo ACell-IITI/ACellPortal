@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react'; // Import useRef
 import './RegistrationForm.css';
 import axios from 'axios';
 
@@ -14,13 +14,19 @@ const RegistrationForm = () => {
     linkedinId: '',
   });
 
+  const [profileImageFile, setProfileImageFile] = useState(null); 
   const [errors, setErrors] = useState({});
+  const fileInputRef = useRef(null);
 
   const handleChange = (e) => {
     setFormData({
       ...formData,
       [e.target.name]: e.target.value,
     });
+  };
+
+  const handleFileChange = (e) => {
+    setProfileImageFile(e.target.files[0]);
   };
 
   const validate = () => {
@@ -69,11 +75,24 @@ const RegistrationForm = () => {
     setErrors(validationErrors);
 
     if (Object.keys(validationErrors).length === 0) {
+      const data = new FormData();
+      for (const key in formData) {
+        data.append(key, formData[key]);
+      }
+      if (profileImageFile) {
+        data.append('profilePic', profileImageFile); 
+      }
+
       try {
         const res = await axios.post(
           'http://localhost:8000/alumni/add-mentor',
-          formData,
-          { withCredentials: true }
+          data,
+          {
+            withCredentials: true,
+            headers: {
+              'Content-Type': 'multipart/form-data',
+            },
+          }
         );
         alert(res.data.message);
       } catch (error) {
@@ -90,7 +109,31 @@ const RegistrationForm = () => {
         skills: '',
         linkedinId: '',
       });
+      setProfileImageFile(null); 
     }
+  };
+
+  const profileImageStyles = {
+    width: '100px',
+    height: '100px',
+    objectFit: 'cover',
+    borderRadius: '50%',
+    marginBottom: '1rem',
+    cursor: 'pointer',
+    border: '1px solid #ccc',
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    fontSize: '0.8rem',
+    color: '#555',
+    textAlign: 'center',
+    padding: '5px'
+  };
+
+  const placeholderImageStyles = {
+    ...profileImageStyles,
+    border: '1px dashed #aaa',
+    backgroundColor: '#f0f0f0',
   };
 
   return (
@@ -167,12 +210,13 @@ const RegistrationForm = () => {
           <label>
             About Yourself: <span className="required">*</span>
           </label>
-          <input
-            type="text"
+          <textarea 
             name="about"
             value={formData.about}
             onChange={handleChange}
-          />
+            rows="4"
+          ></textarea>
+          {errors.about && <p className="error">{errors.about}</p>}
         </div>
 
         <div className="form-group">
@@ -185,6 +229,7 @@ const RegistrationForm = () => {
             value={formData.linkedinId}
             onChange={handleChange}
           />
+          {errors.linkedinId && <p className="error">{errors.linkedinId}</p>}
         </div>
 
         <div className="form-group">
@@ -197,6 +242,37 @@ const RegistrationForm = () => {
             value={formData.skills}
             onChange={handleChange}
           />
+          {errors.skills && <p className="error">{errors.skills}</p>}
+        </div>
+
+        {/* Profile Picture Upload Section */}
+        <div className="form-group">
+          <label>Profile Picture:</label>
+          <input
+            type="file"
+            accept="image/*"
+            onChange={handleFileChange}
+            ref={fileInputRef}
+            style={{ display: 'none' }}
+          />
+
+          {profileImageFile ? (
+            <img
+              src={URL.createObjectURL(profileImageFile)}
+              alt="Profile Preview"
+              style={profileImageStyles}
+              onClick={() => fileInputRef.current.click()} 
+              title="Click to change image"
+            />
+          ) : (
+            <div
+              style={placeholderImageStyles}
+              onClick={() => fileInputRef.current.click()} 
+              title="Click to upload image"
+            >
+              Click to Upload Profile Pic
+            </div>
+          )}
         </div>
 
         <button type="submit" className="submit-button">

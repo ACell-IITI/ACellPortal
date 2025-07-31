@@ -1,20 +1,20 @@
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import Mentorship_db from '../Models/Mentorship_model.js';
-import { Alumni_db } from '../models/User_model.js';
+import { Alumni_db } from '../Models/User_model.js';
 import 'dotenv/config';
+import cloudinary from '../config/cloudinary.js';
+import fs from 'fs';
 
 export const addMentorProfile = async (req, res) => {
   try {
     const appToken = req.cookies.appToken;
-
     if (!appToken) {
       return res.status(401).json({ message: 'No token found' });
     }
 
     try {
       const decoded = jwt.verify(appToken, process.env.JWT_SECRET);
-      const alumniId = decoded.id;
     } catch (err) {
       return res.status(401).json({ message: 'Invalid or expired token' });
     }
@@ -40,7 +40,6 @@ export const addMentorProfile = async (req, res) => {
     ) {
       return res.status(400).json({ message: 'All fields are required.' });
     }
-    console.log(email);
     const alumni = await Alumni_db.findOne({ alumniEmail: email });
 
     if (!alumni) {
@@ -52,6 +51,12 @@ export const addMentorProfile = async (req, res) => {
       return res.status(409).json({ message: 'Mentor already exists' });
     }
 
+    const result = await cloudinary.uploader.upload(req.file.path, {
+      folder: 'kya-profiles',
+    });
+
+    fs.unlinkSync(req.file.path);
+
     const mentorData = new Mentorship_db({
       title,
       name,
@@ -61,6 +66,7 @@ export const addMentorProfile = async (req, res) => {
       linkedinId,
       skills,
       about,
+      profilePic: result.secure_url,
     });
 
     await mentorData.save();
@@ -74,7 +80,9 @@ export const addMentorProfile = async (req, res) => {
 
 export const getMentorsProfile = async (req, res) => {
   try {
-    const mentorsList = await Mentor.find().select('-__v');
+    const mentorsList = await Mentorship_db.find()
+      .select('-__v')
+      .sort({ createdAt: -1 });
     res.json(mentorsList);
   } catch (error) {
     console.error(
@@ -87,12 +95,12 @@ export const getMentorsProfile = async (req, res) => {
 
 export const deleteMentorProfile = async (req, res) => {
   try {
-    const profile = await Mentor.findById(req.params.id);
+    const profile = await Mentorship_db.findById(req.params.id);
     if (!profile) {
       return res.status(404).json({ message: 'Mentor not found' });
     }
 
-    await Mentor.findByIdAndDelete(req.params.id);
+    await Mentorship_db.findByIdAndDelete(req.params.id);
     res.status(200).json({ message: 'Mentor deleted successfully' });
   } catch (error) {
     console.error(
