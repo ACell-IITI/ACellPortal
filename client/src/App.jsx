@@ -6,7 +6,7 @@ import Footer from "./Components/Footer/Footer";
 import Navbar from "./Components/Navbar/Navbar";
 // import RegistrationForm from "./Components/RegistrationForm/RegistrationForm";
 
-import KYA from "./pages/KYA";
+import KYA from "./Components/KYA";
 
 import LoginPage from "./pages/LoginPage";
 import CVReviewPage from "./pages/CVReviewPage";
