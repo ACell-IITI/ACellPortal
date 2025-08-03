@@ -86,12 +86,13 @@ const SignUpForm = () => {
           Submit
         </button>
       </form>
+      <div className="google-login-wrapper">
       <GoogleLogin
         type={'standard'}
         theme={'outline'}
         size={'large'}
         text={'signin_with'}
-        shape={'rectangular'}
+        shape={'pill'}
         logo_alignment={'center'}
         onSuccess={async (credentialResponse) => {
           const res = await axios.post(
@@ -107,6 +108,7 @@ const SignUpForm = () => {
           console.log('Login Failed');
         }}
       />
+      </div>
 
       <div className="login-footer">
         <h6 className="signup-warning">
