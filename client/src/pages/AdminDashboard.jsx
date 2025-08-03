@@ -7,6 +7,8 @@ const AdminDashboard = () => {
   const [mentors, setMentors] = useState([]);
   const [role, setRole] = useState(null);
   const [loading, setLoading] = useState(true);
+  //CV Review
+  const [submittedCVs, setSubmittedCVs] = useState([]);
 
   const fileInputRef = useRef(null);
 
@@ -30,6 +32,23 @@ const AdminDashboard = () => {
 
     fetchRoleAndMentors();
   }, []);
+  
+  // Fetching CV submissions
+  useEffect(() => {
+    const fetchCVs = async () => {
+      try {
+        const res3 = await axios.get('http://localhost:8000/cv/getCV');
+        setSubmittedCVs(res3.data);
+      } catch (error) {
+        console.error('Error fetching CVs:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchCVs();
+  }, []);
+  //fetching CV submissions ends here
 
   const handleMentorsSubmit = async (e, alumniId) => {
     e.preventDefault();
@@ -307,6 +326,29 @@ const AdminDashboard = () => {
             </div>
           </div>
         ))}
+        
+        {/* Returning CV Submissions */}
+        <div className="mt-10">
+          <h2 className="text-2xl font-bold mb-4">CV RECORDS</h2>
+          {submittedCVs.length === 0 ? (
+            <p>No CVs submitted yet.</p>
+          ) : (
+            submittedCVs.map((cv, index) => (
+              <div key={index} className="border rounded p-4 my-3 shadow-sm">
+                <p><strong>Name:</strong> {cv.Name}</p>
+                <p><strong>Roll No:</strong> {cv.Roll_No}</p>
+                <p><strong>Email:</strong> {cv.Student_Email}</p>
+                <p><strong>Target Profile:</strong> {cv.Target_Profile}</p>
+                <p>
+                  <strong>CV Link:</strong>{' '}
+                  <a href={cv.CV_link} target="_blank" rel="noopener noreferrer">
+                    View CV
+                  </a>
+                </p>
+              </div>
+            ))
+          )}
+        </div>
       </div>
 
       <div style={styles.container}>
