@@ -6,7 +6,7 @@ import Footer from "./Components/Footer/Footer";
 import Navbar from "./Components/Navbar/Navbar";
 // import RegistrationForm from "./Components/RegistrationForm/RegistrationForm";
 
-import KYA from "./pages/KYA";
+import KYA from "./Components/KYA";
 
 import LoginPage from "./pages/LoginPage";
 import CVReviewPage from "./pages/CVReviewPage";
@@ -23,7 +23,8 @@ function App() {
     <>
       <BrowserRouter>
         <Navbar />
-        <Routes>
+        <main style={{ paddingTop: '100px' }}>
+           <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/registration-form" element={<SaathiRegistrationPage />} />
 
@@ -39,7 +40,8 @@ function App() {
           <Route path="/admin-dashboard" element={<AdminDashboard />} />
           <Route path="/verified-mentors" element={<VerifiedMentorsPage />} />
         </Routes>
-        <Footer />
+        <Footer /></main>
+       
       </BrowserRouter>
     </>
   );

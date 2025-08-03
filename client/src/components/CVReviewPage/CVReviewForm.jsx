@@ -8,6 +8,7 @@ const CVReviewForm = () => {
   const rollRef = useRef();
   const emailRef = useRef();
   const cvRef = useRef();
+  const targetRef = useRef();
   const submitBtnRef = useRef();
   const headingRef = useRef();
 
@@ -29,10 +30,58 @@ const CVReviewForm = () => {
     }
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    alert("Submitted!");
+
+    const name = nameRef.current?.value.trim();
+    const roll = rollRef.current?.value.trim();
+    const email = emailRef.current?.value.trim();
+    const cv = cvRef.current?.value.trim();
+    const target = targetRef.current?.value?.trim();
+
+    console.log("Field Values Check", {
+      name,
+      roll,
+      email,
+      cv,
+      target
+    });
+
+
+    if (!name || !roll || !email || !cv || !target) {
+      alert("All fields are required!");
+      return;
+    }
+
+    const formData = {
+      Name: name,
+      Roll_No: roll,
+      Student_Email: email,
+      CV_link: cv,
+      Target_Profile: target,
+    };
+
+    console.log("Form Data to Submit:", formData);
+
+    try {
+      const response = await fetch("http://localhost:8000/cv/addCV", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formData),
+      });
+
+      if (!response.ok) throw new Error("Failed to submit data");
+
+      const result = await response.json();
+      alert(result.message || "Submitted successfully!");
+    } catch (err) {
+      console.error("Error submitting form:", err);
+      alert("Submission failed.");
+    }
   };
+
 
   return (
     <div className="cv-container">
@@ -85,7 +134,8 @@ const CVReviewForm = () => {
 
           <CustomSelectField
             label="Target Profile"
-            options={["Core", "Software","Consulting","Finance/Quant","Data Science","Product/FMCG"]}
+            options={["Core", "Software", "Consulting", "Finance/Quant", "Data Science", "Product/FMCG"]}
+            ref={targetRef}
           />
 
           <button

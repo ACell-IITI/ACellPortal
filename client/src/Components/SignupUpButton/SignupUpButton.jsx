@@ -11,7 +11,7 @@ const SignupUpButton = ({ children }) => {
 
   return (
     <button className="signupup-btn" onClick={handleClick}>
-      <span className="label">Sign-up/login</span>
+      <span className="label">Sign-up</span>
       {children}
       <span className="accent"></span>
       <span className="arrow1"></span>

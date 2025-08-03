@@ -1,4 +1,4 @@
-import { CV_Review_db } from "../Models/CV_review_model";
+import CV_Review_db from "../Models/CV_review_model.js";
 
 export const add_cv = async (req, res) => {
     try {
@@ -32,4 +32,5 @@ export const get_cv = async (req, res) => {
     } catch (error) {
         res.status(500).json({ message: "Failed to fetch submissions" });
     }
+
 };

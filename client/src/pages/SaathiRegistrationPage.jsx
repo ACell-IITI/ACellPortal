@@ -14,7 +14,6 @@ const SaathiRegistrationPage = () => {
         const res = await axios.get('http://localhost:8000/auth/check', {
           withCredentials: true,
         });
-        console.log(res.data.status);
         setRole(res.data.role);
         setStatus(res.data.status);
       } catch (error) {

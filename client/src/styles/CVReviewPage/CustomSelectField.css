@@ -9,7 +9,7 @@
   cursor: pointer;
   user-select: none;
   position: relative;
-  background: linear-gradient(90deg, #F6F6C9 0%, #ffffff 120.98%);
+  background: linear-gradient(90deg, #F2f2f2 0%, #ffffff 120.98%);
   box-shadow: 5px 4px 4px rgba(0, 0, 0, 0.25);
   border-radius: 32px;
   outline: none; 

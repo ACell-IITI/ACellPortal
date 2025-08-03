@@ -1,50 +1,66 @@
+import cloudinary from '../config/cloudinary.js';
 import KYA_db from '../Models/KYA_model.js';
 import Mentorship_db from '../Models/Mentorship_model.js';
 import { Alumni_db } from '../Models/User_model.js';
+import fs from 'fs';
+import jwt from 'jsonwebtoken';
 
 export const addKyaProfile = async (req, res) => {
   try {
-    const { Name, Batch, CurrRole, Achievment, ShortBio } = req.body;
-    if (!Name || !Batch || !CurrRole || !Achievment || !ShortBio) {
-      return res.status(400).json({ message: 'All fields are required.' });
+    const appToken = req.cookies.appToken;
+
+    if (!appToken) {
+      return res.status(401).json({ message: 'No token found' });
     }
 
-    const existingProfile = await KYA_db.findOne({
+    try {
+      const decoded = jwt.verify(appToken, process.env.JWT_SECRET);
+    } catch (err) {
+      return res.status(401).json({ message: 'Invalid or expired token' });
+    }
+
+    const { Name, Batch, CurrRole, Achievement, ShortBio } = req.body;
+
+    const result = await cloudinary.uploader.upload(req.file.path, {
+      folder: 'kya-profiles',
+    });
+
+    fs.unlinkSync(req.file.path);
+
+    const kyaData = new KYA_db({
       Name,
       Batch,
       CurrRole,
-      Achievment,
+      Achievement,
       ShortBio,
+      profilePic: result.secure_url,
     });
 
-    if (existingProfile) {
-      return res.status(409).json({ message: 'This profile already exists.' });
-    }
+    await kyaData.save();
 
-    const profile = new KYA_db({
-      Name,
-      Batch,
-      CurrRole,
-      Achievment,
-      ShortBio,
-    });
-
-    await profile.save();
-
-    return res.status(201).json({ message: 'KYA profile added successfully' });
-  } catch (error) {
-    console.error('Error in addKyaProfile under admin controller: ', error);
-    res.status(500).json({ message: 'Internal server error' });
+    res.status(201).json({ message: 'Profile created' });
+  } catch (err) {
+    console.error('Upload error:', err);
+    res.status(500).json({ error: 'Failed to add profile' });
   }
 };
 
 export const getKyaProfiles = async (req, res) => {
   try {
-    const profilesList = await KYA_db.find().select('-__v');
-    res.json(profilesList);
+    const profilesList = await KYA_db.find()
+      .select('-__v')
+      .sort({ createdAt: -1 }); // Newest first
+
+    res.status(200).json({
+      success: true,
+      data: profilesList,
+    });
   } catch (error) {
-    console.error('Error in getKyaProfiles under alumni controller: ', error);
-    res.status(500).json({ message: 'Internal server error' });
+    console.error('Error in getKyaProfiles:', error.message);
+    res.status(500).json({
+      success: false,
+      message: 'Failed to fetch KYA profiles. Please try again later.',
+    });
   }
 };
 
@@ -92,14 +108,14 @@ export const verifyAlumni = async (req, res) => {
   try {
     const id = req.params.id;
 
-    const alumni = await Alumni_db.findById(id); 
+    const alumni = await Alumni_db.findById(id);
     if (!alumni) {
       return res.status(404).json({ message: 'Alumni not found' });
     }
 
     if (alumni.status === 'pending') {
       alumni.status = 'verified';
-      await alumni.save(); 
+      await alumni.save();
       return res.status(200).json({ message: 'Alumni verified successfully' });
     } else {
       return res.status(400).json({ message: 'Alumni already verified' });

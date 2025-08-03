@@ -1,8 +1,8 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef, useEffect, forwardRef, useImperativeHandle } from "react";
 import "../../styles/CVReviewPage/CustomSelectField.css";
 import "@fortawesome/fontawesome-free/css/all.min.css";
 
-const CustomSelectField = ({ label, options }) => {
+const CustomSelectField = forwardRef(({ label, options }, ref) => {
   const [selected, setSelected] = useState(options[0]);
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef(null);
@@ -12,6 +12,13 @@ const CustomSelectField = ({ label, options }) => {
     setSelected(option);
     setIsOpen(false);
   };
+
+  // Make selected value accessible to parent
+  useImperativeHandle(ref, () => ({
+    get value() {
+      return selected;
+    }
+  }));
 
   // Close dropdown on outside click
   useEffect(() => {
@@ -29,14 +36,14 @@ const CustomSelectField = ({ label, options }) => {
       <label>{label}</label>
       <div className="custom-select-wrapper" ref={dropdownRef}>
         <div
-  className={`custom-select-display ${isOpen ? "active" : ""}`}
-  onClick={toggleDropdown}
-  tabIndex={0}
-  onBlur={() => setIsOpen(false)}
-  onKeyDown={(e) => {
-    if (e.key === "Enter" || e.key === " ") toggleDropdown();
-  }}
->
+          className={`custom-select-display ${isOpen ? "active" : ""}`}
+          onClick={toggleDropdown}
+          tabIndex={0}
+          onBlur={() => setIsOpen(false)}
+          onKeyDown={(e) => {
+            if (e.key === "Enter" || e.key === " ") toggleDropdown();
+          }}
+        >
           {selected}
           <i className="fas fa-chevron-down select-icon" />
         </div>
@@ -46,7 +53,7 @@ const CustomSelectField = ({ label, options }) => {
               <li
                 key={idx}
                 className={`custom-option ${opt === selected ? "selected" : ""}`}
-                onMouseDown={() => handleSelect(opt)} 
+                onMouseDown={() => handleSelect(opt)}
               >
                 {opt}
               </li>
@@ -56,6 +63,6 @@ const CustomSelectField = ({ label, options }) => {
       </div>
     </div>
   );
-};
+});
 
 export default CustomSelectField;
