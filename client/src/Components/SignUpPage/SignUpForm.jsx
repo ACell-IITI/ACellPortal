@@ -72,24 +72,29 @@ const SignUpForm = () => {
         />
         <button className="submit-button" type="submit">Submit</button>
       </form>
+      <div className="google-login-wrapper">
       <GoogleLogin
-        type={"standard"}
-        theme={"outline"}
-        size={"large"}
-        text={"signin_with"}
-        shape={"rectangular"}
-        logo_alignment={"center"}
-        onSuccess={async credentialResponse => {
-          const res = await axios.post('http://localhost:8000/auth/google', {
-            token: credentialResponse.credential,
-          }, {withCredentials: true,
-          });
+        type={'standard'}
+        theme={'outline'}
+        size={'large'}
+        text={'signin_with'}
+        shape={'pill'}
+        logo_alignment={'center'}
+        onSuccess={async (credentialResponse) => {
+          const res = await axios.post(
+            'http://localhost:8000/auth/google',
+            {
+              token: credentialResponse.credential,
+            },
+            { withCredentials: true }
+          );
           console.log('User logged in:', res.data);
         }}
         onError={() => {
           console.log('Login Failed');
         }}
       />
+      </div>
 
       <div className="login-footer">
         <h6 className="signup-warning">
