@@ -4,17 +4,17 @@ import axios from 'axios';
 
 const RegistrationForm = () => {
   const [formData, setFormData] = useState({
-    title: '',
     name: '',
     email: '',
-    degreeBranchYear: '',
+    degree: '',
+    graduationYear: '',
     contactNumber: '',
     about: '',
     skills: '',
     linkedinId: '',
   });
 
-  const [profileImageFile, setProfileImageFile] = useState(null); 
+  const [profileImageFile, setProfileImageFile] = useState(null);
   const [errors, setErrors] = useState({});
   const fileInputRef = useRef(null);
 
@@ -76,11 +76,23 @@ const RegistrationForm = () => {
 
     if (Object.keys(validationErrors).length === 0) {
       const data = new FormData();
-      for (const key in formData) {
-        data.append(key, formData[key]);
-      }
+      data.append('name', formData.name);
+      data.append('email', formData.email);
+      data.append('degree', formData.degree);
+      data.append('graduationYear', Number(formData.graduationYear));
+      data.append('contactNumber', Number(formData.contactNumber));
+      data.append('about', formData.about);
+      data.append('linkedinId', formData.linkedinId);
+
+      const skillArray = formData.skills
+        .split(',')
+        .map((s) => s.trim())
+        .filter((s) => s.length > 0);
+
+      data.append('skills', JSON.stringify(skillArray));
+
       if (profileImageFile) {
-        data.append('profilePic', profileImageFile); 
+        data.append('profilePic', profileImageFile);
       }
 
       try {
@@ -100,16 +112,16 @@ const RegistrationForm = () => {
         alert('Operation Failed!');
       }
       setFormData({
-        title: '',
         name: '',
-        degreeBranchYear: '',
         email: '',
+        degree: '',
+        graduationYear: '',
         contactNumber: '',
         about: '',
-        skills: '',
+        skills: [],
         linkedinId: '',
       });
-      setProfileImageFile(null); 
+      setProfileImageFile(null);
     }
   };
 
@@ -127,7 +139,7 @@ const RegistrationForm = () => {
     fontSize: '0.8rem',
     color: '#555',
     textAlign: 'center',
-    padding: '5px'
+    padding: '5px',
   };
 
   const placeholderImageStyles = {
@@ -140,18 +152,6 @@ const RegistrationForm = () => {
     <div className="form-container">
       <h2>Mentorship Registration</h2>
       <form onSubmit={handleSubmit}>
-        <div className="form-group">
-          <label>Title:</label>
-          <select name="title" value={formData.title} onChange={handleChange}>
-            <option value="">Select</option>
-            <option value="Mr.">Mr.</option>
-            <option value="Mrs.">Mrs.</option>
-            <option value="Ms.">Ms.</option>
-            <option value="Dr.">Dr.</option>
-            <option value="Prof.">Prof.</option>
-          </select>
-        </div>
-
         <div className="form-group">
           <label>
             Your Name: <span className="required">*</span>
@@ -180,13 +180,24 @@ const RegistrationForm = () => {
 
         <div className="form-group">
           <label>
-            Degree/Branch/Year (Applicable for Alumni of IITI):{' '}
-            <span className="required">*</span>
+            Degree :<span className="required">*</span>
           </label>
           <input
             type="text"
-            name="degreeBranchYear"
-            value={formData.degreeBranchYear}
+            name="degree"
+            value={formData.degree}
+            onChange={handleChange}
+          />
+        </div>
+
+        <div className="form-group">
+          <label>
+            Graduation Year :<span className="required">*</span>
+          </label>
+          <input
+            type="text"
+            name="graduationYear"
+            value={formData.graduationYear}
             onChange={handleChange}
           />
         </div>
@@ -210,7 +221,7 @@ const RegistrationForm = () => {
           <label>
             About Yourself: <span className="required">*</span>
           </label>
-          <textarea 
+          <textarea
             name="about"
             value={formData.about}
             onChange={handleChange}
@@ -234,7 +245,8 @@ const RegistrationForm = () => {
 
         <div className="form-group">
           <label>
-            Skills/Expertise: <span className="required">*</span>
+            Skills/Expertise(seprated by comma) :{' '}
+            <span className="required">*</span>
           </label>
           <input
             type="text"
@@ -261,13 +273,13 @@ const RegistrationForm = () => {
               src={URL.createObjectURL(profileImageFile)}
               alt="Profile Preview"
               style={profileImageStyles}
-              onClick={() => fileInputRef.current.click()} 
+              onClick={() => fileInputRef.current.click()}
               title="Click to change image"
             />
           ) : (
             <div
               style={placeholderImageStyles}
-              onClick={() => fileInputRef.current.click()} 
+              onClick={() => fileInputRef.current.click()}
               title="Click to upload image"
             >
               Click to Upload Profile Pic

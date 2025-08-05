@@ -32,7 +32,7 @@ const AdminDashboard = () => {
 
     fetchRoleAndMentors();
   }, []);
-  
+
   // Fetching CV submissions
   useEffect(() => {
     const fetchCVs = async () => {
@@ -291,10 +291,13 @@ const AdminDashboard = () => {
                     <strong>About:</strong> {mentor.about}
                   </p>
                   <p>
-                    <strong>Skills:</strong> {mentor.skills}
+                    <strong>Skills:</strong>
+                    {mentor.skills.map((skill, index) => (
+                      <li key={index}>{skill}</li>
+                    ))}
                   </p>
                   <p>
-                    <strong>LinkedIn:</strong>{' '}
+                    <strong>LinkedIn:</strong>
                     <a
                       target="_blank"
                       href={mentor.linkedinId}
@@ -326,7 +329,7 @@ const AdminDashboard = () => {
             </div>
           </div>
         ))}
-        
+
         {/* Returning CV Submissions */}
         <div className="mt-10">
           <h2 className="text-2xl font-bold mb-4">CV RECORDS</h2>
@@ -335,13 +338,25 @@ const AdminDashboard = () => {
           ) : (
             submittedCVs.map((cv, index) => (
               <div key={index} className="border rounded p-4 my-3 shadow-sm">
-                <p><strong>Name:</strong> {cv.Name}</p>
-                <p><strong>Roll No:</strong> {cv.Roll_No}</p>
-                <p><strong>Email:</strong> {cv.Student_Email}</p>
-                <p><strong>Target Profile:</strong> {cv.Target_Profile}</p>
+                <p>
+                  <strong>Name:</strong> {cv.Name}
+                </p>
+                <p>
+                  <strong>Roll No:</strong> {cv.Roll_No}
+                </p>
+                <p>
+                  <strong>Email:</strong> {cv.Student_Email}
+                </p>
+                <p>
+                  <strong>Target Profile:</strong> {cv.Target_Profile}
+                </p>
                 <p>
                   <strong>CV Link:</strong>{' '}
-                  <a href={cv.CV_link} target="_blank" rel="noopener noreferrer">
+                  <a
+                    href={cv.CV_link}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
                     View CV
                   </a>
                 </p>

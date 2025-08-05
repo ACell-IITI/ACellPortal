@@ -11,17 +11,18 @@ import {
 import './MentorCard.css';
 
 const MentorCard = ({ mentor }) => {
-  const maskPhoneNumber = (phone) => {
-    if (phone.length >= 3) {
-      return phone.substring(0, 2) + '*'.repeat(8);
+  const maskPhoneNumber = (phoneNum) => {
+    phoneNum = phoneNum.toString();
+    if (phoneNum.length >= 3) {
+      return phoneNum.substring(0, 3) + '*'.repeat(7);
     }
-    return phone;
+    return phoneNum;
   };
 
   return (
     <div className="mentor-card">
       <div className="card-header">
-        <img src={mentor.photo} alt={mentor.name} className="profile-photo" />
+        <img src={mentor.profilePic} alt={mentor.name} className="profile-photo" />
         <h3 className="mentor-name">{mentor.name}</h3>
         <p className="mentor-degree">{mentor.degree}</p>
         <div className="graduation-details">
@@ -62,14 +63,14 @@ const MentorCard = ({ mentor }) => {
             </div>
             <div className="contact-item">
               <FaPhoneAlt className="icon" />
-              <span className="contact-phone">{maskPhoneNumber(mentor.contact)}</span>
+              <span className="contact-phone">{maskPhoneNumber(mentor.contactNumber)}</span>
             </div>
             <div className="contact-item">
               <FaLinkedin className="icon" />
               <a
-                href={mentor.linkedin}
+                href={mentor.linkedinId}
                 target="_blank"
-                rel="noopener noreferrer"
+                rel="noopener n oreferrer"
                 className="contact-link"
               >
                 LinkedIn

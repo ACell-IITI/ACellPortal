@@ -20,9 +20,9 @@ export const addMentorProfile = async (req, res) => {
     }
 
     const {
-      title,
       name,
-      degreeBranchYear,
+      degree,
+      graduationYear,
       email,
       contactNumber,
       linkedinId,
@@ -31,7 +31,8 @@ export const addMentorProfile = async (req, res) => {
     } = req.body;
     if (
       !name ||
-      !degreeBranchYear ||
+      !degree ||
+      !graduationYear ||
       !email ||
       !contactNumber ||
       !linkedinId ||
@@ -58,13 +59,13 @@ export const addMentorProfile = async (req, res) => {
     fs.unlinkSync(req.file.path);
 
     const mentorData = new Mentorship_db({
-      title,
       name,
-      degreeBranchYear,
+      degree,
+      graduationYear,
       email,
       contactNumber,
       linkedinId,
-      skills,
+      skills : JSON.parse(skills),
       about,
       profilePic: result.secure_url,
     });

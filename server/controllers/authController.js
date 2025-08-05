@@ -38,7 +38,6 @@ export const alumniSignUp = async (req, res) => {
     let isInstituteEmail = false;
     if (insEmailRegex.test(alumniEmail)) isInstituteEmail = true;
     const existingUser = await Alumni_db.findOne({ alumniEmail });
-    console.log(existingUser);
     if (existingUser) {
       return res
         .status(400)
