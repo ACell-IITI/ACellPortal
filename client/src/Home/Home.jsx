@@ -96,7 +96,7 @@ const Home = () => {
 
    <div  className="saathih"> <img className='bubble' src='/Media/bubble.png'></img>
     <img className='bubble1' src='/Media/bubble.png'></img>
-    <img src='/Media/Saathi1.png' alt='saathi' style={{ borderRadius: "15px" }}></img>
+    <img src='/Media/Saathi11.png' alt='saathi' className="saathi11"></img>
       
       <Registerbtn/>
 

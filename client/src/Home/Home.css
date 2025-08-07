@@ -79,11 +79,6 @@
     margin: 0;
 }
 
-@media (max-width: 600px){
-.iitabhi1{
-  display: none;
-}
-}
 
 .saathih{
     display: flex;
@@ -147,3 +142,17 @@
   color: #153462;
   font-weight:bolder;
 }
+
+.saathi11{
+  border-radius: 10px;
+}
+
+@media (max-width: 600px){
+.iitabhi1{
+  display: none;
+}
+.saathi11{
+  border-radius: 5px;
+}
+}
+
