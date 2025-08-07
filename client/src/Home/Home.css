@@ -19,7 +19,7 @@
   font-size: clamp(1.5rem, 3vw, 2.5rem);
   font-weight: 700;
   text-align: center;
-  margin: 3rem 0 1rem 0;
+  margin: 4rem 0 1rem 0;
   color: #333;
   text-transform: uppercase;
   overflow: hidden;
@@ -72,6 +72,9 @@
 .iitabhi1{
   display: none;
 }
+.saathi11{
+  border-radius: 5px;
+}
 }
 
 .saathih{
@@ -79,6 +82,7 @@
     justify-content: center;
     padding: 40px;
     overflow: hidden;
+    margin-top: 5rem;
 }
 
 .saathih img {
@@ -137,8 +141,15 @@
 }
 
 
+.saathi11{
+  border-radius: 10px;
+}
+
+
+
 /* events section */
 .event-section{
   padding: 10px 0;
   background-color: #f2f2f2;
 }
+
