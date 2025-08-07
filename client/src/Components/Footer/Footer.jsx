@@ -1,7 +1,7 @@
 import React from "react";
 import "./Footer.css";
 
-const logoUrl = "/Media/logo.png";
+const logoUrl = "/Media/iitilogo.webp";
 
 const socialIcons = [
   {

@@ -51,7 +51,7 @@ const Home = () => {
     scrollTrigger: {
       trigger: '.saathih',
       scroller: 'body',
-      start: 'top 80%',
+      start: 'top 90%',
       toggleActions: 'play none none none'
     }
   });
