@@ -4,8 +4,9 @@
   width: 100vw;
   height: fit-content;
   margin-right: 2rem;
+
   margin-top: 1rem;
-  padding: 80px;
+  padding: 40px 80px;
   /* box-sizing: border-box; */
   /* overflow-x: hidden; */
   gap: 2vw;
@@ -16,7 +17,7 @@
    height: 100%; 
   max-width: 350px;
   min-width: 90px;
-   padding: 50px;
+   padding: 0 50px;
    
 }
 

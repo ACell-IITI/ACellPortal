@@ -1,0 +1,154 @@
+.mentor-card {
+  background: white;
+  border-radius: 26px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.mentor-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+}
+
+.card-header {
+  /* background: linear-gradient(135deg, #153462 0%, #3b82f6 100%); */
+  background: linear-gradient(180deg, #153462 16.35%, #1E4F99 100%);
+  color: white;
+  padding: 24px;
+  text-align: center;
+  position: relative;
+  padding-bottom: 8px;
+}
+
+.profile-photo {
+  width: 90px;
+  height: 90px;
+  border-radius: 50%;
+  border: 4px solid white;
+  object-fit: cover;
+  margin: 0 auto 8px;
+  display: block;
+}
+
+.mentor-name {
+  font-size: 20px;
+  font-weight: 600;
+  margin: 0 0 8px 0;
+  line-height: 1.2;
+}
+
+.mentor-degree {
+  font-size: 14px;
+  opacity: 1;
+  margin: 0 0 0px 0;
+  font-weight: 500;
+}
+
+.graduation-details {
+  font-size: 14px;
+  opacity:1;
+  margin: 0;
+  font-weight: 500;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+}
+.graduation-cap{
+  font-size: 26px;
+  margin-right: 4px;
+}
+
+.card-content {
+  padding: 20px;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.section {
+  margin-bottom: 8px;
+}
+
+.section:last-child {
+  margin-bottom: 0;
+}
+
+.section-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: #000000;
+  margin: 0 0 8px 0;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.section-title svg {
+  width: 16px;
+  height: 16px;
+  
+}
+
+.about-text {
+  font-size: 14px;
+  color: #6b7280;
+  line-height: 1.5;
+  margin: 0;
+}
+
+.skills-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.skill-tag {
+  background: #dcfce7;
+  color: #166534;
+  padding: 4px 8px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 500;
+  border: 1px solid #bbf7d0;
+}
+
+.contact-info {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.contact-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  color: #4b5563;
+}
+
+.contact-item svg {
+  width: 16px;
+  height: 16px;
+  color: #153462;
+}
+
+.contact-link {
+  color: #3b82f6;
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.contact-link:hover {
+  color: #1d4ed8;
+  text-decoration: underline;
+}
+
+.contact-phone {
+  color: #4b5563;
+}
+

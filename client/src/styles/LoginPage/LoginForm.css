@@ -175,3 +175,14 @@
     padding: 10px;
   }
 }
+.google-login-wrapper {
+  display: flex;
+  justify-content: center;
+  margin-top: 0.8rem;
+  margin-bottom: 0rem;
+  
+}
+.google-login-wrapper > div {
+  width: 100%;
+  max-width: 300px;
+}

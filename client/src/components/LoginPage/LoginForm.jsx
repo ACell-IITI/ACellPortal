@@ -9,6 +9,7 @@ import axios from 'axios';
 const LoginForm = () => {
   const emailRef = useRef(null);
   const passwordRef = useRef(null);
+  const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -25,6 +26,7 @@ const LoginForm = () => {
         { withCredentials: true }
       );
       console.log('Logged in successfully:', res.data);
+      navigate('/');
     } catch (err) {
       console.error('Login failed:', err.response?.data || err.message);
     }
@@ -68,12 +70,14 @@ const LoginForm = () => {
           Submit
         </button>
       </form>
+
+      <div className="google-login-wrapper">
       <GoogleLogin
         type={'standard'}
-        theme={'outline'}
+        theme={'filled-blue'}
         size={'large'}
         text={'signin_with'}
-        shape={'rectangular'}
+        shape={'pill'}
         logo_alignment={'center'}
         onSuccess={async (credentialResponse) => {
           const res = await axios.post(
@@ -89,6 +93,7 @@ const LoginForm = () => {
           console.log('Login Failed');
         }}
       />
+      </div>
       <div className="login-footer">
         <h6 className="signup-warning">
           Not a Member?{' '}

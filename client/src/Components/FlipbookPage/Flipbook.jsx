@@ -58,6 +58,17 @@ const Flipbook = () => {
         return () => document.removeEventListener("fullscreenchange", handleFullscreenChange);
     }, []);
 
+    // here is window.innerwidth part 
+        const [windowWidth, setWindowWidth] = useState(window.innerWidth);
+    
+        useEffect(() => {
+            const handleResize = () => setWindowWidth(window.innerWidth);
+            window.addEventListener("resize", handleResize);
+    
+            handleResize();
+    
+            return () => window.removeEventListener("resize", handleResize);
+        }, []);
 
     const onDocumentLoadSuccess = ({ numPages }) => {
         setNumPages(numPages);
@@ -95,9 +106,9 @@ const Flipbook = () => {
 
     return (
         <>
-            <main className="mx-1 sm:mx-10 mt-20 mb-5 text-[#0F2A5A]">
-                <div className="contentSection bg-[#B9CDC0] rounded-2xl mx-0 sm:mx-10  p-7 pb-20 px-1 sm:px-10 mt-7 overflow-hidden">
-                    <div className="part1 flex justify-between">
+            <main className="mx-1 sm:mx-3 lg:mx-10 mt-16 lg:mt-10 mb-5 text-[#0F2A5A]">
+                <div className="contentSection bg-[#B9CDC0] rounded-2xl mx-0 sm:mx-3 lg:mx-10  p-5 px-1 sm:px-1 lg:px-10 mt-7 overflow-hidden">
+                    <div className="part1 flex justify-between lg:px-0 sm:px-5 px-2">
                         <div>
                             <FaArrowLeft
                                 onClick={() => {
@@ -105,23 +116,23 @@ const Flipbook = () => {
                                         false
                                     );
                                 }}
-                                className="w-7 h-7 cursor-pointer transition-all transform hover:scale-120 duration-300 ease-in-out"
+                                className="text-[#173460] hover:text-[#19438b] w-7 h-7 cursor-pointer transition-all transform hover:scale-125 duration-300 ease-in-out"
                             />
                         </div>
                         <div className="flex justify-between gap-2 sm:gap-5 list-none mt-3">
                             <FaExpand
                                 onClick={handleFullscreen}
-                                className="w-5 h-5 cursor-pointer transition-all transform hover:scale-120 duration-300 ease-in-out"
+                                className="text-[#173460] hover:text-[#19438b] w-5 h-5 cursor-pointer transition-all transform hover:scale-125 duration-300 ease-in-out"
                             />
                             <a href={pdf} download>
-                                <FaDownload className="w-5 h-5 text-[#0F2A5A] cursor-pointer transition-all transform hover:scale-120 duration-300 ease-in-out" />
+                                <FaDownload className="text-[#173460] hover:text-[#19438b] w-5 h-5 cursor-pointer transition-all transform hover:scale-125 duration-300 ease-in-out" />
                             </a>
-                            <FaShareAlt onClick={handleShare} className="w-5 h-5 cursor-pointer transition-all transform hover:scale-120 duration-300 ease-in-out" />
+                            <FaShareAlt onClick={handleShare} className="text-[#173460] hover:text-[#19438b] w-5 h-5 cursor-pointer transition-all transform hover:scale-125 duration-300 ease-in-out" />
                         </div>
                     </div>
                     <div ref={flipbookContainerRef} className="flipbook flex justify-between items-center lg:gap-5 mt-5">
                         <FaArrowCircleLeft
-                            className="hover:shadow-[0_0_10px_4px_rgba(120,120,120,0.5)] rounded-full  w-10 h-10 cursor-pointer transition-all transform hover:scale-110 duration-300 ease-in-out"
+                            className="text-[#173460] hover:text-[#19438b] rounded-full  w-10 h-10 cursor-pointer transition-all transform hover:scale-110 duration-300 ease-in-out"
                             onClick={() =>
                                 flipBookRef.current?.pageFlip().flipPrev()
                             }
@@ -139,7 +150,7 @@ const Flipbook = () => {
                             maxHeight={FLIPBOOK_HEIGHT}
                             drawShadow={true}
                             useMouseEvents={true}
-                            className={`rounded bg-transparent transition-transform duration-300 mx-auto ${isFullscreen ? "scale-120" : (window.innerWidth < 500) ? (window.innerWidth < 400) ? "scale-50" : "scale-75" : "scale-100"
+                            className={`rounded bg-transparent transition-transform duration-300 mx-auto ${isFullscreen ? "scale-125" : (windowWidth < 500) ? (windowWidth < 400) ? "scale-50" : "scale-75" : "scale-100"
                                 }`}
                         >
                             {Array.from(new Array(numPages), (_, i) => (
@@ -166,7 +177,7 @@ const Flipbook = () => {
                         </HTMLFlipBook>
 
                         <FaArrowCircleRight
-                            className="hover:shadow-[0_0_10px_4px_rgba(120,120,120,0.5)] rounded-full w-10 h-10 cursor-pointer transition-all transform hover:scale-110 duration-300 ease-in-out"
+                            className="text-[#173460] hover:text-[#19438b] rounded-full w-10 h-10 cursor-pointer transition-all transform hover:scale-110 duration-300 ease-in-out"
                             onClick={() =>
                                 flipBookRef.current?.pageFlip().flipNext()
                             }

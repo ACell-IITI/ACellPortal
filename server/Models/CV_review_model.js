@@ -19,10 +19,11 @@ const CV_ReviewSchema = new mongoose.Schema({
   },
   Target_Profile: {
     type: String,
-    required: true
+    required: true,
+    enum: ["Core", "Software", "Consulting", "Finance/Quant", "Data Science", "Product/FMCG"]
   }
 }, { timestamps: true });
 
-const CV_Review_db = mongoose.model('Mentorship_db', CV_ReviewSchema);
+const CV_Review_db = mongoose.model('CV_Review_db', CV_ReviewSchema);
 
 export default CV_Review_db;

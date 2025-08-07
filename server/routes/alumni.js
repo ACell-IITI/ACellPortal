@@ -4,10 +4,11 @@ import {
   deleteMentorProfile,
   getMentorsProfile,
 } from '../controllers/alumni.controller.js';
+import upload from '../middleware/multer.js';
 
 const router = express.Router();
 
-router.post('/add-mentor', addMentorProfile);
+router.post('/add-mentor', upload.single('profilePic'), addMentorProfile);
 router.get('/get-mentors/', getMentorsProfile);
 router.delete('/delete-mentor/:id', deleteMentorProfile);
 
