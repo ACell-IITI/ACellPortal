@@ -45,7 +45,7 @@ const Home = () => {
   gsap.from('.saathih', {
     y: 100,
     opacity: 0,
-    duration: 1,
+    duration: 0.7,
     delay: 0.5,
     stagger: 0.15,
     scrollTrigger: {
