@@ -1,0 +1,32 @@
+.user-dropdown-container {
+  position: relative;
+  display: inline-block;
+}
+
+.user-icon-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #ffffff;
+  margin-right: 10px;
+}
+
+.user-dropdown-menu {
+  position: absolute;
+  right: 0;
+  top: 100%;
+  background-color: white;
+  border: 1px solid #aaaaaa;
+  padding: 8px 12px;
+  border-radius: 4px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  z-index: 999;
+}
+
+.user-dropdown-menu button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #000000;
+  font-weight: 700;
+}

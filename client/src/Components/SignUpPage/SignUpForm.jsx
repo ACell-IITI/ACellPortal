@@ -42,7 +42,7 @@ const SignUpForm = () => {
         { withCredentials: true }
       );
       console.log('Signup success:', res.data);
-      navigate('/');
+      navigate('/Login');
     } catch (err) {
       console.error('Signup failed:', err.response?.data || err.message);
       alert(err.response?.data?.message || 'Signup failed');
