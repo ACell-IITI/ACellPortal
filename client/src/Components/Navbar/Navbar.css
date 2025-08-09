@@ -142,6 +142,11 @@ display: flex;
   transition: 0.3s ease-in-out;
 }
 
+.hamburger-react{
+  top: -10px;
+  margin-right: 35px;
+}
+
 
 
 @media (max-width: 900px) {

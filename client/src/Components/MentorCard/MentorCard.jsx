@@ -1,7 +1,6 @@
 import React from 'react';
 import {
   FaEnvelope,
-  FaPhoneAlt,
   FaLinkedin,
   FaUser,
   FaGraduationCap,
@@ -11,14 +10,6 @@ import {
 import './MentorCard.css';
 
 const MentorCard = ({ mentor }) => {
-  const maskPhoneNumber = (phoneNum) => {
-    phoneNum = phoneNum.toString();
-    if (phoneNum.length >= 3) {
-      return phoneNum.substring(0, 3) + '*'.repeat(7);
-    }
-    return phoneNum;
-  };
-
   return (
     <div className="mentor-card">
       <div className="card-header">
@@ -60,10 +51,6 @@ const MentorCard = ({ mentor }) => {
               <a href={`mailto:${mentor.email}`} className="contact-link">
                 {mentor.email}
               </a>
-            </div>
-            <div className="contact-item">
-              <FaPhoneAlt className="icon" />
-              <span className="contact-phone">{maskPhoneNumber(mentor.contactNumber)}</span>
             </div>
             <div className="contact-item">
               <FaLinkedin className="icon" />
