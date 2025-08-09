@@ -5,6 +5,7 @@ import SignUpButton from '../SignupUpButton/SignupUpButton';
 import axios from 'axios';
 import { Fade as Hamburger } from 'hamburger-react'
 import { Link } from 'react-router-dom';
+import UserDropdown from '../UserDropdown/UserDropdown';
 
 
 export default function Navbar() {
@@ -14,6 +15,8 @@ export default function Navbar() {
 
   const handleNavClick = () => setMenuOpen(false);
   const isMobile = window.innerWidth <= 900;
+  const [loading, setLoading] = useState(true);
+
 
   const [role, setRole] = useState(null);
   useEffect(() => {
@@ -22,9 +25,13 @@ export default function Navbar() {
         const res = await axios.get('http://localhost:8000/auth/check', {
           withCredentials: true,
         });
+         console.log('Fetched role:', res.data);
         setRole(res.data.role);
       } catch (error) {
         console.log('Error in useEffect:', error);
+        setRole(null);
+      }finally {
+      setLoading(false); 
       }
     };
 
@@ -154,7 +161,9 @@ export default function Navbar() {
             )
           )}
         </ul>
-        <div className="signupbtn"><SignUpButton /></div>
+        <div className="signupbtn"> 
+           {!loading && (role === 'admin' || role === 'alumni' ? <UserDropdown /> : <SignUpButton />)}
+        </div>
         
       </div>
     </nav>
