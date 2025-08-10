@@ -7,11 +7,12 @@ import {
   verifyAlumni,
 } from "../controllers/admin.controller.js";
 import upload from "../middleware/multer.js";
+import KYA_db from "../Models/KYA_model.js";
 
 const router = express.Router();
 
 // KYA Profile Routes
-router.post("/add-kya-profile", upload.single('profilePic'),addKyaProfile);
+router.post("/add-kya-profile", upload.single("profilePic"), addKyaProfile);
 router.get("/get-kya-profiles", getKyaProfiles);
 router.delete("/delete-kya-profile/:id", deleteKyaProfile);
 
