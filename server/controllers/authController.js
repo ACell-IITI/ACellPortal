@@ -1,7 +1,7 @@
-import bcrypt from 'bcrypt';
-import { Alumni_db, Admin_db } from '../models/User_model.js';
-import { OAuth2Client } from 'google-auth-library';
-import jwt from 'jsonwebtoken';
+import bcrypt from "bcrypt";
+import { Alumni_db, Admin_db } from "../models/User_model.js";
+import { OAuth2Client } from "google-auth-library";
+import jwt from "jsonwebtoken";
 
 const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
 
@@ -14,13 +14,42 @@ export const hashedPassword = async (password) => {
 export const adminSignUp = async (req, res) => {
   const { email, password } = req.body;
   const hPass = await hashedPassword(password);
-  return res.send('X');
+  return res.send("X");
 };
 
 export const adminLogin = async (req, res) => {
-  const { email, password } = req.body;
-  const hPass = await hashedPassword(password);
-  return res.send('X');
+  try {
+    const { email, password } = req.body;
+
+    const admin = await Admin.findOne({ email });
+    if (!admin) {
+      return res.status(404).json({ message: "Admin not found" });
+    }
+
+    const isMatch = await bcrypt.compare(password, admin.password);
+    if (!isMatch) {
+      return res.status(401).json({ message: "Invalid credentials" });
+    }
+
+    const token = jwt.sign(
+      { id: admin._id, role: "admin" },
+      process.env.JWT_SECRET,
+      { expiresIn: "1d" }
+    );
+
+    res.status(200).json({
+      message: "Login successful",
+      token,
+      admin: {
+        id: admin._id,
+        email: admin.email,
+        name: admin.name,
+      },
+    });
+  } catch (err) {
+    console.error("Login error:", err);
+    res.status(500).json({ message: "Server error" });
+  }
 };
 
 export const alumniSignUp = async (req, res) => {
@@ -29,10 +58,10 @@ export const alumniSignUp = async (req, res) => {
     if (!alumniName || !alumniEmail || !password)
       return res
         .status(400)
-        .json({ error: 'Name, email, and password are required' });
+        .json({ error: "Name, email, and password are required" });
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(alumniEmail)) {
-      return res.status(400).json({ error: 'Invalid email address' });
+      return res.status(400).json({ error: "Invalid email address" });
     }
     const insEmailRegex = /^[a-zA-Z0-9._%+-]+@iiti\.ac\.in$/;
     let isInstituteEmail = false;
@@ -41,7 +70,7 @@ export const alumniSignUp = async (req, res) => {
     if (existingUser) {
       return res
         .status(400)
-        .json({ error: 'User already exists with this email' });
+        .json({ error: "User already exists with this email" });
     }
     const hPass = await hashedPassword(password);
     const user = await Alumni_db.create({
@@ -51,12 +80,12 @@ export const alumniSignUp = async (req, res) => {
       isInstituteEmail,
     });
     const appToken = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
-      expiresIn: '7d',
+      expiresIn: "7d",
     });
-    res.cookie('appToken', appToken, {
+    res.cookie("appToken", appToken, {
       httpOnly: true,
       secure: false,
-      sameSite: 'Lax',
+      sameSite: "Lax",
       maxAge: 7 * 24 * 60 * 60 * 1000,
     });
     const finalUser = {
@@ -66,7 +95,7 @@ export const alumniSignUp = async (req, res) => {
     };
     return res.status(200).json({ finalUser });
   } catch (err) {
-    return res.status(500).json({ error: 'Some error occured, sorry' });
+    return res.status(500).json({ error: "Some error occured, sorry" });
   }
 };
 
@@ -74,26 +103,26 @@ export const alumniLogin = async (req, res) => {
   try {
     const { alumniEmail, password } = req.body;
     if (!alumniEmail || !password)
-      return res.status(400).json({ error: 'Login credentials are required.' });
+      return res.status(400).json({ error: "Login credentials are required." });
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(alumniEmail)) {
-      return res.status(400).json({ error: 'Invalid email address' });
+      return res.status(400).json({ error: "Invalid email address" });
     }
     const user = await Alumni_db.findOne({ alumniEmail });
-    if (!user) return res.status(404).json({ error: 'User not found' });
-    if (user.authProvider == 'google')
+    if (!user) return res.status(404).json({ error: "User not found" });
+    if (user.authProvider == "google")
       return res.status(400).json({
-        message: 'This email is registered with google. Use Google Login.',
+        message: "This email is registered with google. Use Google Login.",
       });
     const isMatch = await bcrypt.compare(password, user.alumniPassword);
-    if (!isMatch) return res.status(401).json({ error: 'Invalid credentials' });
+    if (!isMatch) return res.status(401).json({ error: "Invalid credentials" });
     const appToken = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
-      expiresIn: '7d',
+      expiresIn: "7d",
     });
-    res.cookie('appToken', appToken, {
+    res.cookie("appToken", appToken, {
       httpOnly: true,
       secure: false,
-      sameSite: 'Lax',
+      sameSite: "Lax",
       maxAge: 7 * 24 * 60 * 60 * 1000,
     });
     const finalUser = {
@@ -103,7 +132,7 @@ export const alumniLogin = async (req, res) => {
     };
     return res.status(200).json({ user: finalUser });
   } catch (err) {
-    return res.status(500).json({ error: 'Some error occured, sorry' });
+    return res.status(500).json({ error: "Some error occured, sorry" });
   }
 };
 
@@ -119,22 +148,22 @@ export const googleAuth = async (req, res) => {
     let user = await Alumni_db.findOne({ alumniEmail: email });
 
     if (!user) {
-      let isInsEmail = hd == 'iiti.ac.in';
+      let isInsEmail = hd == "iiti.ac.in";
       user = await Alumni_db.create({
         alumniName: name,
         alumniEmail: email,
         alumniProfilePic: picture,
-        authProvider: 'google',
+        authProvider: "google",
         isInstituteEmail: isInsEmail,
       });
     }
     const appToken = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
-      expiresIn: '7d',
+      expiresIn: "7d",
     });
-    res.cookie('appToken', appToken, {
+    res.cookie("appToken", appToken, {
       httpOnly: true,
       secure: false,
-      sameSite: 'Lax',
+      sameSite: "Lax",
       maxAge: 7 * 24 * 60 * 60 * 1000,
     });
     const finalUser = {
@@ -144,8 +173,8 @@ export const googleAuth = async (req, res) => {
     };
     return res.status(200).json({ finalUser });
   } catch (err) {
-    console.error('Google Auth Error', err);
-    res.status(401).json({ message: 'Invalid Google token' });
+    console.error("Google Auth Error", err);
+    res.status(401).json({ message: "Invalid Google token" });
   }
 };
 
@@ -154,7 +183,7 @@ export const validateUser = async (req, res) => {
     const appToken = req.cookies.appToken;
 
     if (!appToken) {
-      return res.status(401).json({ message: 'No token found' });
+      return res.status(401).json({ message: "No token found" });
     }
 
     try {
@@ -164,10 +193,10 @@ export const validateUser = async (req, res) => {
 
       return res.status(200).json({ role: user.role, status: user.status });
     } catch (err) {
-      return res.status(401).json({ message: 'Invalid or expired token' });
+      return res.status(401).json({ message: "Invalid or expired token" });
     }
   } catch (error) {
-    console.log('Error in validateUser controller: ', error);
-    res.status(500).json({ message: 'Internal Server Error' });
+    console.log("Error in validateUser controller: ", error);
+    res.status(500).json({ message: "Internal Server Error" });
   }
 };
