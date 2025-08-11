@@ -51,7 +51,7 @@ const AdminDashboard = () => {
   useEffect(() => {
     const fetchCVs = async () => {
       try {
-        const res3 = await axios.get('http://localhost:8000/cv/getCV');
+        const res3 = await axios.get(`${API_BASE_URL}/cv/getCV`);
         setSubmittedCVs(res3.data);
       } catch (error) {
         console.error('Error fetching CVs:', error);
