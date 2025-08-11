@@ -39,6 +39,7 @@ export const alumniSignUp = async (req, res) => {
       alumniPassword: hPass,
       isInstituteEmail,
     });
+    
     const appToken = jwt.sign({ id: user._id, role: user.role }, JWT_SECRET, {
       expiresIn: "7d",
     });
@@ -89,6 +90,7 @@ export const alumniLogin = async (req, res) => {
       });
     const isMatch = await bcrypt.compare(password, user.alumniPassword);
     if (!isMatch) return res.status(401).json({ error: "Invalid credentials" });
+    
     const appToken = jwt.sign({ id: user._id, role: user.role }, JWT_SECRET, {
       expiresIn: "7d",
     });
@@ -130,7 +132,7 @@ export const googleAuth = async (req, res) => {
         isInstituteEmail: isInsEmail,
       });
     }
-    const appToken = jwt.sign({ id: user._id }, JWT_SECRET, {
+    const appToken = jwt.sign({ id: user._id, role: user.role }, JWT_SECRET, {
       expiresIn: "7d",
     });
     res.cookie("appToken", appToken, {
