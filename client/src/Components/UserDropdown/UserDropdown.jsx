@@ -3,6 +3,7 @@ import React, { useState, useRef, useEffect } from "react";
 import "./UserDropdown.css";
 import { FaUserCircle } from "react-icons/fa";
 import axios from "axios";
+import { API_BASE_URL } from "../../api/alumni";
 
 const UserDropdown = () => {
   const [open, setOpen] = useState(false);
@@ -12,8 +13,8 @@ const UserDropdown = () => {
 
   const handleLogout = async () => {
     try {
-      await axios.post("http://localhost:8000/auth/logout", {}, { withCredentials: true });
-      window.location.reload(); // or navigate('/') if using useNavigate
+      await axios.post(`${API_BASE_URL}/auth/logout`, {}, { withCredentials: true });
+      window.location.href="/";
     } catch (error) {
       console.error("Logout error", error);
     }

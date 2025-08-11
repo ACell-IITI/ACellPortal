@@ -1,5 +1,5 @@
-import Mentorship_db from '../Models/Mentorship_model.js';
-import { Alumni_db } from '../Models/User_model.js';
+import Mentorship_db from '../models/Mentorship_model.js';
+import { Alumni_db } from '../models/User_model.js';
 
 export const getVerifiedMentors = async (req, res) => {
   try {

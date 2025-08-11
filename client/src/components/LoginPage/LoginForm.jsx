@@ -5,6 +5,7 @@ import '../../styles/LoginPage/LoginForm.css';
 import { Link, useNavigate } from 'react-router-dom';
 import { GoogleLogin } from '@react-oauth/google';
 import axios from 'axios';
+import { API_BASE_URL } from '../../api/alumni';
 
 const LoginForm = () => {
   const emailRef = useRef(null);
@@ -18,7 +19,7 @@ const LoginForm = () => {
 
     try {
       const res = await axios.post(
-        'http://localhost:8000/auth/alumni/login',
+        `${API_BASE_URL}/auth/alumni/login`,
         {
           alumniEmail,
           password,
@@ -26,7 +27,7 @@ const LoginForm = () => {
         { withCredentials: true }
       );
       console.log('Logged in successfully:', res.data);
-      navigate('/');
+      window.location.href="/";
     } catch (err) {
       console.error('Login failed:', err.response?.data || err.message);
     }
@@ -81,13 +82,14 @@ const LoginForm = () => {
         logo_alignment={'center'}
         onSuccess={async (credentialResponse) => {
           const res = await axios.post(
-            'http://localhost:8000/auth/google',
+            `${API_BASE_URL}/auth/google`,
             {
               token: credentialResponse.credential,
             },
             { withCredentials: true }
           );
           console.log('User logged in:', res.data);
+          window.location.href="/";
         }}
         onError={() => {
           console.log('Login Failed');

@@ -1,4 +1,4 @@
-import CV_Review_db from "../Models/CV_review_model.js";
+import CV_Review_db from "../models/CV_review_model.js";
 
 export const add_cv = async (req, res) => {
     try {
