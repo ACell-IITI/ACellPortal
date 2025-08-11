@@ -7,7 +7,7 @@ import {
   verifyAlumni,
 } from "../controllers/admin.controller.js";
 import upload from "../middleware/multer.js";
-import KYA_db from "../Models/KYA_model.js";
+import KYA_db from "../models/KYA_model.js";
 
 const router = express.Router();
 

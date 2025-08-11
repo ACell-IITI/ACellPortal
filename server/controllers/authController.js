@@ -4,52 +4,12 @@ import { OAuth2Client } from "google-auth-library";
 import jwt from "jsonwebtoken";
 
 const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
+const JWT_SECRET = process.env.JWT_SECRET;
 
 export const hashedPassword = async (password) => {
   const salt = await bcrypt.genSalt(10);
   const hashedPassword = bcrypt.hash(password, salt);
   return hashedPassword;
-};
-
-export const adminSignUp = async (req, res) => {
-  const { email, password } = req.body;
-  const hPass = await hashedPassword(password);
-  return res.send("X");
-};
-
-export const adminLogin = async (req, res) => {
-  try {
-    const { email, password } = req.body;
-
-    const admin = await Admin.findOne({ email });
-    if (!admin) {
-      return res.status(404).json({ message: "Admin not found" });
-    }
-
-    const isMatch = await bcrypt.compare(password, admin.password);
-    if (!isMatch) {
-      return res.status(401).json({ message: "Invalid credentials" });
-    }
-
-    const token = jwt.sign(
-      { id: admin._id, role: "admin" },
-      process.env.JWT_SECRET,
-      { expiresIn: "1d" }
-    );
-
-    res.status(200).json({
-      message: "Login successful",
-      token,
-      admin: {
-        id: admin._id,
-        email: admin.email,
-        name: admin.name,
-      },
-    });
-  } catch (err) {
-    console.error("Login error:", err);
-    res.status(500).json({ message: "Server error" });
-  }
 };
 
 export const alumniSignUp = async (req, res) => {
@@ -79,7 +39,8 @@ export const alumniSignUp = async (req, res) => {
       alumniPassword: hPass,
       isInstituteEmail,
     });
-    const appToken = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
+    
+    const appToken = jwt.sign({ id: user._id, role: user.role }, JWT_SECRET, {
       expiresIn: "7d",
     });
     res.cookie("appToken", appToken, {
@@ -96,6 +57,19 @@ export const alumniSignUp = async (req, res) => {
     return res.status(200).json({ finalUser });
   } catch (err) {
     return res.status(500).json({ error: "Some error occured, sorry" });
+  }
+};
+
+export const alumniLogout = async (req, res) => {
+  try {
+    res.clearCookie("appToken", {
+      httpOnly: true,
+      secure: false,
+      sameSite: "Lax",
+    });
+    return res.status(200).json({ message: "Logged out successfully" });
+  } catch (err) {
+    return res.status(500).json({ error: "Some error occurred, sorry" });
   }
 };
 
@@ -116,7 +90,8 @@ export const alumniLogin = async (req, res) => {
       });
     const isMatch = await bcrypt.compare(password, user.alumniPassword);
     if (!isMatch) return res.status(401).json({ error: "Invalid credentials" });
-    const appToken = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
+    
+    const appToken = jwt.sign({ id: user._id, role: user.role }, JWT_SECRET, {
       expiresIn: "7d",
     });
     res.cookie("appToken", appToken, {
@@ -157,7 +132,7 @@ export const googleAuth = async (req, res) => {
         isInstituteEmail: isInsEmail,
       });
     }
-    const appToken = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
+    const appToken = jwt.sign({ id: user._id, role: user.role }, JWT_SECRET, {
       expiresIn: "7d",
     });
     res.cookie("appToken", appToken, {
@@ -187,7 +162,7 @@ export const validateUser = async (req, res) => {
     }
 
     try {
-      const decoded = jwt.verify(appToken, process.env.JWT_SECRET);
+      const decoded = jwt.verify(appToken, JWT_SECRET);
       const id = decoded.id;
       const user = await Alumni_db.findById(id);
 

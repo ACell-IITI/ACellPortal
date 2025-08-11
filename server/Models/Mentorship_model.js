@@ -47,6 +47,6 @@ const MentorSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-const Mentorship_db = mongoose.model('Mentorship_db', MentorSchema);
+const Mentorship_db = mongoose.models.Mentorship_db || mongoose.model('Mentorship_db', MentorSchema);
 
 export default Mentorship_db;

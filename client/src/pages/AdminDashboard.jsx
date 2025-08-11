@@ -1,6 +1,5 @@
 import axios from 'axios';
-import React, { useState, useEffect, useRef } from 'react';
-import { Link, Navigate } from 'react-router-dom';
+import { useState, useEffect, useRef } from 'react';
 import { 
   Users, 
   FileText, 
@@ -19,11 +18,11 @@ import {
   Settings,
   Bell
 } from 'lucide-react';
+import { API_BASE_URL } from '../api/alumni';
 
 const AdminDashboard = () => {
   // For Mentors
   const [mentors, setMentors] = useState([]);
-  const [role, setRole] = useState(null);
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState('mentors');
   //CV Review
@@ -34,14 +33,10 @@ const AdminDashboard = () => {
   useEffect(() => {
     const fetchRoleAndMentors = async () => {
       try {
-        const res = await axios.get('http://localhost:8000/auth/check', {
-          withCredentials: true,
-        });
-        setRole(res.data.role);
-        const res2 = await axios.get(
-          'http://localhost:8000/admin/pending-mentors'
-        );
-        setMentors(res2.data);
+          const res2 = await axios.get(
+            `${API_BASE_URL}/admin/pending-mentors`
+          );
+          setMentors(res2.data);
       } catch (error) {
         console.log('Error in useEffect:', error);
       } finally {
@@ -56,7 +51,7 @@ const AdminDashboard = () => {
   useEffect(() => {
     const fetchCVs = async () => {
       try {
-        const res3 = await axios.get('http://localhost:8000/cv/getCV');
+        const res3 = await axios.get(`${API_BASE_URL}/cv/getCV`);
         setSubmittedCVs(res3.data);
       } catch (error) {
         console.error('Error fetching CVs:', error);
@@ -72,12 +67,12 @@ const AdminDashboard = () => {
     e.preventDefault();
     try {
       await axios.patch(
-        `http://localhost:8000/admin/verify-alumni/${alumniId}`
+        `${API_BASE_URL}/admin/verify-alumni/${alumniId}`
       );
       alert('Alumni verified successfully.');
 
       const res2 = await axios.get(
-        'http://localhost:8000/admin/pending-mentors'
+        `${API_BASE_URL}/admin/pending-mentors`
       );
       setMentors(res2.data);
     } catch (err) {
@@ -102,7 +97,7 @@ const AdminDashboard = () => {
   const fetchKyaProfiles = async () => {
     try {
       const res = await axios.get(
-        'http://localhost:8000/admin/get-kya-profiles'
+        `${API_BASE_URL}/admin/get-kya-profiles`
       );
       setProfiles(res.data.data);
     } catch (err) {
@@ -186,7 +181,7 @@ const AdminDashboard = () => {
       }
 
       const res = await axios.post(
-        'http://localhost:8000/admin/add-kya-profile',
+        `${API_BASE_URL}/admin/add-kya-profile`,
         data,
         {
           withCredentials: true,
@@ -220,7 +215,7 @@ const AdminDashboard = () => {
 
     try {
       await axios.delete(
-        `http://localhost:8000/admin/delete-kya-profile/${id}`
+        `${API_BASE_URL}/admin/delete-kya-profile/${id}`
       );
       fetchKyaProfiles();
     } catch (err) {
@@ -244,8 +239,6 @@ const AdminDashboard = () => {
       </div>
     );
   }
-
-  if (role !== 'admin') return <Navigate to="/" />;
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100">
