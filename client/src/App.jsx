@@ -23,7 +23,6 @@ function App() {
     <>
       <BrowserRouter>
         <Navbar />
-        <main style={{ paddingTop: '100px' }}>
            <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/registration-form" element={<SaathiRegistrationPage />} />
@@ -40,7 +39,7 @@ function App() {
           <Route path="/admin-dashboard" element={<AdminDashboard />} />
           <Route path="/verified-mentors" element={<VerifiedMentorsPage />} />
         </Routes>
-        <Footer /></main>
+        <Footer />
        
       </BrowserRouter>
     </>

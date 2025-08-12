@@ -75,7 +75,7 @@ export default function Navbar() {
     />
   </Link>
 </div>
-          <div>
+          <div className='nav-title'>
             <div className="navbar-title">Alumni Cell</div>
             <div className="navbar-subtitle">
               Indian Institute of Technology, Indore
