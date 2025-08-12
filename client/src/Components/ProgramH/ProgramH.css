@@ -107,12 +107,12 @@ background-size: cover;
 @media (max-width: 768px) {
   .slick-prev {
     left: 35%;
-    top: 100%;
+    top: 130%;
   }
 
   .slick-next {
     right: 35%;
-    top: 100%;
+    top: 130%;
   }
   .program-container {
   padding: 5px;
