@@ -20,6 +20,8 @@ import VerifiedMentorsPage from "./pages/VerifiedMentorsPage";
 import { API_BASE_URL } from "./api/alumni";
 import { useEffect, useState } from "react";
 import axios from "axios";
+import GuestRoute from "./routes/GuestRoute";
+
 
 function AdminRoute({ children }) {
   const [loading, setLoading] = useState(true);
@@ -55,8 +57,8 @@ function App() {
           <Route path="/" element={<Home />} />
           <Route path="/registration-form" element={<SaathiRegistrationPage />} />
 
-          <Route path="/Login" element={<LoginPage />} />
-          <Route path="/SignUp" element={<SignUpPage />} />
+          <Route path="/Login" element={<GuestRoute><LoginPage /></GuestRoute>} />
+          <Route path="/SignUp" element={<GuestRoute><SignUpPage /></GuestRoute>} />
 
           <Route path="/cv-review" element={<CVReviewPage />} />
 
