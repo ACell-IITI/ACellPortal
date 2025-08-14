@@ -28,9 +28,9 @@ const NGallery = () => {
 
     return (
         <>
-            <main className='mx-1 sm:mx-10 mt-10 mb-5 text-[#0F2A5A]'>
+            <main className='mx-1 sm:mx-10 mt-16 lg:mt-10 mb-5 text-[#0F2A5A]'>
                 <div>
-                    <FaArrowLeft onClick={() => { view_Gallery_Value.setView_Gallery(false) }} className='w-7 h-7 cursor-pointer transition-all transform hover:scale-120 duration-300 ease-in-out' />
+                    <FaArrowLeft onClick={() => { view_Gallery_Value.setView_Gallery(false) }} className='text-[#173460] hover:text-[#19438b] w-7 h-7 cursor-pointer transition-all transform hover:scale-125 duration-300 ease-in-out' />
                 </div>
                 <div className="textSection">
                     <h1 className='text-4xl font-bold text-center'>Alumni Newsletter Collection</h1>

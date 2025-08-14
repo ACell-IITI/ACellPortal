@@ -1,7 +1,6 @@
-import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
-import Mentorship_db from '../Models/Mentorship_model.js';
-import { Alumni_db } from '../Models/User_model.js';
+import Mentorship_db from '../models/Mentorship_model.js';
+import { Alumni_db } from '../models/User_model.js';
 import 'dotenv/config';
 import cloudinary from '../config/cloudinary.js';
 import fs from 'fs';
@@ -20,9 +19,9 @@ export const addMentorProfile = async (req, res) => {
     }
 
     const {
-      title,
       name,
-      degreeBranchYear,
+      degree,
+      graduationYear,
       email,
       contactNumber,
       linkedinId,
@@ -31,7 +30,8 @@ export const addMentorProfile = async (req, res) => {
     } = req.body;
     if (
       !name ||
-      !degreeBranchYear ||
+      !degree ||
+      !graduationYear ||
       !email ||
       !contactNumber ||
       !linkedinId ||
@@ -58,13 +58,13 @@ export const addMentorProfile = async (req, res) => {
     fs.unlinkSync(req.file.path);
 
     const mentorData = new Mentorship_db({
-      title,
       name,
-      degreeBranchYear,
+      degree,
+      graduationYear,
       email,
       contactNumber,
       linkedinId,
-      skills,
+      skills : JSON.parse(skills),
       about,
       profilePic: result.secure_url,
     });

@@ -30,6 +30,6 @@ const KYAschema = new mongoose.Schema(
   { timestamps: true }
 );
 
-const KYA_db = mongoose.model('KYA_db', KYAschema);
+const KYA_db = mongoose.models.KYA_db || mongoose.model('KYA_db', KYAschema);
 
 export default KYA_db;

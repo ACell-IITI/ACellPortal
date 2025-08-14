@@ -10,7 +10,7 @@ import adminRoute from './routes/admin.js';
 import alumniRoute from './routes/alumni.js';
 import mentorsRoute from './routes/mentors.js';
 // Optional: if you have other grouped routes
-// import allRoutes from "./routes/index.js";
+import allRoutes from "./routes/index.js";
 
 const app = express();
 
@@ -36,6 +36,7 @@ app.use('/auth', authRoutes);
 app.use('/admin', adminRoute);
 app.use('/alumni', alumniRoute);
 app.use('/mentors', mentorsRoute);
+app.use("/", allRoutes);
 
 // MongoDB connection
 const mongodbLink = process.env.MONGO_URI || process.env.MONGODB_LINK;

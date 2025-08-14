@@ -1,7 +1,8 @@
 .register-button{
  min-width: 10px;
+ width: fit-content;
 font-weight: 550;
-font-size: clamp(7px, 2vw, 20px);
+font-size: clamp(5px, 2vw, 20px);
   background: linear-gradient(75deg, #ff6f00, #f0aa56);
   border: none;
   border-radius: 5px;
@@ -9,7 +10,17 @@ font-size: clamp(7px, 2vw, 20px);
   justify-content: center;
   align-items: center;
   position: absolute;
-  bottom: 13%; 
+  bottom: 24%; 
   left: 56%; 
+  padding: 6px;
+}
+
+@media (max-width:600px) {
+  .register-button{
+     padding: 0;
+     bottom: 28%; 
+     left: 50%; 
+     border-radius: 0;
+  }
   
 }

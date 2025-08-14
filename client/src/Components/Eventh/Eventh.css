@@ -4,9 +4,8 @@
   width: 100vw;
   height: fit-content;
   margin-right: 2rem;
+  margin-top: 1rem;
   padding: 40px 80px;
-  /* box-sizing: border-box; */
-  /* overflow-x: hidden; */
   gap: 2vw;
 }
 
@@ -117,12 +116,12 @@
 
   .slick-prev {
     left: 35%;
-    top: 100%;
+    top: 130%;
   }
 
   .slick-next {
     right: 35%;
-    top: 100%;
+    top: 130%;
   }
 }
 

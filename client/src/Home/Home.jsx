@@ -45,13 +45,13 @@ const Home = () => {
   gsap.from('.saathih', {
     y: 100,
     opacity: 0,
-    duration: 1,
+    duration: 0.7,
     delay: 0.5,
     stagger: 0.15,
     scrollTrigger: {
       trigger: '.saathih',
       scroller: 'body',
-      start: 'top 80%',
+      start: 'top 90%',
       toggleActions: 'play none none none'
     }
   });
@@ -98,7 +98,7 @@ const Home = () => {
 
    <div  className="saathih"> <img className='bubble' src='/Media/bubble.png'></img>
     <img className='bubble1' src='/Media/bubble.png'></img>
-    <img src='/Media/Saathi1.png' alt='saathi' style={{ borderRadius: "15px" }}></img>
+    <img src='/Media/Saathi11.png' alt='saathi' className="saathi11"></img>
       
       <Registerbtn/>
 

@@ -52,6 +52,17 @@ const Newsletter = () => {
         return () => document.removeEventListener("fullscreenchange", handleFullscreenChange);
     }, []);
 
+    // here is window.innerwidth part 
+        const [windowWidth, setWindowWidth] = useState(window.innerWidth);
+    
+        useEffect(() => {
+            const handleResize = () => setWindowWidth(window.innerWidth);
+            window.addEventListener("resize", handleResize);
+    
+            handleResize();
+    
+            return () => window.removeEventListener("resize", handleResize);
+        }, []);
 
     const onDocumentLoadSuccess = ({ numPages }) => {
         setNumPages(numPages);
@@ -89,24 +100,24 @@ const Newsletter = () => {
 
     return (
         <>
-            <main className='mx-1 sm:mx-10 mt-10 mb-5 text-[#0F2A5A]'>
+            <main className='mx-1 sm:mx-3 lg:mx-10 mt-16 lg:mt-10 mb-5 text-[#0F2A5A]'>
                 <div className="textSection">
                     <h1 className='text-3xl font-bold font-inter'>Stay Connected with Our NEWSLETTER</h1>
                     <p className='mt-2'>Our newsletter is more than just updates—it's a celebration of the Alumni Cell community. From achievements and events to memories and milestones, each issue keeps you connected with what matters most.</p>
                 </div>
-                <div className="contentSection bg-[#B9CDC0] rounded-2xl mx-0 sm:mx-10  p-5 px-1 sm:px-1 lg:px-10 mt-7 overflow-hidden">
-                    <div className='part1 flex justify-between'>
+                <div className="contentSection bg-[#B9CDC0] rounded-2xl mx-0 sm:mx-3 lg:mx-10  p-5 px-1 sm:px-1 lg:px-10 mt-7 overflow-hidden">
+                    <div className='part1 flex justify-between lg:px-0 sm:px-5 px-2'>
                         <h1 className='font-bold text-3xl italic'> POD Pulse · Vol. 1, Issue 4</h1>
                         <div className='flex justify-between gap-2 sm:gap-5 list-none mt-3'>
-                            <FaExpand onClick={handleFullscreen} className='w-5 h-5 cursor-pointer transition-all transform hover:scale-120 duration-300 ease-in-out' />
+                            <FaExpand onClick={handleFullscreen} className='text-[#173460] hover:text-[#19438b] w-5 h-5 cursor-pointer transition-all transform hover:scale-125 duration-300 ease-in-out' />
                             <a href={pdfFile} download>
-                                <FaDownload className="w-5 h-5 text-[#0F2A5A]  cursor-pointer transition-all transform hover:scale-120 duration-300 ease-in-out" />
+                                <FaDownload className="w-5 h-5 text-[#173460] hover:text-[#19438b]  cursor-pointer transition-all transform hover:scale-125 duration-300 ease-in-out" />
                             </a>
-                            <FaShareAlt onClick={handleShare} className='w-5 h-5 cursor-pointer transition-all transform hover:scale-120 duration-300 ease-in-out' />
+                            <FaShareAlt onClick={handleShare} className='text-[#173460] hover:text-[#19438b] w-5 h-5 cursor-pointer transition-all transform hover:scale-125 duration-300 ease-in-out' />
                         </div>
                     </div>
                     <div ref={flipbookContainerRef} className="flipbook flex justify-between items-center lg:gap-5 mt-5">
-                        <FaArrowCircleLeft className='hover:shadow-[0_0_10px_4px_rgba(120,120,120,0.5)] rounded-full  w-10 h-10 cursor-pointer transition-all transform hover:scale-110 duration-300 ease-in-out' onClick={() => flipBookRef.current?.pageFlip().flipPrev()} />
+                        <FaArrowCircleLeft className='text-[#173460] hover:text-[#19438b] rounded-full  w-10 h-10 cursor-pointer transition-all transform hover:scale-110 duration-300 ease-in-out' onClick={() => flipBookRef.current?.pageFlip().flipPrev()} />
 
                         <HTMLFlipBook
                             ref={flipBookRef}
@@ -120,7 +131,7 @@ const Newsletter = () => {
                             maxHeight={FLIPBOOK_HEIGHT}
                             drawShadow={true}
                             useMouseEvents={true}
-                            className={`rounded bg-transparent transition-transform duration-300 mx-auto ${isFullscreen ? "scale-120" : (window.innerWidth < 500) ? (window.innerWidth < 400) ? "scale-50" : "scale-75" : "scale-100"
+                            className={`rounded bg-transparent transition-transform duration-300 mx-auto ${isFullscreen ? "scale-125" : (windowWidth < 500) ? (windowWidth < 400) ? "scale-50" : "scale-75" : "scale-100"
                                 }`}
                         >
                             {Array.from(new Array(numPages), (_, i) => (
@@ -141,9 +152,11 @@ const Newsletter = () => {
                             ))}
                         </HTMLFlipBook>
 
-                        <FaArrowCircleRight className='hover:shadow-[0_0_10px_4px_rgba(120,120,120,0.5)] rounded-full w-10 h-10 cursor-pointer transition-all transform hover:scale-110 duration-300 ease-in-out' onClick={() => flipBookRef.current?.pageFlip().flipNext()} />
+                        <FaArrowCircleRight className='text-[#173460] hover:text-[#19438b] rounded-full w-10 h-10 cursor-pointer transition-all transform hover:scale-110 duration-300 ease-in-out' onClick={() => flipBookRef.current?.pageFlip().flipNext()} />
                     </div>
-                    <p onClick={() => { view_Gallery_Value.setView_Gallery(true) }} className='underline w-fit mt-5 mx-auto cursor-pointer transition-all transform hover:scale-105 duration-300 ease-in-out'>View All Editions</p>
+                    <div className="flex justify-center mt-5">
+                        <button className="bg-[#173460] hover:bg-[#19438b] hover:scale-105 text-white text-lg font-bold rounded-lg py-3 px-4 transition-all duration-300 ease-in-out" onClick={() => { view_Gallery_Value.setView_Gallery(true) }}>View All Editions</button>
+                    </div>
 
                 </div>
             </main>

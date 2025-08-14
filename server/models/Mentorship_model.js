@@ -2,18 +2,18 @@ import mongoose from 'mongoose';
 
 const MentorSchema = new mongoose.Schema(
   {
-    title: {
-      type: String,
-      default: 'NA',
-    },
     name: {
       type: String,
       required: true,
       trim: true,
     },
-    degreeBranchYear: {
+    degree: {
       type: String,
       required: true,
+    },
+    graduationYear:{
+      type:Number,
+      required:true,
     },
     email: {
       type: String,
@@ -22,7 +22,7 @@ const MentorSchema = new mongoose.Schema(
       trim: true,
     },
     contactNumber: {
-      type: String,
+      type: Number,
       required: true,
       trim: true,
     },
@@ -31,7 +31,7 @@ const MentorSchema = new mongoose.Schema(
       required: true,
     },
     skills: {
-      type: String,
+      type: [String],
       required: true,
     },
     linkedinId: {
@@ -47,6 +47,6 @@ const MentorSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-const Mentorship_db = mongoose.model('Mentorship_db', MentorSchema);
+const Mentorship_db = mongoose.models.Mentorship_db || mongoose.model('Mentorship_db', MentorSchema);
 
 export default Mentorship_db;
