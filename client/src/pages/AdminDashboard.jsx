@@ -1,5 +1,6 @@
 import axios from 'axios';
 import { useState, useEffect, useRef } from 'react';
+import {useNavigate} from 'react-router-dom';
 import { 
   Users, 
   FileText, 
@@ -21,12 +22,14 @@ import {
 import { API_BASE_URL } from '../api/alumni';
 
 const AdminDashboard = () => {
+  const navigate = useNavigate();
   // For Mentors
   const [mentors, setMentors] = useState([]);
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState('mentors');
   //CV Review
   const [submittedCVs, setSubmittedCVs] = useState([]);
+  const [unseenCVCount, setUnseenCVCount] = useState(0);
 
   const fileInputRef = useRef(null);
 
@@ -48,20 +51,35 @@ const AdminDashboard = () => {
   }, []);
 
   // Fetching CV submissions
-  useEffect(() => {
-    const fetchCVs = async () => {
-      try {
-        const res3 = await axios.get(`${API_BASE_URL}/cv/getCV`);
-        setSubmittedCVs(res3.data);
-      } catch (error) {
-        console.error('Error fetching CVs:', error);
-      } finally {
-        setLoading(false);
-      }
-    };
+useEffect(() => {
+  const fetchCVs = async () => {
+    try {
+      const res3 = await axios.get(`${API_BASE_URL}/cv/getCV`);
+      setSubmittedCVs(res3.data);
 
-    fetchCVs();
-  }, []);
+      // Count unseen CVs (logic: all are unseen unless already in list)
+      if (res3.data.length > submittedCVs.length) {
+        setUnseenCVCount(res3.data.length - submittedCVs.length);
+      }
+    } catch (error) {
+      console.error('Error fetching CVs:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Poll every 30s
+  fetchCVs();
+  const interval = setInterval(fetchCVs, 30000);
+  return () => clearInterval(interval);
+}, [submittedCVs]);
+
+useEffect(() => {
+  if (activeTab === 'cvs') {
+    setUnseenCVCount(0);
+  }
+}, [activeTab]);
+
 
   const handleMentorsSubmit = async (e, alumniId) => {
     e.preventDefault();
@@ -251,10 +269,26 @@ const AdminDashboard = () => {
               <p className="text-slate-600 mt-1">Manage mentors, reviews, and alumni profiles</p>
             </div>
             <div className="flex items-center space-x-4">
-              <button className="p-2 text-slate-400 hover:text-slate-600 transition-colors">
-                <Bell className="w-6 h-6" />
-              </button>
-              <button className="p-2 text-slate-400 hover:text-slate-600 transition-colors">
+              <div className="relative">
+                <button
+                  className="p-2 text-slate-400 hover:text-slate-600 transition-colors relative"
+                  onClick={() => {
+                    setActiveTab('cvs'); // Switch to CV Reviews tab
+                    setUnseenCVCount(0); // Reset notifications
+                  }}
+                >
+                  <Bell className="w-6 h-6" />
+                  {unseenCVCount > 0 && (
+                    <span className="absolute top-0 right-0 inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-white bg-red-600 rounded-full transform translate-x-1/2 -translate-y-1/2">
+                      {unseenCVCount}
+                    </span>
+                  )}
+                </button>
+              </div>
+              <button
+                className="p-2 text-slate-400 hover:text-slate-600 transition-colors"
+                onClick={() => navigate("/admin-settings")}
+              >
                 <Settings className="w-6 h-6" />
               </button>
             </div>
