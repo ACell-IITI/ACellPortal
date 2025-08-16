@@ -1,9 +1,72 @@
 import cloudinary from '../config/cloudinary.js';
 import KYA_db from '../models/KYA_model.js';
+import bcrypt from "bcrypt";
 import Mentorship_db from '../models/Mentorship_model.js';
-import { Alumni_db } from '../models/User_model.js';
+import { Admin_db, Alumni_db } from '../models/User_model.js';
 import fs from 'fs';
 import jwt from 'jsonwebtoken';
+
+export const getAdminProfiles = async (req, res) => {
+  try {
+    // const appToken = req.cookies.appToken;
+
+    // if (!appToken) {
+    //   return res.status(401).json({ message: 'No token found' });
+    // }
+
+    // try {
+    //   const decoded = jwt.verify(appToken, process.env.JWT_SECRET);
+    // } catch (err) {
+    //   return res.status(401).json({ message: 'Invalid or expired token' });
+    // }
+
+    const profilesList = await Admin_db.find()
+      .select('-__v')
+      .sort({ createdAt: -1 }); // Newest first
+
+    res.status(200).json({
+      success: true,
+      data: profilesList,
+    });
+  } catch (error) {
+    console.error('Upload error:', err);
+    res.status(500).json({ error: 'Failed to get admins' });
+  }
+};
+
+export const updateAdminProfile = async (req, res) => {
+  try {
+    console.log(req.params.id);
+    const profile = await Admin_db.findById(req.params.id);
+    if (!profile) {
+      return res.status(404).json({ message: 'Admin not found' });
+    }
+
+    const { adminEmail, adminPassword } = req.body;
+
+    if (adminEmail) {
+      profile.AdminEmail = adminEmail;
+    }
+
+    if (adminPassword) {
+      const salt = await bcrypt.genSalt(10);
+      profile.AdminPassword = await bcrypt.hash(adminPassword, salt);
+    }
+
+    const updatedProfile = await profile.save();
+
+    res.status(200).json({
+      message: 'Admin profile updated successfully',
+      admin: {
+        _id: updatedProfile._id,
+        adminEmail: updatedProfile.AdminEmail,
+      },
+    });
+  } catch (err) {
+    console.error('Update error:', err);
+    res.status(500).json({ error: 'Failed to update admin profile' });
+  }
+};
 
 export const addKyaProfile = async (req, res) => {
   try {
