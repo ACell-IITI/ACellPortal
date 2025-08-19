@@ -54,6 +54,7 @@ function App() {
     <>
       <BrowserRouter>
         <Navbar />
+          <div style={{ height:'100px', backgroundColor: '#153462' }}></div>
            <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/registration-form" element={<SaathiRegistrationPage />} />
