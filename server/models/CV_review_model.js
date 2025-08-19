@@ -24,6 +24,6 @@ const CV_ReviewSchema = new mongoose.Schema({
   }
 }, { timestamps: true });
 
-const CV_Review_db = mongoose.model('CV_Review_db', CV_ReviewSchema);
+const CV_Review_db = mongoose.models.CV_ReviewSchema || mongoose.model('CV_Review_db', CV_ReviewSchema);
 
 export default CV_Review_db;

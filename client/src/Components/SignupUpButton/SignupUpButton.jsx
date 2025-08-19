@@ -6,12 +6,12 @@ const SignupUpButton = ({ children }) => {
   const navigate = useNavigate();
 
   const handleClick = () => {
-    navigate("/Signup"); 
+    navigate("/Login"); 
   };
 
   return (
     <button className="signupup-btn" onClick={handleClick}>
-      <span className="label">Sign-up</span>
+      <span className="label">Login</span>
       {children}
       <span className="accent"></span>
       <span className="arrow1"></span>
