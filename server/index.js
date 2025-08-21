@@ -34,7 +34,7 @@ app.get('/', (req, res) => {
 // Use individual routes
 app.use('/auth', authRoutes);
 app.use('/admin', adminRoute);
-app.use('/alumni', alumniRoute);
+app.use('/alumni', alumniRoute); // have to shift add,get and delete mentors from here to admin route
 app.use('/mentors', mentorsRoute);
 app.use("/", allRoutes);
 

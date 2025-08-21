@@ -142,49 +142,49 @@ export const deleteKyaProfile = async (req, res) => {
   }
 };
 
-export const getPendingMentors = async (req, res) => {
-  try {
-    const alumnis = await Alumni_db.find({ status: 'pending', role: 'alumni' });
+// export const getPendingMentors = async (req, res) => {
+//   try {
+//     const alumnis = await Alumni_db.find({ status: 'pending', role: 'alumni' });
 
-    const alumniEmails = alumnis.map((alumni) => alumni.alumniEmail);
+//     const alumniEmails = alumnis.map((alumni) => alumni.alumniEmail);
 
-    const mentors = await Mentorship_db.find({ email: { $in: alumniEmails } });
+//     const mentors = await Mentorship_db.find({ email: { $in: alumniEmails } });
 
-    const mentorMap = new Map();
-    mentors.forEach((mentor) => {
-      mentorMap.set(mentor.email, mentor);
-    });
+//     const mentorMap = new Map();
+//     mentors.forEach((mentor) => {
+//       mentorMap.set(mentor.email, mentor);
+//     });
 
-    const combined = alumnis.map((alumni) => ({
-      alumni,
-      mentor: mentorMap.get(alumni.alumniEmail) || null,
-    }));
+//     const combined = alumnis.map((alumni) => ({
+//       alumni,
+//       mentor: mentorMap.get(alumni.alumniEmail) || null,
+//     }));
 
-    return res.status(200).json(combined);
-  } catch (error) {
-    console.error('Error in getPendingMentors controller:', error);
-    return res.status(500).json({ message: 'Internal server error' });
-  }
-};
+//     return res.status(200).json(combined);
+//   } catch (error) {
+//     console.error('Error in getPendingMentors controller:', error);
+//     return res.status(500).json({ message: 'Internal server error' });
+//   }
+// };
 
-export const verifyAlumni = async (req, res) => {
-  try {
-    const id = req.params.id;
+// export const verifyAlumni = async (req, res) => {
+//   try {
+//     const id = req.params.id;
 
-    const alumni = await Alumni_db.findById(id);
-    if (!alumni) {
-      return res.status(404).json({ message: 'Alumni not found' });
-    }
+//     const alumni = await Alumni_db.findById(id);
+//     if (!alumni) {
+//       return res.status(404).json({ message: 'Alumni not found' });
+//     }
 
-    if (alumni.status === 'pending') {
-      alumni.status = 'verified';
-      await alumni.save();
-      return res.status(200).json({ message: 'Alumni verified successfully' });
-    } else {
-      return res.status(400).json({ message: 'Alumni already verified' });
-    }
-  } catch (error) {
-    console.error('Error in verifyAlumni controller:', error);
-    return res.status(500).json({ message: 'Internal server error' });
-  }
-};
+//     if (alumni.status === 'pending') {
+//       alumni.status = 'verified';
+//       await alumni.save();
+//       return res.status(200).json({ message: 'Alumni verified successfully' });
+//     } else {
+//       return res.status(400).json({ message: 'Alumni already verified' });
+//     }
+//   } catch (error) {
+//     console.error('Error in verifyAlumni controller:', error);
+//     return res.status(500).json({ message: 'Internal server error' });
+//   }
+// };
