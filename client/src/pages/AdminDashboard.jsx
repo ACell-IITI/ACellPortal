@@ -339,12 +339,12 @@ const AdminDashboard = () => {
                   )}
                 </button>
               </div>
-              <button
+              {/* <button
                 className="p-2 text-slate-400 hover:text-slate-600 transition-colors"
                 onClick={() => navigate('/admin-settings')}
               >
                 <Settings className="w-6 h-6" />
-              </button>
+              </button> */}
             </div>
           </div>
         </div>
