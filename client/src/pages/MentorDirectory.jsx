@@ -15,7 +15,7 @@ const MentorDirectory = () => {
   useEffect(() => {
     const fetchMentors = async () => {
       try {
-        const res = await axios.get('http://localhost:8000/mentors/verified', {
+        const res = await axios.get('http://localhost:8000/mentors/get', {
           withCredentials: true,
         });
         setMentorsData(res.data);

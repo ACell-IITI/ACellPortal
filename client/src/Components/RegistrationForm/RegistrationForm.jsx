@@ -97,7 +97,7 @@ const RegistrationForm = () => {
 
       try {
         const res = await axios.post(
-          'http://localhost:8000/alumni/add-mentor',
+          'http://localhost:8000/admin/add-mentor',
           data,
           {
             withCredentials: true,
