@@ -1,16 +1,14 @@
-import React, { useRef } from 'react';
+import { useRef } from 'react';
 import InputField from './InputField';
 import PasswordField from './PasswordField';
 import '../../styles/LoginPage/LoginForm.css';
-import { Link, useNavigate } from 'react-router-dom';
-import { GoogleLogin } from '@react-oauth/google';
+// import { GoogleLogin } from '@react-oauth/google';
 import axios from 'axios';
 import { API_BASE_URL } from '../../api/alumni';
 
 const LoginForm = () => {
   const emailRef = useRef(null);
   const passwordRef = useRef(null);
-  const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -27,7 +25,7 @@ const LoginForm = () => {
         { withCredentials: true }
       );
       console.log('Logged in successfully:', res.data);
-      window.location.href="/";
+      window.location.href="/admin-dashboard";
     } catch (err) {
       console.error('Login failed:', err.response?.data || err.message);
     }
@@ -73,7 +71,7 @@ const LoginForm = () => {
       </form>
 
       <div className="google-login-wrapper">
-      <GoogleLogin
+      {/* <GoogleLogin
         type={'standard'}
         theme={'filled-blue'}
         size={'large'}
@@ -94,16 +92,16 @@ const LoginForm = () => {
         onError={() => {
           console.log('Login Failed');
         }}
-      />
+      /> */}
       </div>
-      <div className="login-footer">
+      {/* <div className="login-footer">
         <h6 className="signup-warning">
           Not a Member?{' '}
           <Link to="/signup" className="signup-link">
             Sign-Up Now
           </Link>
         </h6>
-      </div>
+      </div> */}
     </div>
   );
 };

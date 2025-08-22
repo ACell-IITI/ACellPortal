@@ -1,7 +1,7 @@
-import React, { useEffect, useState, useRef } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import './Navbar.css';
 import { NavLink, useLocation, Link } from 'react-router-dom';
-import SignUpButton from '../SignupUpButton/SignupUpButton';
+// import SignUpButton from '../SignupUpButton/SignupUpButton';
 import axios from 'axios';
 import { Fade as Hamburger } from 'hamburger-react'
 // import { Link } from 'react-router-dom';
@@ -73,9 +73,9 @@ export default function Navbar() {
     { name: 'Mentors', path: '/verified-mentors' },
   ];
 
-  if (role === 'admin') {
-    navLinks.push({ name: 'Dashboard', path: '/admin-dashboard' });
-  }
+  // if (role === 'admin') {
+  //   navLinks.push({ name: 'Dashboard', path: '/admin-dashboard' });
+  // }
 
   const handleNavClick = () => setMenuOpen(false);
 
@@ -184,7 +184,7 @@ export default function Navbar() {
         </ul>
 
         <div className="signupbtn"> 
-           {!loading && (role === 'admin' || role === 'alumni' ? <UserDropdown /> : <SignUpButton />)}
+           {!loading && role === "admin" ? <UserDropdown /> : null}
         </div>
 
       </div>

@@ -10,7 +10,7 @@ import KYA from "./Components/KYA";
 
 import LoginPage from "./pages/LoginPage";
 import CVReviewPage from "./pages/CVReviewPage";
-import SignUpPage from "./pages/SignUpPage";
+// import SignUpPage from "./pages/SignUpPage";
 import NewsletterPage from "./pages/NewsletterPage";
 import MagazinePage from "./pages/MagazinePage";
 import TeamSection from "./components/TeamPage";
@@ -23,11 +23,9 @@ import axios from "axios";
 import GuestRoute from "./routes/GuestRoute";
 // import AdminSettings from "./pages/AdminSettings";
 
-
 function AdminRoute({ children }) {
   const [loading, setLoading] = useState(true);
   const [isAdmin, setIsAdmin] = useState(false);
-
   useEffect(() => {
     async function fetchRole() {
       try {
@@ -44,9 +42,8 @@ function AdminRoute({ children }) {
     }
     fetchRole();
   }, []);
-
   if (loading) return <div>Loading...</div>;
-  return isAdmin ? children : <Navigate to="/login" />;
+  return isAdmin ? children : <Navigate to="/adminlogin" />;
 }
 
 function App() {
@@ -59,8 +56,8 @@ function App() {
           <Route path="/" element={<Home />} />
           <Route path="/registration-form" element={<SaathiRegistrationPage />} />
 
-          <Route path="/Login" element={<GuestRoute><LoginPage /></GuestRoute>} />
-          <Route path="/SignUp" element={<GuestRoute><SignUpPage /></GuestRoute>} />
+          <Route path="/adminlogin" element={<GuestRoute><LoginPage /></GuestRoute>} />
+          {/* <Route path="/SignUp" element={<GuestRoute><SignUpPage /></GuestRoute>} /> */}
 
           <Route path="/cv-review" element={<CVReviewPage />} />
           {/* <Route path="/admin-settings" element={<AdminSettings />} /> */}
