@@ -8,31 +8,31 @@ const SaathiRegistrationPage = () => {
   const [status, setStatus] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    const fetchRoleNStatus = async () => {
-      try {
-        const res = await axios.get('http://localhost:8000/auth/check', {
-          withCredentials: true,
-        });
-        setRole(res.data.role);
-        setStatus(res.data.status);
-      } catch (error) {
-        console.log('Error while sending request to check route', error);
-      } finally {
-        setLoading(false);
-      }
-    };
+  // useEffect(() => {
+  //   const fetchRoleNStatus = async () => {
+  //     try {
+  //       const res = await axios.get('http://localhost:8000/auth/check', {
+  //         withCredentials: true,
+  //       });
+  //       setRole(res.data.role);
+  //       setStatus(res.data.status);
+  //     } catch (error) {
+  //       console.log('Error while sending request to check route', error);
+  //     } finally {
+  //       setLoading(false);
+  //     }
+  //   };
 
-    fetchRoleNStatus();
-  }, []);
+  //   fetchRoleNStatus();
+  // }, []);
 
   if (loading) return <div>Loading...</div>;
 
-  if (role !== 'alumni') {
-    return <Navigate to="/Login" />;
-  } else if (status === 'verified') {
-    return <h1>You are already a mentor</h1>;
-  }
+  // if (role !== 'alumni') {
+  //   return <Navigate to="/Login" />;
+  // } else if (status === 'verified') {
+  //   return <h1>You are already a mentor</h1>;
+  // }
 
   return (
     <div>

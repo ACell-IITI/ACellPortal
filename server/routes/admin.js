@@ -3,13 +3,15 @@ import {
   addKyaProfile,
   deleteKyaProfile,
   getKyaProfiles,
-  getPendingMentors,
-  verifyAlumni,
+  // getPendingMentors,
+  // verifyAlumni,
   getAdminProfiles,
-  updateAdminProfile
+  updateAdminProfile,
+  addMentorProfile,
+  // getMentorsProfile,
+  deleteMentorProfile
 } from "../controllers/admin.controller.js";
 import upload from "../middleware/multer.js";
-import KYA_db from "../models/KYA_model.js";
 
 const router = express.Router();
 
@@ -22,7 +24,12 @@ router.get("/get-kya-profiles", getKyaProfiles);
 router.delete("/delete-kya-profile/:id", deleteKyaProfile);
 
 // Admin Actions
-router.get("/pending-mentors", getPendingMentors);
-router.patch("/verify-alumni/:id", verifyAlumni);
+// router.get("/pending-mentors", getPendingMentors);
+// router.patch("/verify-alumni/:id", verifyAlumni);
+
+// Mentor Profile Routes
+router.post('/add-mentor', upload.single('profilePic'), addMentorProfile);
+// router.get('/get-mentors/', getMentorsProfile);
+router.delete('/delete-mentor/:id', deleteMentorProfile);
 
 export default router;

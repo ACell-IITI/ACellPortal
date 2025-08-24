@@ -1,15 +1,15 @@
-import '../styles/LoginPage/LoginPage.css';
-import SignUpForm from '../Components/SignUpPage/SignUpForm';
+// import '../styles/LoginPage/LoginPage.css';
+// import SignUpForm from '../Components/SignUpPage/SignUpForm';
 
 
-function SignUpPage() {
-  return (
-    <div className="LoginPage">
+// function SignUpPage() {
+//   return (
+//     <div className="LoginPage">
     
-      <SignUpForm/>
+//       <SignUpForm/>
      
-    </div>
-  );
-}
+//     </div>
+//   );
+// }
 
-export default SignUpPage;
+// export default SignUpPage;

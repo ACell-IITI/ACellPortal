@@ -1,17 +1,16 @@
 import Mentorship_db from '../models/Mentorship_model.js';
 import { Alumni_db } from '../models/User_model.js';
 
-export const getVerifiedMentors = async (req, res) => {
+export const getMentors = async (req, res) => {
   try {
-    const alumnis = await Alumni_db.find({
-      status: 'verified',
-      role: 'alumni',
-    });
-    const alumniEmails = alumnis.map((alumni) => alumni.alumniEmail);
+    // const alumnis = await Alumni_db.find({
+    //   role: 'alumni',
+    // });
+    // const alumniEmails = alumnis.map((alumni) => alumni.alumniEmail);
 
-    const mentors = await Mentorship_db.find({
-      email: { $in: alumniEmails },
-    }).select('-__v');
+    const mentors = await Mentorship_db.find()
+      .select('-__v')
+      .sort({ createdAt: -1 });
 
     return res.status(200).json(mentors);
   } catch (error) {

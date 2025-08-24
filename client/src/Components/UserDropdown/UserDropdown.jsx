@@ -38,7 +38,13 @@ const UserDropdown = () => {
       </button>
       {open && (
         <div className="user-dropdown-menu">
-          <button onClick={handleLogout}>Logout</button>
+          <button 
+            onClick={handleLogout}
+            className="bg-slate-500 hover:bg-slate-200 active:bg-slate-400 text-white font-medium px-4 py-2 rounded-lg shadow-md transition-transform transform hover:scale-105 active:scale-95 focus:outline-none focus:ring-2 focus:ring-slate-300"
+          >
+            Logout
+          </button>
+
         </div>
       )}
     </div>
