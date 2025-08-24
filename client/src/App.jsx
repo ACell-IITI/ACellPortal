@@ -21,7 +21,7 @@ import { API_BASE_URL } from "./api/alumni";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import GuestRoute from "./routes/GuestRoute";
-import AdminSettings from "./pages/AdminSettings";
+import AdminSettings from "./pages/AdminDashboard";
 
 
 function AdminRoute({ children }) {

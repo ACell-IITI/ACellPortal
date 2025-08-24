@@ -4,7 +4,6 @@ import { NavLink, useLocation, Link } from 'react-router-dom';
 import SignUpButton from '../SignupUpButton/SignupUpButton';
 import axios from 'axios';
 import { Fade as Hamburger } from 'hamburger-react'
-import { Link } from 'react-router-dom';
 import UserDropdown from '../UserDropdown/UserDropdown';
 
 
