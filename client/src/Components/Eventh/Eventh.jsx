@@ -18,47 +18,28 @@ const events = [
     time: "05:00 AM",
     venue:"IIT Indore",
   },
+ 
   {
-    image: "/Media/ah.png",
-    title: "Alumni Hour",
-    date: "April, 2025",
-    time: "09:00 AM",
-    venue:"IIT Indore",
-  },
-  {
-    image: "/Media/cmeet1.jpg",
-    title: "Alumni Hour",
-    date: "April 20, 2025",
-    time: "4:30 PM",
-    venue:"IIT Indore",
-  },
-  {
-    image: "/Media/mopus.png",
-    title: "Magnum Opus",
-    date: "Jan 11-12, 2025",
+    image: "/Media/NNPG.jpg",
+    title: "Flagship ML",
+    date: "August 24, 2025",
     time: "9:00 AM",
     venue:"IIT Indore",
   },
+
   {
-    image: "/Media/cmeet1.jpg",
-    title: "Alumni Hour",
-    date: "April 20, 2025",
-    time: "4:30 PM",
-    venue:"IIT Indore",
-  },
-  {
-    image: "/Media/mopus.png",
-    title: "Magnum Opus",
-    date: "Jan 11-12, 2025",
+    image: "/Media/kmt.jpg",
+    title: "Reunion",
+    date: "August 30, 2025",
     time: "9:00 AM",
-    venue:"IIT Indore",
+    venue:"Kolkata",
   },
-  {
-    image: "/Media/mopus.png",
-    title: "Magnum Opus",
-    date: "Jan 11-12, 2025",
+   {
+    image: "/Media/chennaimeet.jpg",
+    title: "Reunion",
+    date: "july 20, 2025",
     time: "9:00 AM",
-    venue:"IIT Indore",
+    venue:"Coal Barbecues,Chennai",
   },
 ];
 
@@ -66,8 +47,8 @@ const Carousel = () => {
 const settings = {
   infinite: true,
   autoplay: true,
-  autoplaySpeed: 3000, // 3 seconds between auto-scroll
-  speed: 800,          // transition animation speed
+  autoplaySpeed: 3000, 
+  speed: 800,         
   slidesToShow: 3,
   slidesToScroll: 1,
   cssEase: "ease",
@@ -75,7 +56,7 @@ const settings = {
   pauseOnHover: true,
    responsive: [
     {
-      breakpoint: 750, // Below 1200px
+      breakpoint: 750, 
       settings: {
         slidesToShow: 3,
         slidesToScroll: 1,
@@ -86,7 +67,6 @@ const settings = {
 
 
     useGSAP(() => {
-      // gsap code here...
       gsap.from('.carousel-container ', 
          
          {

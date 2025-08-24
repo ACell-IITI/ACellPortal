@@ -24,7 +24,7 @@ const Home = () => {
       trigger: '.pr',
       scroller: 'body',
       start: 'top 60%',
-      toggleActions: 'play none none none'  // play once on entering trigger, no reverse
+      toggleActions: 'play none none none' 
     }
   });
 
@@ -98,9 +98,9 @@ const Home = () => {
 
    <div  className="saathih"> <img className='bubble' src='/Media/bubble.png'></img>
     <img className='bubble1' src='/Media/bubble.png'></img>
-    <img src='/Media/Saathi11.png' alt='saathi' className="saathi11"></img>
+    <img src='/Media/saathi-banner.png' alt='saathi' className="saathi11"></img>
       
-      <Registerbtn/>
+      {/* <Registerbtn/> */}
 
    </div>
   </>

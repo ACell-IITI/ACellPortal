@@ -26,19 +26,13 @@ const programs = [
     venue:"IIT Indore",
   },
   {
-    image: "/Media/cmeet1.jpg",
-    title: "Alumni Hour",
-    date: "April 20, 2025",
-    time: "4:30 PM",
+    image: "/Media/hari.jpeg",
+    title: "Mentorship-Session",
+    date: "August 18, 2025",
+    time: "6:00 PM",
     venue:"IIT Indore",
   },
-  {
-    image: "/Media/mopus.png",
-    title: "Magnum Opus",
-    date: "Jan 11-12, 2025",
-    time: "9:00 AM",
-    venue:"IIT Indore",
-  },
+
   {
     image: "/Media/cmeet1.jpg",
     title: "Alumni Hour",
@@ -47,27 +41,35 @@ const programs = [
     venue:"IIT Indore",
   },
   {
-    image: "/Media/mopus.png",
-    title: "Magnum Opus",
-    date: "Jan 11-12, 2025",
-    time: "9:00 AM",
-    venue:"IIT Indore",
+    image: "/Media/dashee.png",
+    title: "CV-Workshop",
+    date: "July 6, 2025",
+    time: "8:00 PM",
+    venue:"Online",
+  },
+    {
+    image: "/Media/mohit.png",
+    title: "CV-Workshop",
+    date: "July 5, 2025",
+    time: "8:00 PM",
+    venue:"Online",
   },
   {
-    image: "/Media/mopus.png",
-    title: "Magnum Opus",
-    date: "Jan 11-12, 2025",
-    time: "9:00 AM",
+    image: "/Media/eesa1.jpg",
+    title: "Mentorship-Session",
+    date: "August 22, 2025",
+    time: "10:00 AM",
     venue:"IIT Indore",
   },
+  
 ];
 
 const Program = () => {
 const settings = {
   infinite: true,
   autoplay: true,
-  autoplaySpeed: 3000, // 3 seconds between auto-scroll
-  speed: 800,          // transition animation speed
+  autoplaySpeed: 3000,
+  speed: 800,          
   slidesToShow: 3,
   slidesToScroll: 1,
   cssEase: "ease",
@@ -75,7 +77,7 @@ const settings = {
   pauseOnHover: true,
    responsive: [
     {
-      breakpoint: 750, // Below 1200px
+      breakpoint: 750, 
       settings: {
         slidesToShow: 3,
         slidesToScroll: 1,
@@ -86,7 +88,6 @@ const settings = {
 
 
     useGSAP(() => {
-      // gsap code here...
       gsap.from('.program-container', 
          
          {
@@ -97,11 +98,11 @@ const settings = {
          scrollTrigger: {
            trigger: '.program-container',
            scroller: 'body',
-           start: 'top 40%', // Animation starts when top of the card reaches 60% of the viewport
+           start: 'top 40%', 
            toggleActions: 'play none none none'
          } 
    
-         }); // <-- automatically reverted
+         }); 
     },);
   
   return (

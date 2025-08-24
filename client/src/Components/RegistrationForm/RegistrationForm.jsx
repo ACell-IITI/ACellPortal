@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react'; // Import useRef
+import React, { useState, useRef } from 'react'; 
 import './RegistrationForm.css';
 import axios from 'axios';
 
@@ -257,7 +257,6 @@ const RegistrationForm = () => {
           {errors.skills && <p className="error">{errors.skills}</p>}
         </div>
 
-        {/* Profile Picture Upload Section */}
         <div className="form-group">
           <label>Profile Picture:</label>
           <input
