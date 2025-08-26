@@ -1,6 +1,30 @@
 export const teamMembers = [
-  {
+    {
     id: 1,
+    name: "Yashasvi Shukla",
+    role: "Head",
+    year: "2023-2027",
+    bio: "Building bridges between current students and accomplished alumni mentors.",
+    image: "../Team/YashasviShukla.jpeg",
+    linkedin: "https://www.linkedin.com/in/yashasvi-shukla-49882030a/",
+    github: "/team",
+    group: "Head",
+    team: "Web Dev",
+  },
+  {
+    id: 2,
+    name: "Aviral Sharma",
+    role: "Team Lead",
+    year: "2023-2027",
+    bio: "Delivers end-to-end solutions from UI to database with agility.",
+    image: "../Team/AviralSharma.jpg",
+    linkedin: "https://www.linkedin.com/in/aviral-sharma-b57127299/",
+    github: "https://github.com/AviralSharma11",
+    group: "Team Lead",
+    team: "Web Dev",
+  },
+  {
+    id: 8,
     name: "Vaatsalya Sahu",
     role: "Front-End Developer",
     year: "2024-2028",
@@ -9,9 +33,10 @@ export const teamMembers = [
     linkedin: "https://www.linkedin.com/in/vaatsalya-sahu-28274031b",
     github: "https://github.com/Svaatsalya",
     group: "Member",
+    team: "Web Dev",
   },
   {
-    id: 2,
+    id: 5,
     name: "Veer Doria",
     role: "Back-End Developer",
     year: "2024-2028",
@@ -20,6 +45,7 @@ export const teamMembers = [
     linkedin: "https://www.linkedin.com/in/veer-doria-16567b330/",
     github: "https://github.com/VeerDoria",
     group: "Member",
+    team: "Web Dev",
   },
   {
     id: 3,
@@ -31,6 +57,7 @@ export const teamMembers = [
     linkedin: "https://in.linkedin.com/in/chetan-verma-a82239324",
     github: "https://github.com/codecv28",
     group: "Member",
+    team: "Web Dev",
   },
   {
     id: 4,
@@ -42,18 +69,9 @@ export const teamMembers = [
     linkedin: "https://linkedin.com/in/sarang-v-thakare",
     github: "https://github.com/SarangVT",
     group: "Member",
+    team: "Web Dev",
   },
-  {
-    id: 5,
-    name: "Aviral Sharma",
-    role: "Full-Stack Developer",
-    year: "2023-2027",
-    bio: "Delivers end-to-end solutions from UI to database with agility.",
-    image: "../Team/AviralSharma.jpg",
-    linkedin: "https://www.linkedin.com/in/aviral-sharma-b57127299/",
-    github: "https://github.com/AviralSharma11",
-    group: "Co-Head",
-  },
+  
   {
     id: 6,
     name: "Sethumadhav Naik",
@@ -64,6 +82,7 @@ export const teamMembers = [
     linkedin: "https://www.linkedin.com/in/bhukya-sethu-madhav-naik-467b96366/",
     github: "https://github.com/Sethu-madhav17",
     group: "Member",
+    team: "Web Dev",
   },
   {
     id: 7,
@@ -75,17 +94,8 @@ export const teamMembers = [
     linkedin: "https://www.linkedin.com/in/devika-manoharan-12774b330",
     github: "https://github.com/devs1man",
     group: "Member",
+    team: "Web Dev",
   },
-  {
-    id: 8,
-    name: "Yashasvi Shukla",
-    role: "Web Dev",
-    year: "2023-2027",
-    bio: "Building bridges between current students and accomplished alumni mentors.",
-    image: "../Team/YashasviShukla.jpeg",
-    linkedin: "https://www.linkedin.com/in/yashasvi-shukla-49882030a/",
-    github: "/team",
-    group: "Head",
-  },
+
 
 ];

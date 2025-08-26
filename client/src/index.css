@@ -1,3 +1,7 @@
+@import "swiper/css";
+@import "swiper/css/navigation";
+@import "swiper/css/pagination";
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -104,6 +108,7 @@
     --sidebar-ring: 217.2 91.2% 59.8%;
   }
 }
+
 
 
 
