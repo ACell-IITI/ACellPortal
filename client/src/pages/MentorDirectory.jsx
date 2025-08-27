@@ -40,7 +40,9 @@ const MentorDirectory = () => {
         skill.toLowerCase().includes(searchTerm.toLowerCase())
       );
     const matchesYear =
-      selectedYear === '' || mentor.graduationYear === selectedYear;
+      // selectedYear === '' || mentor.graduationYear === selectedYear;
+      selectedYear === '' || String(mentor.graduationYear) === selectedYear
+
     return matchesSearch && matchesYear;
   });
 
@@ -49,7 +51,12 @@ const MentorDirectory = () => {
   ].sort();
 
   if (loading) return <div>Loading...</div>;
-  if(!mentorsData) return <div>No Mentors Found</div>
+  // if(!mentorsData) return <div>No Mentors Found</div>
+
+  if (!mentorsData || mentorsData.length === 0) {
+  return <div>No Mentors Found</div>;
+}
+
 
   return (
     <div className="mentor-directory">
@@ -97,7 +104,9 @@ const MentorDirectory = () => {
         {filteredMentors.length > 0 ? (
           <div className="mentor-grid">
             {filteredMentors.map((mentor) => (
-              <MentorCard key={Number(mentor._id)} mentor={mentor} />
+              // <MentorCard key={Number(mentor._id)} mentor={mentor} />
+              <MentorCard key={mentor._id} mentor={mentor} />
+
             ))}
           </div>
         ) : (
