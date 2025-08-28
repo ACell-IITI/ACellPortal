@@ -42,7 +42,7 @@ export default function TeamComponent({ title, members }) {
                   : member.group === "Co-Head" 
                     ? "border-4 border-orange-400 shadow-[0_0_25px_rgba(251,146,60,0.5)]"
                     : "border border-gray-100"
-                } h-[500px] flex flex-col justify-between`}
+                } h-[400px] flex flex-col justify-between mt-6 mb-6`}
             >
               {/* Glow Background */}
               <div className="absolute inset-0 bg-gradient-to-br from-indigo-100 via-white to-teal-100 opacity-0 group-hover:opacity-100 transition-opacity duration-500 blur-xl"></div>
@@ -71,10 +71,10 @@ export default function TeamComponent({ title, members }) {
                   {member.name}
                 </h3>
                 <p className="text-gray-600 font-semibold">{member.role}</p>
-                <p className="text-sm text-gray-500 mb-3">{member.year}</p>
-                <p className="text-sm text-gray-600 leading-relaxed mb-6 line-clamp-3">
+                {/* <p className="text-sm text-gray-500 mb-3">{member.year}</p> */}
+                {/* <p className="text-sm text-gray-600 leading-relaxed mb-6 line-clamp-3">
                   {member.bio}
-                </p>
+                </p> */}
 
                 {/* Social Links (stick to bottom if content is small) */}
                 <div className="mt-auto flex justify-center space-x-3">
