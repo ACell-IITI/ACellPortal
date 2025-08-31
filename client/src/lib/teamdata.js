@@ -104,7 +104,7 @@ export const teamMembers = [
    {
     id: 11,
     name: "Garvit Mathur",
-    role: "Design",
+    role: "Head",
     image: "../Team/Garvit Mathur_Design Head.jpg",
     linkedin: "/team",
     insta: "/team",
@@ -144,7 +144,7 @@ export const teamMembers = [
   {
     id: 15,
     name: "Vedansh Shrivastava",
-    role: "ARAM",
+    role: "Head",
     image: "../Team/Vedansh Shrivastava_ARAM Head.jpg",
     linkedin: "/team",
     insta: "/team",
@@ -253,16 +253,16 @@ export const teamMembers = [
     group: "Member",
     team:"Design"
   },
-  {
-    id: 26,
-    name: "Ankita Yadav",
-    role: "Member",
-    image: "../Team/Ankita Yadav-Design.jpg",
-    linkedin: "/team",
-    insta: "/team",
-    group: "Member",
-    team:"Design"
-  },
+  // {
+  //   id: 26,
+  //   name: "Ankita Yadav",
+  //   role: "Member",
+  //   image: "../Team/Ankita Yadav-Design.jpg",
+  //   linkedin: "/team",
+  //   insta: "/team",
+  //   group: "Member",
+  //   team:"Design"
+  // },
   {
     id: 27,
     name: "Yagyaparna Mandwale",
