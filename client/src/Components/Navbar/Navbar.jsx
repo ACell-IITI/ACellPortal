@@ -75,9 +75,9 @@ export default function Navbar() {
     { name: 'Mentors', path: '/verified-mentors' },
   ];
 
-  // if (role === 'admin') {
-  //   navLinks.push({ name: 'Dashboard', path: '/admin-dashboard' });
-  // }
+  if (role === 'admin') {
+    navLinks.push({ name: 'Dashboard', path: '/admin-dashboard' });
+  }
 
   const handleNavClick = () => setMenuOpen(false);
 
