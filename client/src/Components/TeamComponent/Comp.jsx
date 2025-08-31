@@ -1,4 +1,3 @@
-
 export default function TeamComponent({ title, members }) {
   return (
     <div className="mb-20">
@@ -18,7 +17,8 @@ export default function TeamComponent({ title, members }) {
               <div className="absolute inset-0 bg-gradient-to-br from-[#BAD1C2]/20 to-[#4FA095]/20 rounded-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
 
               <div className="relative z-10 mb-6">
-                <div className="w-24 h-24 mx-auto rounded-2xl overflow-hidden ring-4 ring-[#4FA095]/30 group-hover:ring-[#4FA095]/60 transition-all duration-500">
+                
+                <div className="w-40 h-40 mx-auto rounded-2xl overflow-hidden ring-4 ring-[#4FA095]/30 group-hover:ring-[#4FA095]/60 transition-all duration-500">
                   <img
                     src={member.image}
                     alt={member.name}
@@ -31,12 +31,8 @@ export default function TeamComponent({ title, members }) {
                 <h3 className="text-xl font-bold text-white mb-1 group-hover:text-[#F6F6C9] transition-colors duration-300">
                   {member.name}
                 </h3>
-                <p className="text-[#BAD1C2] font-semibold mb-1">
+                <p className="text-[#BAD1C2] font-semibold mb-4">
                   {member.role}
-                </p>
-                <p className="text-sm text-gray-700 mb-4">{member.year}</p>
-                <p className="text-sm text-gray-300 leading-relaxed mb-6 opacity-0 group-hover:opacity-100 transition-opacity duration-500">
-                  {member.bio}
                 </p>
 
                 <div className="flex justify-center space-x-3 opacity-0 group-hover:opacity-100 transition-opacity duration-500">
@@ -44,6 +40,8 @@ export default function TeamComponent({ title, members }) {
                     <a
                       href={member.linkedin}
                       className="w-10 h-10 bg-[#153462] rounded-xl flex items-center justify-center transition-transform duration-300 hover:scale-110"
+                      target="_blank"
+                      rel="noopener noreferrer"
                     >
                       <svg
                         className="w-5 h-5 text-white"
@@ -54,22 +52,19 @@ export default function TeamComponent({ title, members }) {
                       </svg>
                     </a>
                   )}
-                  {member.github && (
+                  {member.insta && (
                     <a
-                      href={member.github}
+                      href={member.insta}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="w-10 h-10 bg-gray-800 hover:bg-gray-900 rounded-xl flex items-center justify-center transition-transform duration-300 hover:scale-110"
+                      className="w-10 h-10 bg-gradient-to-tr from-yellow-300 via-pink-500 to-purple-400 rounded-xl flex items-center justify-center transition-transform duration-300 hover:scale-110"
                     >
                       <svg
                         className="w-5 h-5 text-white"
                         fill="currentColor"
                         viewBox="0 0 24 24"
                       >
-                        <path
-                          fillRule="evenodd"
-                          d="M12 0C5.37 0 0 5.373 0 12c0 5.303 3.438 9.8 8.205 11.387.6.11.82-.258.82-.577v-2.234c-3.338.724-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.09-.744.084-.729.084-.729 1.205.084 1.84 1.236 1.84 1.236 1.07 1.835 2.809 1.305 3.495.998.107-.776.418-1.305.762-1.605-2.665-.3-5.467-1.335-5.467-5.933 0-1.312.468-2.383 1.236-3.222-.123-.303-.536-1.523.117-3.176 0 0 1.008-.322 3.3 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.29-1.552 3.296-1.23 3.296-1.23.655 1.653.242 2.873.119 3.176.77.84 1.235 1.91 1.235 3.222 0 4.61-2.807 5.63-5.48 5.922.43.372.823 1.102.823 2.222v3.293c0 .322.218.694.825.576C20.565 21.796 24 17.3 24 12c0-6.627-5.373-12-12-12z"
-                        />
+                        <path d="M7.75 2h8.5A5.75 5.75 0 0 1 22 7.75v8.5A5.75 5.75 0 0 1 16.25 22h-8.5A5.75 5.75 0 0 1 2 16.25v-8.5A5.75 5.75 0 0 1 7.75 2zm0 1.5A4.25 4.25 0 0 0 3.5 7.75v8.5A4.25 4.25 0 0 0 7.75 20.5h8.5a4.25 4.25 0 0 0 4.25-4.25v-8.5A4.25 4.25 0 0 0 16.25 3.5h-8.5zM12 7a5 5 0 1 1 0 10 5 5 0 0 1 0-10zm0 1.5a3.5 3.5 0 1 0 0 7 3.5 3.5 0 0 0 0-7zm5.25-.75a1 1 0 1 1 0 2 1 1 0 0 1 0-2z" />
                       </svg>
                     </a>
                   )}
