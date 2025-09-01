@@ -1,4 +1,24 @@
 export const teamMembers = [
+  {
+    id: 10,
+    name: "Ansh Kyal",
+    role: " Head",
+    image: "../Team/Ansh Kyal_Head.jpg",
+    linkedin: "/team",
+    insta: "/team",
+    group: "Head",
+    team: "Alumni Cell Head"
+  },
+  //    {
+  //   id: 14,
+  //   name: "Mohak Dadhich",
+  //   role: "Co-Head",
+  //   image: "../Team/Mohak Dadhich- Co Head.jpg",
+  //   linkedin: "/team",
+  //   insta: "/team",
+  //   group: "Co-Head",
+  //   team:"Co-Head"
+  // },
     {
     id: 1,
     name: "Yashasvi Shukla",
@@ -91,16 +111,17 @@ export const teamMembers = [
     group: "Member",
     team:"Web Dev"
   },
-  {
-    id: 10,
-    name: "Ansh Kyal",
-    role: " Head",
-    image: "../Team/Ansh Kyal_Head.jpg",
+   {
+    id: 15,
+    name: "Vedansh Shrivastava",
+    role: "Head",
+    image: "../Team/Vedansh Shrivastava_ARAM Head.jpg",
     linkedin: "/team",
     insta: "/team",
     group: "Head",
-    team: "General"
+    team:"ARAM"
   },
+  
    {
     id: 11,
     name: "Garvit Mathur",
@@ -128,29 +149,11 @@ export const teamMembers = [
     image: "../Team/Kavyansh Raj Singh_Newsletter Coordinator.jpg",
     linkedin: "/team",
     insta: "/team",
-    group: "Member",
+    group: "Head",
     team:"Newsletter"
   },
-   {
-    id: 14,
-    name: "Mohak Dadhich",
-    role: "Co-Head",
-    image: "../Team/Mohak Dadhich- Co Head.jpg",
-    linkedin: "/team",
-    insta: "/team",
-    group: "Co-Head",
-    team:"General"
-  },
-  {
-    id: 15,
-    name: "Vedansh Shrivastava",
-    role: "Head",
-    image: "../Team/Vedansh Shrivastava_ARAM Head.jpg",
-    linkedin: "/team",
-    insta: "/team",
-    group: "Head",
-    team:"ARAM"
-  },
+
+ 
   {
     id: 16,
     name: "Anushka Krishan",
