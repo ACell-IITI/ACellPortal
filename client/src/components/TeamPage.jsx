@@ -63,7 +63,7 @@ export default function TeamPage() {
 
         <div className="relative container mx-auto px-6 py-24 lg:py-32">
           <div className="text-center space-y-6">
-            <h1 className="text-6xl lg:text-7xl font-extrabold text-indigo-600 bg-clip-text text-transparent">
+            <h1 className="text-6xl lg:text-7xl font-extrabold text-blue-300  bg-clip-text ">
               Our Team
             </h1>
             <p className="text-xl lg:text-2xl text-gray-700 max-w-3xl mx-auto leading-relaxed">

@@ -88,14 +88,14 @@ export default function TeamComponent({ title, members }) {
                       <i className="fab fa-linkedin-in"></i>
                     </a>
                   )}
-                  {member.github && (
+                  {member.insta && (
                     <a
-                      href={member.github}
+                      href={member.insta}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="w-10 h-10 bg-gradient-to-r from-gray-800 to-gray-900 rounded-full flex items-center justify-center text-white hover:scale-110 transition-transform shadow-md"
+                      className="w-10 h-10 bg-gradient-to-r from-yellow-300 via-pink-600 to-purple-500 rounded-full flex items-center justify-center text-white hover:scale-110 transition-transform shadow-md"
                     >
-                      <i className="fab fa-github"></i>
+                      <i className="fab fa-instagram"></i>
                     </a>
                   )}
                 </div>
