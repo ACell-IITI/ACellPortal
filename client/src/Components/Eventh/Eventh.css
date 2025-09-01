@@ -1,7 +1,7 @@
 /* Carousel Wrapper */
 .carousel-container {
    position: relative;               
-  width: 100vw;
+  width: 100%;
   height: fit-content;
   margin-right: 2rem;
   margin-top: 1rem;
@@ -14,7 +14,7 @@
    height: 100%; 
   max-width: 350px;
   min-width: 90px;
-   padding: 0 50px;
+padding: 30px 50px;
    
 }
 
@@ -125,24 +125,30 @@
   }
 }
 
-@media (max-width: 370px) {
-  .slick-prev {
-    left: 20%;
-    top: 120%;
-  }
-
+@media (max-width: 450px) {
   .carousel-container {
-      margin: 6px;
-  margin-right: 6px;
-  padding: 2px;
-  }
-  .slick-next {
-    right: 20%;
-    top: 120%;
-  }
+  width: 150px;
+    height: fit-content;
+  margin-left: 4rem;
 
-  .event-slide {
-    padding: 10px;
   }
+  .event-slide {
+  padding: 10px;
+  display:flex;
+  place-items: center;
+    height: fit-content;
+
+  }
+    .event-card {
+  margin:0;
+  padding: 2px;
+  width: 92px;
+  height: 220px;
+
+ }
+ .event-image {
+ height: fit-content;
+}
+
   
 }

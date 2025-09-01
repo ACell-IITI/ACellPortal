@@ -1,7 +1,7 @@
 /* Carousel Container */
 .program-container {
   position: relative;               
-  width: 100vw;
+  width: 100%;
   height: fit-content;
   margin-right: 2rem;
   padding: 40px 80px;
@@ -15,7 +15,7 @@
    height: 100%; 
   max-width: 350px;
   min-width: 90px;
-   padding: 0 50px;
+   padding: 30px 50px;
 }
 
 /* Card */
@@ -105,6 +105,7 @@ background-size: cover;
 }
 
 @media (max-width: 768px) {
+
   .slick-prev {
     left: 35%;
     top: 130%;
@@ -119,24 +120,42 @@ background-size: cover;
 
  }
 }
-@media (max-width: 370px) {
+@media (max-width: 450px) {
+    .slick-prev:before,
+.slick-next:before {
+    font-size: 2rem;
+}
   .slick-prev {
-    left: 20%;
-    top: 120%;
+    left: -30%;
+    top: 50%;
+
   }
 
   .slick-next {
-    right: 20%;
-    top: 120%;
+    right: -27%;
+    top: 50%;
   }
-  .program-container {
-  margin: 6px;
-  margin-right: 6px;
+  .program-card {
+  margin:0;
   padding: 2px;
+  width: 92px;
+  height: 220px;
 
  }
  .program-slide {
   padding: 10px;
+  display:flex;
+  place-items: center;
+  height: fit-content;
+ }
+ .program-container {
+  width: 150px;
+  height: fit-content;
+  margin-left: 4rem;
+
+ }
+ .program-image {
+  height: fit-content;
  }
 }
 
