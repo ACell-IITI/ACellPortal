@@ -235,10 +235,13 @@ display: flex;
   text-decoration: none;
   background: none;
   border: none;
-  transition: background 0.18s, color 0.18s;
+  transition: all ease-in-out 0.18s, color 0.18s;
 }
 
-.navbar-dropdown-link:hover,
+.navbar-dropdown-link:hover{
+  scale: 1.1;
+}
+
 .navbar-link-text:hover {
   text-decoration: none;
 }

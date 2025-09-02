@@ -66,10 +66,11 @@ const Home = () => {
             <h2 className="text ">Welcome To</h2>
             <div className="typewriter">Alumni Cell</div>
             <h1 className="cell-desc">Connecting Legacies, Inspiring Futures — Where Alumni Meet, Memories Live, and New Journeys Begin.</h1>
+
             <a href="https://alumni.iiti.ac.in/" target="_blank" rel="noopener noreferrer"><button className="join-btn">
-        Join the Alumni Network
-      </button>
-      </a>
+                Join the Alumni Network
+              </button>
+            </a>
 
           </div>
           <img

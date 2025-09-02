@@ -1,7 +1,5 @@
 // src/components/KYA.jsx
 import React, { useEffect, useRef, useState } from "react";
-import gsap from "gsap";
-import { ArrowLeft, ArrowRight } from "lucide-react";
 import AlumniCard from "./AlumniCard";
 import axios from "axios";
 import { motion } from "framer-motion";
@@ -12,7 +10,6 @@ const KYA = () => {
 
   const [profiles, setProfiles] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [index, setIndex] = useState(0); // MOVE THIS UP here
 
   useEffect(() => {
     axios
@@ -53,13 +50,9 @@ const KYA = () => {
     return <p>No profiles found from backend.</p>;
   }
 
-  const total = profiles.length;
-
-  const nextCard = () => setIndex((prev) => (prev + 1) % total);
-  const prevCard = () => setIndex((prev) => (prev - 1 + total) % total);
-
   return (
     <div>
+      {/* Header Section */}
       <div
         className="text-center py-10 md:py-14 shadow-md bg-cover bg-center relative"
         style={{ backgroundImage: "url('/Texture.png')" }}
@@ -100,45 +93,13 @@ const KYA = () => {
         </div>
       </div>
 
-      {/* Main Content */}
-      <div className="flex flex-col items-center justify-center min-h-screen bg-[#F6F6C9]/10 px-4">
-        <AlumniCard alumni={profiles[index]} />
-
-        <div className="flex mt-6 gap-4">
-          <motion.div
-            className="flex mt-6 gap-4"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.3, duration: 0.5 }}
-          >
-            <motion.button
-              onClick={prevCard}
-              whileHover={{ scale: 1.1 }}
-              whileTap={{ scale: 0.9 }}
-              className="p-2 rounded-full bg-white shadow-md hover:bg-[#4FA095]/30 transition-colors duration-300"
-            >
-              <ArrowLeft className="text-gray-600 group-hover:text-white transition-colors duration-200" />
-            </motion.button>
-
-            <motion.button
-              onClick={nextCard}
-              whileHover={{ scale: 1.1 }}
-              whileTap={{ scale: 0.9 }}
-              className="p-2 rounded-full bg-white shadow-md hover:bg-[#4FA095]/30 transition-colors duration-300"
-            >
-              <ArrowRight className="text-gray-600 group-hover:text-white transition-colors duration-200" />
-            </motion.button>
-          </motion.div>
+      {/* Grid of Alumni Profiles */}
+      <div className="min-h-screen bg-[#F6F6C9]/10 px-6 py-10">
+        <div className="grid grid-cols-1 md:grid-cols-1 lg:grid-cols-2 gap-10">
+          {profiles.map((alumni, idx) => (
+            <AlumniCard key={idx} alumni={alumni} />
+          ))}
         </div>
-
-        <motion.p
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.5, duration: 0.4 }}
-          className="mt-4 text-sm font-medium text-gray-600 tracking-wide bg-white px-4 py-1 rounded-full shadow-sm border border-gray-200"
-        >
-          {index + 1} <span className="text-gray-400 ">/</span> {total}
-        </motion.p>
       </div>
     </div>
   );
