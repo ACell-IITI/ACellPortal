@@ -28,7 +28,7 @@ const events = [
   },
 
   {
-    image: "/Media/kmt.jpg",
+    image: "/Media/kmt.png",
     title: "Reunion",
     date: "August 30, 2025",
     time: "9:00 AM",
@@ -59,6 +59,13 @@ const settings = {
       breakpoint: 750, 
       settings: {
         slidesToShow: 3,
+        slidesToScroll: 1,
+      },
+    },
+    {
+      breakpoint: 450, 
+      settings: {
+        slidesToShow: 1,
         slidesToScroll: 1,
       },
     },
