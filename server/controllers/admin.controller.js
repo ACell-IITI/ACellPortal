@@ -210,8 +210,8 @@ export const addMentorProfile = async (req, res) => {
       name,
       degree,
       graduationYear,
-      email,
-      contactNumber,
+      // email,
+      // contactNumber,
       linkedinId,
       skills,
       about,
@@ -220,19 +220,19 @@ export const addMentorProfile = async (req, res) => {
       !name ||
       !degree ||
       !graduationYear ||
-      !email ||
-      !contactNumber ||
+      // !email ||
+      // !contactNumber ||
       !linkedinId ||
       !skills ||
       !about
     ) {
       return res.status(400).json({ message: 'All fields are required.' });
     }
-    const alumni = await Alumni_db.findOne({ alumniEmail: email });
+    // const alumni = await Alumni_db.findOne({ alumniEmail: email });
 
-    if (!alumni) {
-      return res.status(401).json({ message: 'Invalid Credentials' });
-    }
+    // if (!alumni) {
+    //   return res.status(401).json({ message: 'Invalid Credentials' });
+    // }
 
     // if (alumni.status === 'verified') {
     //   // If status is verified it means alumni is already a mentor
@@ -249,8 +249,8 @@ export const addMentorProfile = async (req, res) => {
       name,
       degree,
       graduationYear,
-      email,
-      contactNumber,
+      // email,
+      // contactNumber,
       linkedinId,
       skills : JSON.parse(skills),
       about,

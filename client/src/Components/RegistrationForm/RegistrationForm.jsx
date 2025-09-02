@@ -5,10 +5,10 @@ import axios from 'axios';
 const RegistrationForm = () => {
   const [formData, setFormData] = useState({
     name: '',
-    email: '',
+    // email: '',
     degree: '',
     graduationYear: '',
-    contactNumber: '',
+    // contactNumber: '',
     about: '',
     skills: '',
     linkedinId: '',
@@ -36,23 +36,23 @@ const RegistrationForm = () => {
       newErrors.name = 'Name is required';
     }
 
-    if (!formData.email) {
-      newErrors.email = 'Email is required';
-    } else {
-      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-      if (!emailRegex.test(formData.email)) {
-        newErrors.email = 'Invalid email format';
-      }
-    }
+    // if (!formData.email) {
+    //   newErrors.email = 'Email is required';
+    // } else {
+    //   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    //   if (!emailRegex.test(formData.email)) {
+    //     newErrors.email = 'Invalid email format';
+    //   }
+    // }
 
-    if (!formData.contactNumber) {
-      newErrors.contactNumber = 'Contact number is required';
-    } else {
-      const phoneRegex = /^\d{10}$/;
-      if (!phoneRegex.test(formData.contactNumber)) {
-        newErrors.contactNumber = 'Enter a valid 10-digit phone number';
-      }
-    }
+    // if (!formData.contactNumber) {
+    //   newErrors.contactNumber = 'Contact number is required';
+    // } else {
+    //   const phoneRegex = /^\d{10}$/;
+    //   if (!phoneRegex.test(formData.contactNumber)) {
+    //     newErrors.contactNumber = 'Enter a valid 10-digit phone number';
+    //   }
+    // }
 
     if (!formData.about) {
       newErrors.about = 'About field is required';
@@ -77,10 +77,10 @@ const RegistrationForm = () => {
     if (Object.keys(validationErrors).length === 0) {
       const data = new FormData();
       data.append('name', formData.name);
-      data.append('email', formData.email);
+      // data.append('email', formData.email);
       data.append('degree', formData.degree);
       data.append('graduationYear', Number(formData.graduationYear));
-      data.append('contactNumber', Number(formData.contactNumber));
+      // data.append('contactNumber', Number(formData.contactNumber));
       data.append('about', formData.about);
       data.append('linkedinId', formData.linkedinId);
 
@@ -113,10 +113,10 @@ const RegistrationForm = () => {
       }
       setFormData({
         name: '',
-        email: '',
+        // email: '',
         degree: '',
         graduationYear: '',
-        contactNumber: '',
+        // contactNumber: '',
         about: '',
         skills: [],
         linkedinId: '',
@@ -165,7 +165,7 @@ const RegistrationForm = () => {
           {errors.name && <p className="error">{errors.name}</p>}
         </div>
 
-        <div className="form-group">
+        {/* <div className="form-group">
           <label>
             Email: <span className="required">*</span>
           </label>
@@ -176,7 +176,7 @@ const RegistrationForm = () => {
             onChange={handleChange}
           />
           {errors.email && <p className="error">{errors.email}</p>}
-        </div>
+        </div> */}
 
         <div className="form-group">
           <label>
@@ -202,7 +202,7 @@ const RegistrationForm = () => {
           />
         </div>
 
-        <div className="form-group">
+        {/* <div className="form-group">
           <label>
             Contact Number: <span className="required">*</span>
           </label>
@@ -215,7 +215,7 @@ const RegistrationForm = () => {
           {errors.contactNumber && (
             <p className="error">{errors.contactNumber}</p>
           )}
-        </div>
+        </div> */}
 
         <div className="form-group">
           <label>
@@ -245,7 +245,7 @@ const RegistrationForm = () => {
 
         <div className="form-group">
           <label>
-            Skills/Expertise(seprated by comma) :{' '}
+            Domains(seprated by comma) :{' '}
             <span className="required">*</span>
           </label>
           <input

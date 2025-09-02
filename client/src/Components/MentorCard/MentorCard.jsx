@@ -46,12 +46,12 @@ const MentorCard = ({ mentor }) => {
 
         <div className="section">
           <div className="contact-info">
-            <div className="contact-item">
+            {/* <div className="contact-item">
               <FaEnvelope className="icon" />
               <a href={`mailto:${mentor.email}`} className="contact-link">
                 {mentor.email}
               </a>
-            </div>
+            </div> */}
             <div className="contact-item">
               <FaLinkedin className="icon" />
               <a

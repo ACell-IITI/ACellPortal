@@ -15,17 +15,17 @@ const MentorSchema = new mongoose.Schema(
       type:Number,
       required:true,
     },
-    email: {
-      type: String,
-      required: true,
-      lowercase: true,
-      trim: true,
-    },
-    contactNumber: {
-      type: Number,
-      required: true,
-      trim: true,
-    },
+    // email: {
+    //   type: String,
+    //   required: true,
+    //   lowercase: true,
+    //   trim: true,
+    // },
+    // contactNumber: {
+    //   type: Number,
+    //   required: true,
+    //   trim: true,
+    // },
     about: {
       type: String,
       required: true,
