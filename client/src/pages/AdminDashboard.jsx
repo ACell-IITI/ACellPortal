@@ -580,7 +580,7 @@ const AdminDashboard = () => {
 
                       <div className="section">
                         <div className="contact-info">
-                          <div className="contact-item">
+                          {/* <div className="contact-item">
                             <FaEnvelope className="icon" />
                             <a
                               href={`mailto:${mentor.email}`}
@@ -588,7 +588,7 @@ const AdminDashboard = () => {
                             >
                               {mentor.email}
                             </a>
-                          </div>
+                          </div> */}
                           <div className="contact-item">
                             <FaLinkedin className="icon" />
                             <a
