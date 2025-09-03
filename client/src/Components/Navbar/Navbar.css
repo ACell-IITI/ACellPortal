@@ -259,6 +259,16 @@ display: flex;
 .navbar-underline {
   display: none !important;
 }
+
+.navbar-link:last-child {
+    margin-right: 180px;
+  }
+
+@media (max-width: 1190px) {
+  .navbar-link:last-child {
+    margin-right: 0;
+  }
+}
 @media (min-width: 960px) {
   .navbar-link-text:hover {
   background-color: #229ac6;
