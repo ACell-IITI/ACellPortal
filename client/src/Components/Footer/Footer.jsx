@@ -76,8 +76,7 @@ const Footer = () => (
       <div className="footer-section quick-links">
         <div className="section-title">Quick Links</div>
           <div>
-      <div><a href="https://www.iiti.ac.in" target="_blank" rel="noopener noreferrer">IITI Website</a></div>
-      <div><a href="https://ir.iiti.ac.in/" target="_blank" rel="noopener noreferrer">International Relations</a></div>
+      <div><a href="https://alumni.iiti.ac.in/" target="_blank" rel="noopener noreferrer">ACR Office</a></div>
       <div><a href="https://academic.iiti.ac.in/" target="_blank" rel="noopener noreferrer">Academics</a></div>
       <div><a href="https://studentaffairs.iiti.ac.in/" target="_blank" rel="noopener noreferrer">Student Affairs</a></div>
     </div>

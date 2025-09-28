@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
@@ -6,11 +6,13 @@ import "./Eventh.css";
 import { gsap } from 'gsap';
 import { useGSAP } from '@gsap/react';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import axios from "axios";
 
-gsap.registerPlugin(useGSAP);
-gsap.registerPlugin(ScrollTrigger);
+gsap.registerPlugin(useGSAP, ScrollTrigger);
 
-const events = [
+const EventCarousel = () => {
+  const [events, setEvents] = useState([]);
+{/*const events = [
   {
     image: "/Media/cv.jpg",
     title: "CV Review Drive",
@@ -42,8 +44,21 @@ const events = [
     venue:"Coal Barbecues,Chennai",
   },
 ];
+*/}
+useEffect(() => {
+    const fetchEvents = async () => {
+      try {
+        const res = await axios.get("http://localhost:8000/admin/get-programs");
+        const onlyEvents = res.data.data.filter(item => item.type === "event");
+        setEvents(onlyEvents);
+      } catch (err) {
+        console.error("Error fetching events:", err);
+      }
+    };
 
-const Carousel = () => {
+    fetchEvents();
+  }, []);
+
 const settings = {
   infinite: true,
   autoplay: true,
@@ -94,8 +109,8 @@ const settings = {
   return (
     <div className="carousel-container">
       <Slider {...settings}>
-        {events.map((event, index) => (
-          <div key={index} className="event-slide">
+        {events.map((event) => (
+          <div key={event._id} className="event-slide">
             <div className="event-card">
               <img
                 src={event.image}
@@ -116,6 +131,6 @@ const settings = {
   );
 };
 
-export default Carousel;
+export default EventCarousel;
 
 
