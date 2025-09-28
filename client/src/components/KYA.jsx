@@ -24,8 +24,7 @@ const KYA = () => {
               role: item.CurrRole || "",
               bio: item.ShortBio || "",
               achievement: item.Achievement || "",
-              LinkedIn: item.linkedin || "#",
-              CompanyLink: item.companyLink || "#",
+              LinkedInPostLink: item.LinkedInPostLink || "#",
             }))
           );
         } else {

@@ -85,7 +85,7 @@ export const addKyaProfile = async (req, res) => {
       return res.status(401).json({ message: 'Invalid or expired token' });
     }
 
-    const { Name, Batch, CurrRole, Achievement, ShortBio } = req.body;
+    const { Name, Batch, CurrRole, Achievement, ShortBio,LinkedInPostLink } = req.body;
 
     const result = await cloudinary.uploader.upload(req.file.path, {
       folder: 'kya-profiles',
@@ -99,6 +99,7 @@ export const addKyaProfile = async (req, res) => {
       CurrRole,
       Achievement,
       ShortBio,
+      LinkedInPostLink,
       profilePic: result.secure_url,
     });
 

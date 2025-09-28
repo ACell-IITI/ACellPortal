@@ -22,6 +22,10 @@ const KYAschema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    LinkedInPostLink:{
+      type: String,
+      required: true,
+    },
     profilePic: {
       type: String,
       default: '',
