@@ -80,6 +80,26 @@ const Home = () => {
           />
         </div>
         </div>
+      <div className="gallery-section">
+        <p className="titlec">Gallery</p>
+        <div className="gallery-grid">
+          <div className="gallery-item">
+            <img src="/Media/image-g1.JPG" alt="gallery1" />
+          </div>
+          <div className="gallery-item">
+            <img src="/Media/image-g2.jpg" alt="gallery2" />
+          </div>
+          <div className="gallery-item">
+            <img src="/Media/image-g3.JPG" alt="gallery3" />
+          </div>
+          <div className="gallery-item">
+            <img src="/Media/image-g4.jpg" alt="gallery4" />
+          </div>
+          <div className="gallery-item">
+            <img src="/Media/image-g5.JPG" alt="gallery4" />
+          </div>
+        </div>
+      </div>
         <div className="program-section">
   <img className='bubble' src='/Media/bubble.png'></img>
     <img className='bubble1' src='/Media/bubble.png'></img>
