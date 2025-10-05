@@ -36,7 +36,7 @@ export const teamMembers = [
     image: "../Team/AviralSharma.jpg",
     linkedin: "https://www.linkedin.com/in/aviral-sharma-b57127299/",
     insta: "/team",
-    group: "Team Lead",
+    group: "Member",
     team: "Web Dev",
   },
   {

@@ -1,4 +1,4 @@
-import React from 'react'
+import React , {useEffect, useState} from 'react'
 import './Home.css'
 import Eventh from '../Components/Eventh/Eventh'
 import Program from '../Components/ProgramH/ProgramH'
@@ -8,6 +8,7 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import Registerbtn from '../Components/Registerbtn/Registerbtn'
 import RegistrationForm from '../Components/RegistrationForm/RegistrationForm'
 import { Link } from "react-router-dom";
+import { API_BASE_URL } from '../api/alumni';
 
 gsap.registerPlugin(useGSAP);
 gsap.registerPlugin(ScrollTrigger);
@@ -56,6 +57,14 @@ const Home = () => {
     }
   });
 });
+const [recentPhotos, setRecentPhotos] = useState([]);
+
+
+useEffect(() => {
+  fetch(`${API_BASE_URL}/api/gallery/recent`)
+    .then((res) => res.json())
+    .then((data) => setRecentPhotos(data));
+}, []);
 
   return (
     <>
@@ -82,7 +91,7 @@ const Home = () => {
         </div>
       <div className="gallery-section">
         <p className="titlec">Gallery</p>
-        <div className="gallery-grid">
+        {/* <div className="gallery-grid">
           <div className="gallery-item">
             <img src="/Media/image-g1.JPG" alt="gallery1" />
           </div>
@@ -98,6 +107,16 @@ const Home = () => {
           <div className="gallery-item">
             <img src="/Media/image-g5.JPG" alt="gallery4" />
           </div>
+        </div> */}
+        <div className="gallery-grid">
+          {recentPhotos.map((photo) => (
+            <img
+              key={photo._id}
+              src={photo.image}
+              alt="recent"
+              className="w-full h-40 object-cover rounded"
+            />
+          ))}
         </div>
       </div>
         <div className="program-section">

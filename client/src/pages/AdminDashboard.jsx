@@ -42,8 +42,61 @@ const AdminDashboard = () => {
   //CV Review
   const [submittedCVs, setSubmittedCVs] = useState([]);
   const [unseenCVCount, setUnseenCVCount] = useState(0);
+  //Gallery
+  const [gallery, setGallery] = useState([]);           
+  const [galleryImageFile, setGalleryImageFile] = useState(null); 
+  const fileInputRefGallery = useRef(null);
+
 
   const fileInputRef = useRef(null);
+
+  // when file is selected
+const handleImageChangeGallery = (e) => {
+  setGalleryImageFile(e.target.files[0]);
+};
+
+// submit new image
+const handleSubmitGallery = async (e) => {
+  e.preventDefault();
+
+  if (!galleryImageFile) return;
+
+  const formData = new FormData();
+  formData.append("image", galleryImageFile);
+
+  try {
+    const res = await fetch("http://localhost:8000/api/gallery", {
+      method: "POST",
+      body: formData,
+    });
+
+    const data = await res.json();
+    setGallery((prev) => [data, ...prev]); // add new photo on top
+    setGalleryImageFile(null); // reset file
+  } catch (err) {
+    console.error("Error uploading image:", err);
+  }
+};
+
+ useEffect(() => {
+    fetch("http://localhost:8000/api/gallery")
+      .then((res) => res.json())
+      .then((data) => setGallery(data))
+      .catch((err) => console.error("Error fetching gallery:", err));
+  }, []);
+
+// delete photo
+const handleDeleteGallery = async (id) => {
+  try {
+    await fetch(`http://localhost:8000/api/gallery/${id}`, {
+      method: "DELETE",
+    });
+    setGallery((prev) => prev.filter((photo) => photo._id !== id));
+  } catch (err) {
+    console.error("Error deleting image:", err);
+  }
+};
+
 
   //to fetch mentors
   const fetchMentors = async () => {
@@ -413,6 +466,11 @@ const AdminDashboard = () => {
       label: 'KYA Profiles',
       icon: Award,
       count: profiles.length,
+    },
+    {
+      id: 'gallery',
+      label: 'Add to gallery',
+      icon: Upload,
     },
   ];
 
@@ -1315,6 +1373,95 @@ const AdminDashboard = () => {
                     ))}
                   </div>
                 )}
+              </div>
+            </div>
+          )}
+
+          {/* Gallery Section */}
+          {activeTab === 'gallery' && (
+            <div>
+              <div className="flex items-center justify-between mb-6">
+                <h2 className="text-2xl font-semibold text-slate-900">
+                  Gallery
+                </h2>
+              </div>
+
+              <div className="bg-white rounded-xl p-6 shadow-sm border border-slate-200 mb-8">
+                <h3 className="text-lg font-semibold text-slate-900 mb-4">
+                  Upload New Photo
+                </h3>
+
+                <form onSubmit={handleSubmitGallery} className="space-y-6">
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={handleImageChangeGallery}
+                    ref={fileInputRefGallery}
+                    required
+                    className="hidden"
+                  />
+
+                  <div className="flex items-center space-x-6">
+                    {galleryImageFile ? (
+                      <img
+                        src={URL.createObjectURL(galleryImageFile)}
+                        alt="Preview"
+                        className="w-24 h-24 rounded-full object-cover border-4 cursor-pointer hover:border-blue-300"
+                        onClick={() => fileInputRefGallery.current.click()}
+                      />
+                    ) : (
+                      <div
+                        onClick={() => fileInputRefGallery.current.click()}
+                        className="w-24 h-24 border-2 border-dashed rounded-full flex items-center justify-center cursor-pointer hover:border-blue-400"
+                      >
+                        <Upload className="w-6 h-6 text-slate-400" />
+                      </div>
+                    )}
+                    <div>
+                      <button
+                        type="button"
+                        onClick={() => fileInputRefGallery.current.click()}
+                        className="inline-flex items-center px-4 py-2 bg-slate-100 text-slate-700 text-sm font-medium rounded-lg hover:bg-slate-200 transition-colors"
+                      >
+                        Upload Image
+                      </button>
+                      <p className="text-xs text-slate-500 mt-1">
+                        PNG, JPG, GIF up to 10MB
+                      </p>
+                    </div>
+                  </div>
+
+                  {/* Submit */}
+                  <div className="flex justify-end">
+                    <button
+                      type="submit"
+                      className="inline-flex items-center px-6 py-3 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 transition-colors shadow-sm"
+                    >
+                      Add to Gallery
+                    </button>
+                  </div>
+                </form>
+              </div>
+
+              <h1 className="text-4xl mb-4">Gallery Photos</h1>
+              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+                {gallery.map((photo) => (
+                  <div key={photo._id} className="border p-2 rounded-lg shadow">
+                    <img
+                      src={photo.image}
+                      alt="gallery"
+                      className="w-full h-40 object-cover rounded"
+                    />
+                    <div className="mt-2 flex justify-between">
+                      <button
+                        onClick={() => handleDeleteGallery(photo._id)}
+                        className="text-red-600 font-bold text-sm"
+                      >
+                        DELETE
+                      </button>
+                    </div>
+                  </div>
+                ))}
               </div>
             </div>
           )}
