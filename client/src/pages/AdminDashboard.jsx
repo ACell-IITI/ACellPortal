@@ -309,7 +309,7 @@ const AdminDashboard = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100">
+    <div className="w-full min-h-screen bg-gradient-to-br from-slate-50 to-slate-100">
       {/* Header */}
       <div className="bg-white shadow-sm border-b border-slate-200">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -357,7 +357,7 @@ const AdminDashboard = () => {
             <button
               key={tab.id}
               onClick={() => setActiveTab(tab.id)}
-              className={`flex items-center px-4 py-3 rounded-md text-sm font-medium transition-all duration-200 flex-1 justify-center ${
+              className={`flex items-center px-4 py-3 rounded-md text-sm text-[8px]  sm:text-lg md:text-xl font-medium transition-all duration-200 flex-1 justify-center overflow-hidden whitespace-nowrap  ${
                 activeTab === tab.id
                   ? 'bg-white text-blue-700 shadow-sm'
                   : 'text-slate-600 hover:text-slate-900'
@@ -926,7 +926,8 @@ const AdminDashboard = () => {
                         key={profile._id}
                         className="bg-white rounded-xl p-6 shadow-sm border border-slate-200"
                       >
-                        <div className="flex items-start space-x-4">
+                        <div className="flex flex-col sm:flex-row items-start sm:space-x-4 space-y-4 sm:space-y-0">
+
                           {profile.profilePic && (
                             <img
                               src={profile.profilePic}
@@ -940,7 +941,7 @@ const AdminDashboard = () => {
                                 <h4 className="text-lg font-semibold text-slate-900">
                                   {profile.Name}
                                 </h4>
-                                <div className="flex items-center mt-1 space-x-4 text-sm text-slate-600">
+                                <div className="flex flex-col sm:flex-row items-start mt-1 space-x-4 text-sm text-slate-600">
                                   <div className="flex items-center">
                                     <Calendar className="w-4 h-4 mr-1" />
                                     Batch {profile.Batch}
