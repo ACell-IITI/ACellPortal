@@ -39,7 +39,7 @@ const AlumniCard = ({ alumni }) => {
         {/* Buttons */}
         <div className="flex flex-wrap gap-4 justify-evenly mt-4">
           <motion.a
-            href={alumni.LinkedIn}
+            href={alumni.LinkedInPostLink}
             target="_blank"
             rel="noopener noreferrer"
             whileHover={{ scale: 1.05 }}
@@ -48,20 +48,6 @@ const AlumniCard = ({ alumni }) => {
               <div className="absolute inset-0 bg-gradient-to-r from-[#4FA095] via-[#BAD1C2] to-[#F6F6C9] opacity-0 group-hover:opacity-100 transition-opacity duration-300 blur-sm"></div>
               <span className="relative flex items-center gap-3 tracking-wide text-base">
                 LinkedIn <Linkedin size={18} />
-              </span>
-            </button>
-          </motion.a>
-
-          <motion.a
-            href={alumni.CompanyLink}
-            target="_blank"
-            rel="noopener noreferrer"
-            whileHover={{ scale: 1.05 }}
-          >
-            <button className="group relative px-6 py-3 bg-gradient-to-r from-[#F6F6C9] via-[#BAD1C2] to-[#4FA095] text-white font-bold rounded-2xl overflow-hidden transition-all duration-300 ease-in-out hover:scale-105 hover:shadow-lg">
-              <div className="absolute inset-0 bg-gradient-to-r from-[#4FA095] via-[#BAD1C2] to-[#F6F6C9] opacity-0 group-hover:opacity-100 transition-opacity duration-300 blur-sm"></div>
-              <span className="relative flex items-center gap-3 tracking-wide text-base">
-                About Company <ExternalLink size={18} />
               </span>
             </button>
           </motion.a>

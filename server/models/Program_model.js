@@ -1,0 +1,12 @@
+import mongoose from 'mongoose';
+
+const eventProgramSchema = new mongoose.Schema({
+  type: { type: String, enum: ['program', 'event'], required: true },
+  image: { type: String, required: true },   
+  title: { type: String, required: true },
+  date: { type: String, required: true },
+  time: { type: String, required: true },
+  venue: { type: String, required: true },
+}, { timestamps: true });
+
+export default mongoose.model('EventProgram', eventProgramSchema);

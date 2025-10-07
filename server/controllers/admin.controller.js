@@ -3,6 +3,7 @@ import KYA_db from '../models/KYA_model.js';
 import bcrypt from "bcrypt";
 import Mentorship_db from '../models/Mentorship_model.js';
 import { Admin_db, Alumni_db } from '../models/User_model.js';
+import Program from '../models/Program_model.js';
 import fs from 'fs';
 import jwt from 'jsonwebtoken';
 import 'dotenv/config';
@@ -84,7 +85,7 @@ export const addKyaProfile = async (req, res) => {
       return res.status(401).json({ message: 'Invalid or expired token' });
     }
 
-    const { Name, Batch, CurrRole, Achievement, ShortBio } = req.body;
+    const { Name, Batch, CurrRole, Achievement, ShortBio,LinkedInPostLink } = req.body;
 
     const result = await cloudinary.uploader.upload(req.file.path, {
       folder: 'kya-profiles',
@@ -98,6 +99,7 @@ export const addKyaProfile = async (req, res) => {
       CurrRole,
       Achievement,
       ShortBio,
+      LinkedInPostLink,
       profilePic: result.secure_url,
     });
 
@@ -210,8 +212,8 @@ export const addMentorProfile = async (req, res) => {
       name,
       degree,
       graduationYear,
-      email,
-      contactNumber,
+      // email,
+      // contactNumber,
       linkedinId,
       skills,
       about,
@@ -220,19 +222,19 @@ export const addMentorProfile = async (req, res) => {
       !name ||
       !degree ||
       !graduationYear ||
-      !email ||
-      !contactNumber ||
+      // !email ||
+      // !contactNumber ||
       !linkedinId ||
       !skills ||
       !about
     ) {
       return res.status(400).json({ message: 'All fields are required.' });
     }
-    const alumni = await Alumni_db.findOne({ alumniEmail: email });
+    // const alumni = await Alumni_db.findOne({ alumniEmail: email });
 
-    if (!alumni) {
-      return res.status(401).json({ message: 'Invalid Credentials' });
-    }
+    // if (!alumni) {
+    //   return res.status(401).json({ message: 'Invalid Credentials' });
+    // }
 
     // if (alumni.status === 'verified') {
     //   // If status is verified it means alumni is already a mentor
@@ -249,8 +251,8 @@ export const addMentorProfile = async (req, res) => {
       name,
       degree,
       graduationYear,
-      email,
-      contactNumber,
+      // email,
+      // contactNumber,
       linkedinId,
       skills : JSON.parse(skills),
       about,
@@ -298,3 +300,63 @@ export const deleteMentorProfile = async (req, res) => {
     res.status(500).json({ message: 'Internal server error' });
   }
 };
+
+// ADD program/event
+export const addProgram = async (req, res) => {
+  console.log('addProgram req.body:', req.body);
+console.log('addProgram req.file:', req.file);
+  try {
+    const { type, title, date, time, venue } = req.body;
+
+    if (!req.file) {
+      return res.status(400).json({ message: 'Image file required' });
+    }
+
+    const result = await cloudinary.uploader.upload(req.file.path, {
+      folder: 'programs-events'
+    });
+    fs.unlinkSync(req.file.path);
+
+    const program = new Program({
+      type,
+      image: result.secure_url,
+      title,
+      date,
+      time,
+      venue
+    });
+
+    await program.save();
+
+    res.status(201).json({ success: true, message: 'Program/Event added', data: program });
+  } catch (err) {
+    console.error('Error in addProgram:', err);
+    res.status(500).json({ success: false, message: 'Internal server error' });
+  }
+};
+
+export const getPrograms = async (req, res) => {
+  try {
+    const { type } = req.query;
+    const query = type ? { type } : {};
+    const programs = await Program.find(query).sort({ createdAt: -1 });
+    res.status(200).json({ success: true, data: programs });
+  } catch (err) {
+    console.error('Error in getPrograms:', err);
+    res.status(500).json({ success: false, message: 'Internal server error' });
+  }
+};
+
+export const deleteProgram = async (req, res) => {
+  try {
+    const program = await Program.findById(req.params.id);
+    if (!program) return res.status(404).json({ message: 'Program/Event not found' });
+
+    await Program.findByIdAndDelete(req.params.id);
+    res.status(200).json({ success: true, message: 'Program/Event deleted successfully' });
+  } catch (err) {
+    console.error('Error in deleteProgram:', err);
+    res.status(500).json({ success: false, message: 'Internal server error' });
+  }
+};
+

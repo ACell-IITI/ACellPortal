@@ -5,6 +5,9 @@ import {
   getKyaProfiles,
   // getPendingMentors,
   // verifyAlumni,
+  addProgram,
+  getPrograms,
+  deleteProgram,
   getAdminProfiles,
   updateAdminProfile,
   addMentorProfile,
@@ -31,5 +34,11 @@ router.delete("/delete-kya-profile/:id", deleteKyaProfile);
 router.post('/add-mentor', upload.single('profilePic'), addMentorProfile);
 // router.get('/get-mentors/', getMentorsProfile);
 router.delete('/delete-mentor/:id', deleteMentorProfile);
+
+// Program/Event Routes
+router.post('/add-program', upload.single('image'), addProgram);
+router.get('/get-programs', getPrograms);
+router.delete('/delete-program/:id', deleteProgram);
+
 
 export default router;

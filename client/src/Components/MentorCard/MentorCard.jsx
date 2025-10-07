@@ -34,7 +34,7 @@ const MentorCard = ({ mentor }) => {
         <div className="section">
           <h4 className="section-title">
             <FaCogs className="icon" />
-            Skills</h4>
+            Domain</h4>
           <div className="skills-container">
             {mentor.skills.map((skill, index) => (
               <span key={index} className="skill-tag">
@@ -46,13 +46,13 @@ const MentorCard = ({ mentor }) => {
 
         <div className="section">
           <div className="contact-info">
-            <div className="contact-item">
+            {/* <div className="contact-item">
               <FaEnvelope className="icon" />
               <a href={`mailto:${mentor.email}`} className="contact-link">
                 {mentor.email}
               </a>
-            </div>
-            <div className="contact-item">
+            </div> */}
+           {/* <div className="contact-item">
               <FaLinkedin className="icon" />
               <a
                 href={mentor.linkedinId}
@@ -62,7 +62,7 @@ const MentorCard = ({ mentor }) => {
               >
                 LinkedIn
               </a>
-            </div>
+            </div>*/}
           </div>
         </div>
       </div>

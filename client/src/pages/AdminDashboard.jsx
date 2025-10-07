@@ -42,8 +42,61 @@ const AdminDashboard = () => {
   //CV Review
   const [submittedCVs, setSubmittedCVs] = useState([]);
   const [unseenCVCount, setUnseenCVCount] = useState(0);
+  //Gallery
+  const [gallery, setGallery] = useState([]);           
+  const [galleryImageFile, setGalleryImageFile] = useState(null); 
+  const fileInputRefGallery = useRef(null);
+
 
   const fileInputRef = useRef(null);
+
+  // when file is selected
+const handleImageChangeGallery = (e) => {
+  setGalleryImageFile(e.target.files[0]);
+};
+
+// submit new image
+const handleSubmitGallery = async (e) => {
+  e.preventDefault();
+
+  if (!galleryImageFile) return;
+
+  const formData = new FormData();
+  formData.append("image", galleryImageFile);
+
+  try {
+    const res = await fetch("http://localhost:8000/api/gallery", {
+      method: "POST",
+      body: formData,
+    });
+
+    const data = await res.json();
+    setGallery((prev) => [data, ...prev]); // add new photo on top
+    setGalleryImageFile(null); // reset file
+  } catch (err) {
+    console.error("Error uploading image:", err);
+  }
+};
+
+ useEffect(() => {
+    fetch("http://localhost:8000/api/gallery")
+      .then((res) => res.json())
+      .then((data) => setGallery(data))
+      .catch((err) => console.error("Error fetching gallery:", err));
+  }, []);
+
+// delete photo
+const handleDeleteGallery = async (id) => {
+  try {
+    await fetch(`http://localhost:8000/api/gallery/${id}`, {
+      method: "DELETE",
+    });
+    setGallery((prev) => prev.filter((photo) => photo._id !== id));
+  } catch (err) {
+    console.error("Error deleting image:", err);
+  }
+};
+
 
   //to fetch mentors
   const fetchMentors = async () => {
@@ -138,6 +191,115 @@ const AdminDashboard = () => {
   //   }
   // };
 
+  // For Programs and Events
+  const [programs, setPrograms] = useState([]);
+  const [imageFilepro, setImageFilepro] = useState(null);
+  const [formErrorspro, setFormErrorspro] = useState({});
+  const [formDataprogram, setFormDataprogram] = useState({
+    type: 'program',
+    image: '',
+    title: '',
+    date: '',
+    time: '',
+    venue: '',
+  });
+
+  useEffect(() => {
+    const fetchPrograms = async () => {
+      try {
+        const res = await axios.get('http://localhost:8000/admin/get-programs');
+        setPrograms(res.data.data);
+      } catch (err) {
+        console.error('Error fetching programs:', err);
+      }
+    };
+
+    fetchPrograms();
+  }, []);
+
+  const handleChangeprogram = (e) => {
+    setFormDataprogram({ ...formDataprogram, [e.target.name]: e.target.value });
+    if (formErrors[e.target.name]) {
+      setFormErrorspro({ ...formErrorspro, [e.target.name]: '' });
+    }
+  };
+
+  const handleImageChangeprogram = (e) => {
+    setImageFilepro(e.target.files[0]);
+
+    if (formErrorspro.image) {
+      setFormErrorspro({ ...formErrorspro, image: '' });
+    }
+  };
+
+  const validateProgramForm = () => {
+    const errors = {};
+    if (!formDataprogram.title.trim()) errors.title = 'Title is required';
+    if (!formDataprogram.date.trim()) errors.date = 'Date is required';
+    if (!formDataprogram.time.trim()) errors.time = 'Time is required';
+    if (!formDataprogram.venue.trim()) errors.venue = 'Venue is required';
+    if (!imageFilepro) errors.image = 'Program/Event image is required';
+    return errors;
+  };
+
+  const handleSubmitprogram = async (e) => {
+    e.preventDefault();
+    const errors = validateProgramForm();
+    if (Object.keys(errors).length > 0) {
+      setFormErrorspro(errors);
+      return;
+    }
+
+    try {
+      const data = new FormData();
+      data.append('type', formDataprogram.type);
+      data.append('title', formDataprogram.title);
+      data.append('date', formDataprogram.date);
+      data.append('time', formDataprogram.time);
+      data.append('venue', formDataprogram.venue);
+      data.append('image', imageFilepro);
+
+      await axios.post('http://localhost:8000/admin/add-program', data, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      });
+
+      alert('Program/Event added successfully!');
+
+      setFormDataprogram({
+        type: 'program',
+        image: '',
+        title: '',
+        date: '',
+        time: '',
+        venue: '',
+      });
+      setImageFilepro(null);
+      setFormErrors({});
+
+      const res = await axios.get('http://localhost:8000/admin/get-programs');
+      setPrograms(res.data.data);
+    } catch (err) {
+      console.error('Error adding program:', err);
+    }
+  };
+
+  const handleDeleteProgram = async (id, title) => {
+    const confirmed = window.confirm(
+      `Are you sure you want to delete "${title}"?`
+    );
+    if (!confirmed) return;
+
+    try {
+      await axios.delete(`http://localhost:8000/admin/delete-program/${id}`);
+      const res = await axios.get('http://localhost:8000/admin/get-programs');
+      setPrograms(res.data.data);
+    } catch (err) {
+      console.error('Error deleting program:', err);
+    }
+  };
+
   // For KYA
   const [profiles, setProfiles] = useState([]);
   const [imageFile, setImageFile] = useState(null);
@@ -149,6 +311,7 @@ const AdminDashboard = () => {
     Achievement: '',
     ShortBio: '',
     profilePic: '',
+    LinkedInPostLink: '',
   });
 
   const fetchKyaProfiles = async () => {
@@ -231,6 +394,8 @@ const AdminDashboard = () => {
       data.append('CurrRole', formData.CurrRole);
       data.append('Achievement', formData.Achievement);
       data.append('ShortBio', formData.ShortBio);
+      data.append('LinkedInPostLink', formData.LinkedInPostLink);
+      console.log(formData.LinkedInPostLink);
       if (imageFile) {
         data.append('profilePic', imageFile);
       }
@@ -254,6 +419,7 @@ const AdminDashboard = () => {
         CurrRole: '',
         Achievement: '',
         ShortBio: '',
+        LinkedInPostLink:'',
       });
       setImageFile(null);
       setFormErrors({});
@@ -284,6 +450,12 @@ const AdminDashboard = () => {
       count: mentors.length,
     },
     {
+      id: 'programs',
+      label: 'ProgramsEvents',
+      icon: Users,
+      count: programs.length,
+    },
+    {
       id: 'cvs',
       label: 'CV Reviews',
       icon: FileText,
@@ -291,9 +463,14 @@ const AdminDashboard = () => {
     },
     {
       id: 'profiles',
-      label: 'Alumni Profiles',
+      label: 'KYA Profiles',
       icon: Award,
       count: profiles.length,
+    },
+    {
+      id: 'gallery',
+      label: 'Add to gallery',
+      icon: Upload,
     },
   ];
 
@@ -319,7 +496,7 @@ const AdminDashboard = () => {
                 Admin Dashboard
               </h1>
               <p className="text-slate-600 mt-1">
-                Manage mentors, reviews, and alumni profiles
+                Manage mentors, reviews, and KYA profiles
               </p>
             </div>
             <div className="flex items-center space-x-4">
@@ -580,7 +757,7 @@ const AdminDashboard = () => {
 
                       <div className="section">
                         <div className="contact-info">
-                          <div className="contact-item">
+                          {/* <div className="contact-item">
                             <FaEnvelope className="icon" />
                             <a
                               href={`mailto:${mentor.email}`}
@@ -588,7 +765,7 @@ const AdminDashboard = () => {
                             >
                               {mentor.email}
                             </a>
-                          </div>
+                          </div> */}
                           <div className="contact-item">
                             <FaLinkedin className="icon" />
                             <a
@@ -692,12 +869,209 @@ const AdminDashboard = () => {
             </div>
           )}
 
+          {/* Programs/Events Tab */}
+          {activeTab === 'programs' && (
+            <div>
+              <div className="flex items-center justify-between mb-6">
+                <h2 className="text-2xl font-semibold text-slate-900">
+                  Programs & Events
+                </h2>
+                <div className="text-sm text-slate-500"></div>
+              </div>
+
+              <div className="bg-white rounded-xl p-6 shadow-sm border border-slate-200 mb-8">
+                <h3 className="text-lg font-semibold text-slate-900 mb-4">
+                  Add New Event / Program
+                </h3>
+
+                <form onSubmit={handleSubmitprogram} className="space-y-6">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                      <label className="block text-sm font-medium text-slate-700 mb-2">
+                        Type
+                      </label>
+                      <select
+                        name="type"
+                        value={formDataprogram.type}
+                        onChange={handleChangeprogram}
+                        required
+                        className="w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-shadow border-slate-300"
+                      >
+                        <option value="program">Program</option>
+                        <option value="event">Event</option>
+                      </select>
+                    </div>
+
+                    <div>
+                      <label className="block text-sm font-medium text-slate-700 mb-4">
+                        Program/Event Image
+                      </label>
+                      <input
+                        type="file"
+                        accept="image/*"
+                        onChange={handleImageChangeprogram}
+                        ref={fileInputRef}
+                        className="hidden"
+                      />
+
+                      <div className="flex items-center space-x-6">
+                        {imageFile ? (
+                          <img
+                            src={URL.createObjectURL(imageFile)}
+                            alt="Program Preview"
+                            className={`w-24 h-24 rounded-full object-cover border-4 cursor-pointer hover:border-blue-300 transition-colors ${
+                              formErrorspro.image
+                                ? 'border-red-300'
+                                : 'border-slate-100'
+                            }`}
+                            onClick={() => fileInputRef.current.click()}
+                            title="Click to change image"
+                          />
+                        ) : (
+                          <div
+                            onClick={() => fileInputRef.current.click()}
+                            className={`w-24 h-24 border-2 border-dashed rounded-full flex items-center justify-center cursor-pointer hover:border-blue-400 transition-colors ${
+                              formErrorspro.image
+                                ? 'border-red-300 bg-red-50'
+                                : 'border-slate-300'
+                            }`}
+                          >
+                            <Upload className="w-6 h-6 text-slate-400" />
+                          </div>
+                        )}
+                        <div>
+                          <button
+                            type="button"
+                            onClick={() => fileInputRef.current.click()}
+                            className="inline-flex items-center px-4 py-2 bg-slate-100 text-slate-700 text-sm font-medium rounded-lg hover:bg-slate-200 transition-colors"
+                          >
+                            <Upload className="w-4 h-4 mr-2" />
+                            {imageFilepro ? 'Change Image' : 'Upload Image'}
+                          </button>
+                          <p className="text-xs text-slate-500 mt-1">
+                            PNG, JPG, GIF up to 10MB
+                          </p>
+                        </div>
+                      </div>
+                      {formErrorspro.image && (
+                        <p className="mt-2 text-sm text-red-600">
+                          {formErrorspro.image}
+                        </p>
+                      )}
+                    </div>
+
+                    <div>
+                      <label className="block text-sm font-medium text-slate-700 mb-2">
+                        Title
+                      </label>
+                      <input
+                        type="text"
+                        name="title"
+                        value={formDataprogram.title}
+                        onChange={handleChangeprogram}
+                        required
+                        placeholder="Enter title"
+                        className="w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-shadow border-slate-300"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-sm font-medium text-slate-700 mb-2">
+                        Venue
+                      </label>
+                      <input
+                        type="text"
+                        name="venue"
+                        value={formDataprogram.venue}
+                        onChange={handleChangeprogram}
+                        required
+                        placeholder="Enter venue"
+                        className="w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-shadow border-slate-300"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-sm font-medium text-slate-700 mb-2">
+                        Date
+                      </label>
+                      <input
+                        type="text"
+                        name="date"
+                        value={formDataprogram.date}
+                        onChange={handleChangeprogram}
+                        required
+                        placeholder="e.g. July 6, 2025"
+                        className="w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-shadow border-slate-300"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-sm font-medium text-slate-700 mb-2">
+                        Time
+                      </label>
+                      <input
+                        type="text"
+                        name="time"
+                        value={formDataprogram.time}
+                        onChange={handleChangeprogram}
+                        required
+                        placeholder="e.g. 6:00 PM"
+                        className="w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-shadow border-slate-300"
+                      />
+                    </div>
+                  </div>
+
+                  {/* Submit */}
+                  <div className="flex justify-end">
+                    <button
+                      type="submit"
+                      className="inline-flex items-center px-6 py-3 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 transition-colors shadow-sm"
+                    >
+                      Add Event / Program
+                    </button>
+                  </div>
+                </form>
+              </div>
+              <h1 className="text-4xl mb-4">Programs / Events</h1>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {programs.map((program) => (
+                  <div
+                    key={program._id}
+                    className=" border  p-4 rounded-lg shadow"
+                  >
+                    <img
+                      src={program.image}
+                      alt={program.title}
+                      className="w-full h-48 object-cover rounded mb-4"
+                    />
+                    <h3 className="text-xl font-semibold">{program.type}</h3>
+                    <h3 className="text-xl font-semibold">{program.title}</h3>
+                    <p className="text-sm text-gray-500">
+                      📅 {program.date} ⏰ {program.time}
+                    </p>
+                    <p className="text-sm text-gray-500">📍 {program.venue}</p>
+                    <div className="mt-2">
+                      <button
+                        onClick={() =>
+                          handleDeleteProgram(program._id, program.title)
+                        }
+                        className="text-red-600 font-bold mt-2"
+                      >
+                        DELETE
+                      </button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
           {/* Profiles Tab */}
           {activeTab === 'profiles' && (
             <div>
               <div className="flex items-center justify-between mb-6">
                 <h2 className="text-2xl font-semibold text-slate-900">
-                  Alumni Profiles
+                  KYA Profiles
                 </h2>
                 <div className="text-sm text-slate-500">
                   {profiles.length} profiles
@@ -707,7 +1081,7 @@ const AdminDashboard = () => {
               {/* Add Profile Form */}
               <div className="bg-white rounded-xl p-6 shadow-sm border border-slate-200 mb-8">
                 <h3 className="text-lg font-semibold text-slate-900 mb-4">
-                  Add New Alumni Profile
+                  Add New KYA Profile
                 </h3>
                 <form onSubmit={handleSubmit} className="space-y-6">
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -805,6 +1179,29 @@ const AdminDashboard = () => {
                       {formErrors.Achievement && (
                         <p className="mt-1 text-sm text-red-600">
                           {formErrors.Achievement}
+                        </p>
+                      )}
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-slate-700 mb-2">
+                        Linked In Post Link
+                      </label>
+                      <input
+                        type="url"
+                        name="LinkedInPostLink"
+                        value={formData.LinkedInPostLink}
+                        onChange={handleChange}
+                        required
+                        className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-shadow ${
+                          formErrors.LinkedInPostLink
+                            ? 'border-red-300 bg-red-50'
+                            : 'border-slate-300'
+                        }`}
+                        placeholder="Key achievement or recognition"
+                      />
+                      {formErrors.LinkedInPostLink && (
+                        <p className="mt-1 text-sm text-red-600">
+                          {formErrors.LinkedInPostLink}
                         </p>
                       )}
                     </div>
@@ -977,6 +1374,95 @@ const AdminDashboard = () => {
                     ))}
                   </div>
                 )}
+              </div>
+            </div>
+          )}
+
+          {/* Gallery Section */}
+          {activeTab === 'gallery' && (
+            <div>
+              <div className="flex items-center justify-between mb-6">
+                <h2 className="text-2xl font-semibold text-slate-900">
+                  Gallery
+                </h2>
+              </div>
+
+              <div className="bg-white rounded-xl p-6 shadow-sm border border-slate-200 mb-8">
+                <h3 className="text-lg font-semibold text-slate-900 mb-4">
+                  Upload New Photo
+                </h3>
+
+                <form onSubmit={handleSubmitGallery} className="space-y-6">
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={handleImageChangeGallery}
+                    ref={fileInputRefGallery}
+                    required
+                    className="hidden"
+                  />
+
+                  <div className="flex items-center space-x-6">
+                    {galleryImageFile ? (
+                      <img
+                        src={URL.createObjectURL(galleryImageFile)}
+                        alt="Preview"
+                        className="w-24 h-24 rounded-full object-cover border-4 cursor-pointer hover:border-blue-300"
+                        onClick={() => fileInputRefGallery.current.click()}
+                      />
+                    ) : (
+                      <div
+                        onClick={() => fileInputRefGallery.current.click()}
+                        className="w-24 h-24 border-2 border-dashed rounded-full flex items-center justify-center cursor-pointer hover:border-blue-400"
+                      >
+                        <Upload className="w-6 h-6 text-slate-400" />
+                      </div>
+                    )}
+                    <div>
+                      <button
+                        type="button"
+                        onClick={() => fileInputRefGallery.current.click()}
+                        className="inline-flex items-center px-4 py-2 bg-slate-100 text-slate-700 text-sm font-medium rounded-lg hover:bg-slate-200 transition-colors"
+                      >
+                        Upload Image
+                      </button>
+                      <p className="text-xs text-slate-500 mt-1">
+                        PNG, JPG, GIF up to 10MB
+                      </p>
+                    </div>
+                  </div>
+
+                  {/* Submit */}
+                  <div className="flex justify-end">
+                    <button
+                      type="submit"
+                      className="inline-flex items-center px-6 py-3 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 transition-colors shadow-sm"
+                    >
+                      Add to Gallery
+                    </button>
+                  </div>
+                </form>
+              </div>
+
+              <h1 className="text-4xl mb-4">Gallery Photos</h1>
+              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+                {gallery.map((photo) => (
+                  <div key={photo._id} className="border p-2 rounded-lg shadow">
+                    <img
+                      src={photo.image}
+                      alt="gallery"
+                      className="w-full h-40 object-cover rounded"
+                    />
+                    <div className="mt-2 flex justify-between">
+                      <button
+                        onClick={() => handleDeleteGallery(photo._id)}
+                        className="text-red-600 font-bold text-sm"
+                      >
+                        DELETE
+                      </button>
+                    </div>
+                  </div>
+                ))}
               </div>
             </div>
           )}
