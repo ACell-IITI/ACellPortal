@@ -35,7 +35,7 @@ export default function TeamPage() {
             stagger: 0.15,
             ease: "power3.out",
           }),
-        start: "top 85%",
+        start: "top 10%",
         once: true,
       });
 
