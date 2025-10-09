@@ -40,8 +40,8 @@ const AdminDashboard = () => {
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState('mentors');
   //CV Review
-  const [submittedCVs, setSubmittedCVs] = useState([]);
-  const [unseenCVCount, setUnseenCVCount] = useState(0);
+  //const [submittedCVs, setSubmittedCVs] = useState([]);
+  //const [unseenCVCount, setUnseenCVCount] = useState(0);
   //Gallery
   const [gallery, setGallery] = useState([]);           
   const [galleryImageFile, setGalleryImageFile] = useState(null); 
@@ -148,7 +148,7 @@ const handleDeleteGallery = async (id) => {
   }, []);
 
   // Fetching CV submissions
-  useEffect(() => {
+  {/*useEffect(() => {
     const fetchCVs = async () => {
       try {
         const res3 = await axios.get(`${API_BASE_URL}/cv/getCV`);
@@ -176,6 +176,7 @@ const handleDeleteGallery = async (id) => {
       setUnseenCVCount(0);
     }
   }, [activeTab]);
+  */}
 
   // const handleMentorsSubmit = async (e, alumniId) => {
   //   e.preventDefault();
@@ -456,12 +457,6 @@ const handleDeleteGallery = async (id) => {
       count: programs.length,
     },
     {
-      id: 'cvs',
-      label: 'CV Reviews',
-      icon: FileText,
-      count: submittedCVs.length,
-    },
-    {
       id: 'profiles',
       label: 'KYA Profiles',
       icon: Award,
@@ -501,11 +496,11 @@ const handleDeleteGallery = async (id) => {
             </div>
             <div className="flex items-center space-x-4">
               <div className="relative">
-                <button
+                {/*<button
                   className="p-2 text-slate-400 hover:text-slate-600 transition-colors relative"
                   onClick={() => {
-                    setActiveTab('cvs'); // Switch to CV Reviews tab
-                    setUnseenCVCount(0); // Reset notifications
+                    setActiveTab('mentors'); // Switch to CV Reviews tab
+                    (0); // Reset notifications
                   }}
                 >
                   <Bell className="w-6 h-6" />
@@ -514,7 +509,7 @@ const handleDeleteGallery = async (id) => {
                       {unseenCVCount}
                     </span>
                   )}
-                </button>
+                </button>*/}
               </div>
               {/* <button
                 className="p-2 text-slate-400 hover:text-slate-600 transition-colors"
@@ -561,154 +556,6 @@ const handleDeleteGallery = async (id) => {
         <div className="space-y-6">
           {/* Mentors Tab */}
           {activeTab === 'mentors' && (
-            // <div>
-            //   <div className="flex items-center justify-between mb-6">
-            //     <h2 className="text-2xl font-semibold text-slate-900">Mentor Verification</h2>
-            //     <div className="text-sm text-slate-500">
-            //       {mentors.length} pending verifications
-            //     </div>
-            //   </div>
-
-            //   {mentors.length === 0 ? (
-            //     <div className="bg-white rounded-xl p-12 text-center shadow-sm border border-slate-200">
-            //       <Users className="w-16 h-16 text-slate-300 mx-auto mb-4" />
-            //       <h3 className="text-lg font-medium text-slate-900 mb-2">No pending mentors</h3>
-            //       <p className="text-slate-600">All mentor applications have been processed.</p>
-            //     </div>
-            //   ) : (
-            //     <div className="grid gap-6">
-            //       {mentors.map(({ alumni, mentor }, index) => (
-            //         <div key={index} className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
-            //           <div className="p-6">
-            //             <div className="flex flex-col lg:flex-row lg:items-start gap-6">
-            //               {/* Profile Image */}
-            //               {mentor && mentor.profilePic && (
-            //                 <div className="flex-shrink-0">
-            //                   <img
-            //                     src={mentor.profilePic}
-            //                     alt={`${mentor.name}'s profile`}
-            //                     className="w-24 h-24 rounded-full object-cover border-4 border-slate-100"
-            //                   />
-            //                 </div>
-            //               )}
-
-            //               <div className="flex-1 space-y-6">
-            //                 {/* Alumni Section */}
-            //                 <div>
-            //                   <div className="flex items-center mb-3">
-            //                     <User className="w-5 h-5 text-blue-600 mr-2" />
-            //                     <h3 className="text-lg font-semibold text-slate-900">Alumni Information</h3>
-            //                   </div>
-            //                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            //                     <div className="flex items-center">
-            //                       <span className="text-sm text-slate-500 w-16">Name:</span>
-            //                       <span className="text-sm font-medium text-slate-900">{alumni.alumniName}</span>
-            //                     </div>
-            //                     <div className="flex items-center">
-            //                       <Mail className="w-4 h-4 text-slate-400 mr-2" />
-            //                       <span className="text-sm text-slate-600">{alumni.alumniEmail}</span>
-            //                     </div>
-            //                     <div className="flex items-center">
-            //                       <span className="text-sm text-slate-500 w-16">Status:</span>
-            //                       <span className={`px-2 py-1 text-xs rounded-full font-medium ${
-            //                         alumni.status === 'pending'
-            //                           ? 'bg-yellow-100 text-yellow-800'
-            //                           : 'bg-green-100 text-green-800'
-            //                       }`}>
-            //                         {alumni.status}
-            //                       </span>
-            //                     </div>
-            //                   </div>
-            //                 </div>
-
-            //                 {/* Mentor Section */}
-            //                 <div>
-            //                   <div className="flex items-center mb-3">
-            //                     <Award className="w-5 h-5 text-green-600 mr-2" />
-            //                     <h3 className="text-lg font-semibold text-slate-900">Mentor Profile</h3>
-            //                   </div>
-
-            //                   {mentor ? (
-            //                     <div className="space-y-4">
-            //                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            //                         <div>
-            //                           <span className="text-sm text-slate-500">Title:</span>
-            //                           <p className="text-sm font-medium text-slate-900">{mentor.title}</p>
-            //                         </div>
-            //                         <div>
-            //                           <span className="text-sm text-slate-500">Name:</span>
-            //                           <p className="text-sm font-medium text-slate-900">{mentor.name}</p>
-            //                         </div>
-            //                         <div>
-            //                           <span className="text-sm text-slate-500">Degree:</span>
-            //                           <p className="text-sm font-medium text-slate-900">{mentor.degreeBranchYear}</p>
-            //                         </div>
-            //                         <div>
-            //                           <span className="text-sm text-slate-500">Contact:</span>
-            //                           <p className="text-sm font-medium text-slate-900">{mentor.contactNumber}</p>
-            //                         </div>
-            //                       </div>
-
-            //                       <div>
-            //                         <span className="text-sm text-slate-500">About:</span>
-            //                         <p className="text-sm text-slate-700 mt-1">{mentor.about}</p>
-            //                       </div>
-
-            //                       <div>
-            //                         <span className="text-sm text-slate-500">Skills:</span>
-            //                         <div className="flex flex-wrap gap-2 mt-1">
-            //                           {mentor.skills.map((skill, index) => (
-            //                             <span key={index} className="px-3 py-1 bg-blue-50 text-blue-700 text-xs rounded-full">
-            //                               {skill}
-            //                             </span>
-            //                           ))}
-            //                         </div>
-            //                       </div>
-
-            //                       <div>
-            //                         <span className="text-sm text-slate-500">LinkedIn:</span>
-            //                         <a
-            //                           href={mentor.linkedinId}
-            //                           target="_blank"
-            //                           rel="noopener noreferrer"
-            //                           className="inline-flex items-center text-sm text-blue-600 hover:text-blue-800 ml-2"
-            //                         >
-            //                           View Profile <ExternalLink className="w-3 h-3 ml-1" />
-            //                         </a>
-            //                       </div>
-            //                     </div>
-            //                   ) : (
-            //                     <div className="bg-red-50 border border-red-200 rounded-lg p-4">
-            //                       <p className="text-red-800 text-sm">No mentor profile submitted yet.</p>
-            //                     </div>
-            //                   )}
-            //                 </div>
-            //               </div>
-            //             </div>
-
-            //             {/* Actions */}
-            //             {alumni.status === 'pending' && mentor && (
-            //               <div className="mt-6 pt-6 border-t border-slate-200">
-            //                 <form onSubmit={(e) => handleMentorsSubmit(e, alumni._id)}>
-            //                   <button
-            //                     type="submit"
-            //                     className="inline-flex items-center px-6 py-3 bg-green-600 text-white text-sm font-medium rounded-lg hover:bg-green-700 transition-colors shadow-sm"
-            //                   >
-            //                     <Check className="w-4 h-4 mr-2" />
-            //                     Verify Alumni
-            //                   </button>
-            //                 </form>
-            //               </div>
-            //             )}
-            //           </div>
-            //         </div>
-            //       ))}
-            //     </div>
-            //   )}
-            // </div>
-
-            //added mentors form here
-            // registration form for mentors
             <>
               <RegistrationForm />
               {/* //showing all mentors */}
@@ -797,7 +644,7 @@ const handleDeleteGallery = async (id) => {
           )}
 
           {/* CVs Tab */}
-          {activeTab === 'cvs' && (
+       {/*   {activeTab === 'cvs' && (
             <div>
               <div className="flex items-center justify-between mb-6">
                 <h2 className="text-2xl font-semibold text-slate-900">
@@ -868,6 +715,7 @@ const handleDeleteGallery = async (id) => {
               )}
             </div>
           )}
+            */}
 
           {/* Programs/Events Tab */}
           {activeTab === 'programs' && (
@@ -1469,7 +1317,7 @@ const handleDeleteGallery = async (id) => {
         </div>
       </div>
     </div>
-  );
+  )
 };
 
 export default AdminDashboard;
