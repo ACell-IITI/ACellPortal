@@ -2,8 +2,9 @@ import React, { useState, useRef, useEffect, useContext } from "react";
 import { FaArrowCircleLeft, FaArrowCircleRight, FaDownload, FaExpand, FaShareAlt } from 'react-icons/fa'
 import HTMLFlipBook from "react-pageflip";
 import { Document, Page, pdfjs } from "react-pdf";
-const pdfFile = "/magazines/magazine_25.pdf";
+import axios from "axios";
 import { view_Gallery_Context } from "../../context/NMcontext";
+import { API_BASE_URL } from "../../api/alumni";
 
 pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.mjs`;
 
@@ -39,9 +40,29 @@ const Magazine = () => {
 
     const [numPages, setNumPages] = useState(null);
     const [isFullscreen, setIsFullscreen] = useState(false)
+    const [latestMagazine, setLatestMagazine] = useState(null);
+    const [loading, setLoading] = useState(true);
 
     const flipBookRef = useRef(null);
     const flipbookContainerRef = useRef(null);
+
+    useEffect(() => {
+        const fetchLatestMagazine = async () => {
+            try {
+                const res = await axios.get(`${API_BASE_URL}/admin/get-magazines`);
+                const magazines = res.data.data || res.data;
+                if (magazines && magazines.length > 0) {
+                    const sorted = magazines.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+                    setLatestMagazine(sorted[0]);
+                }
+            } catch (err) {
+                console.error("Error fetching magazines:", err);
+            } finally {
+                setLoading(false);
+            }
+        };
+        fetchLatestMagazine();
+    }, []);
 
     useEffect(() => {
         const handleFullscreenChange = () => {
@@ -88,7 +109,7 @@ const Magazine = () => {
             navigator.share(
                 {
                     title: "Alumni Magazine",
-                    url: pdfFile,
+                    url: latestMagazine?.pdfUrl,
                 }
             )
                 .then(() => console.log('Shared successfully'))
@@ -97,6 +118,14 @@ const Magazine = () => {
             alert('Web Share is not supported on this browser.');
         }
     }
+    if (loading) {
+        return <div className="text-center py-10 text-lg">Loading latest magazine...</div>;
+    }
+    if (!latestMagazine) {
+        return <div className="text-center py-10 text-lg text-red-600">No magazines available!</div>;
+    }
+
+    const pdfFile = latestMagazine.pdfUrl;
 
     return (
         <>
@@ -107,7 +136,7 @@ const Magazine = () => {
                 </div>
                 <div className="contentSection bg-[#B9CDC0] rounded-2xl mx-0 sm:mx-3 lg:mx-10  p-5 px-1 sm:px-1 lg:px-10 mt-7 overflow-hidden">
                     <div className='part1 flex justify-between lg:px-0 sm:px-5 px-2'>
-                        <h1 className='font-bold text-3xl italic'>Magazine '25</h1>
+                        <h1 className='font-bold text-3xl italic'> {latestMagazine.title || "Untitled Magazine"} </h1>
                         <div className='flex justify-between gap-2 sm:gap-5 list-none mt-3'>
                             <FaExpand onClick={handleFullscreen} className='text-[#173460] hover:text-[#19438b] w-5 h-5 cursor-pointer transition-all transform hover:scale-125 duration-300 ease-in-out' />
                             <a href={pdfFile} download>
