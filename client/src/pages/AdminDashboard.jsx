@@ -42,10 +42,63 @@ const AdminDashboard = () => {
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState('mentors');
   //CV Review
-  const [submittedCVs, setSubmittedCVs] = useState([]);
-  const [unseenCVCount, setUnseenCVCount] = useState(0);
+  //const [submittedCVs, setSubmittedCVs] = useState([]);
+  //const [unseenCVCount, setUnseenCVCount] = useState(0);
+  //Gallery
+  const [gallery, setGallery] = useState([]);           
+  const [galleryImageFile, setGalleryImageFile] = useState(null); 
+  const fileInputRefGallery = useRef(null);
+
 
   const fileInputRef = useRef(null);
+
+  // when file is selected
+const handleImageChangeGallery = (e) => {
+  setGalleryImageFile(e.target.files[0]);
+};
+
+// submit new image
+const handleSubmitGallery = async (e) => {
+  e.preventDefault();
+
+  if (!galleryImageFile) return;
+
+  const formData = new FormData();
+  formData.append("image", galleryImageFile);
+
+  try {
+    const res = await fetch("http://localhost:8000/api/gallery", {
+      method: "POST",
+      body: formData,
+    });
+
+    const data = await res.json();
+    setGallery((prev) => [data, ...prev]); // add new photo on top
+    setGalleryImageFile(null); // reset file
+  } catch (err) {
+    console.error("Error uploading image:", err);
+  }
+};
+
+ useEffect(() => {
+    fetch("http://localhost:8000/api/gallery")
+      .then((res) => res.json())
+      .then((data) => setGallery(data))
+      .catch((err) => console.error("Error fetching gallery:", err));
+  }, []);
+
+// delete photo
+const handleDeleteGallery = async (id) => {
+  try {
+    await fetch(`http://localhost:8000/api/gallery/${id}`, {
+      method: "DELETE",
+    });
+    setGallery((prev) => prev.filter((photo) => photo._id !== id));
+  } catch (err) {
+    console.error("Error deleting image:", err);
+  }
+};
+
 
   //to fetch mentors
   const fetchMentors = async () => {
@@ -97,7 +150,7 @@ const AdminDashboard = () => {
   }, []);
 
   // Fetching CV submissions
-  useEffect(() => {
+  {/*useEffect(() => {
     const fetchCVs = async () => {
       try {
         const res3 = await axios.get(`${API_BASE_URL}/cv/getCV`);
@@ -125,6 +178,7 @@ const AdminDashboard = () => {
       setUnseenCVCount(0);
     }
   }, [activeTab]);
+  */}
 
   // const handleMentorsSubmit = async (e, alumniId) => {
   //   e.preventDefault();
@@ -368,7 +422,7 @@ const AdminDashboard = () => {
         CurrRole: '',
         Achievement: '',
         ShortBio: '',
-        LinkedInPostLink: '',
+        LinkedInPostLink:'',
       });
       setImageFile(null);
       setFormErrors({});
@@ -478,7 +532,7 @@ const handleMagazineUpload = async (e) => {
     if (fileInput) fileInput.value = "";
   }
 };
-
+  
   const tabs = [
     {
       id: 'mentors',
@@ -493,16 +547,15 @@ const handleMagazineUpload = async (e) => {
       count: programs.length,
     },
     {
-      id: 'cvs',
-      label: 'CV Reviews',
-      icon: FileText,
-      count: submittedCVs.length,
-    },
-    {
       id: 'profiles',
       label: 'KYA Profiles',
       icon: Award,
       count: profiles.length,
+    },
+    {
+      id: 'gallery',
+      label: 'Add to gallery',
+      icon: Upload,
     },
     {
       id: 'newsletters',
@@ -530,7 +583,7 @@ const handleMagazineUpload = async (e) => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100">
+    <div className="w-full min-h-screen bg-gradient-to-br from-slate-50 to-slate-100">
       {/* Header */}
       <div className="bg-white shadow-sm border-b border-slate-200">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -545,11 +598,13 @@ const handleMagazineUpload = async (e) => {
             </div>
             <div className="flex items-center space-x-4">
               <div className="relative">
-                <button
+                {/*<button
                   className="p-2 text-slate-400 hover:text-slate-600 transition-colors relative"
                   onClick={() => {
                     setActiveTab('cvs'); // Switch to CV Reviews tab
                     setUnseenCVCount(0); // Reset notifications
+                    setActiveTab('mentors'); // Switch to CV Reviews tab
+                    (0); // Reset notifications
                   }}
                 >
                   <Bell className="w-6 h-6" />
@@ -559,6 +614,7 @@ const handleMagazineUpload = async (e) => {
                     </span>
                   )}
                 </button>
+                </button>*/}
               </div>
               {/* <button
                 className="p-2 text-slate-400 hover:text-slate-600 transition-colors"
@@ -578,19 +634,21 @@ const handleMagazineUpload = async (e) => {
             <button
               key={tab.id}
               onClick={() => setActiveTab(tab.id)}
-              className={`flex items-center px-4 py-3 rounded-md text-sm font-medium transition-all duration-200 flex-1 justify-center ${activeTab === tab.id
-                ? 'bg-white text-blue-700 shadow-sm'
-                : 'text-slate-600 hover:text-slate-900'
-                }`}
+              className={`flex items-center px-4 py-3 rounded-md text-sm text-[8px]  sm:text-lg md:text-xl font-medium transition-all duration-200 flex-1 justify-center overflow-hidden whitespace-nowrap  ${
+                activeTab === tab.id
+                  ? 'bg-white text-blue-700 shadow-sm'
+                  : 'text-slate-600 hover:text-slate-900'
+              }`}
             >
               <tab.icon className="w-5 h-5 mr-2" />
               {tab.label}
               {tab.count > 0 && (
                 <span
-                  className={`ml-2 px-2 py-1 text-xs rounded-full ${activeTab === tab.id
-                    ? 'bg-blue-100 text-blue-700'
-                    : 'bg-slate-200 text-slate-600'
-                    }`}
+                  className={`ml-2 px-2 py-1 text-xs rounded-full ${
+                    activeTab === tab.id
+                      ? 'bg-blue-100 text-blue-700'
+                      : 'bg-slate-200 text-slate-600'
+                  }`}
                 >
                   {tab.count}
                 </span>
@@ -603,154 +661,7 @@ const handleMagazineUpload = async (e) => {
         <div className="space-y-6">
           {/* Mentors Tab */}
           {activeTab === 'mentors' && (
-            // <div>
-            //   <div className="flex items-center justify-between mb-6">
-            //     <h2 className="text-2xl font-semibold text-slate-900">Mentor Verification</h2>
-            //     <div className="text-sm text-slate-500">
-            //       {mentors.length} pending verifications
-            //     </div>
-            //   </div>
-
-            //   {mentors.length === 0 ? (
-            //     <div className="bg-white rounded-xl p-12 text-center shadow-sm border border-slate-200">
-            //       <Users className="w-16 h-16 text-slate-300 mx-auto mb-4" />
-            //       <h3 className="text-lg font-medium text-slate-900 mb-2">No pending mentors</h3>
-            //       <p className="text-slate-600">All mentor applications have been processed.</p>
-            //     </div>
-            //   ) : (
-            //     <div className="grid gap-6">
-            //       {mentors.map(({ alumni, mentor }, index) => (
-            //         <div key={index} className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
-            //           <div className="p-6">
-            //             <div className="flex flex-col lg:flex-row lg:items-start gap-6">
-            //               {/* Profile Image */}
-            //               {mentor && mentor.profilePic && (
-            //                 <div className="flex-shrink-0">
-            //                   <img
-            //                     src={mentor.profilePic}
-            //                     alt={`${mentor.name}'s profile`}
-            //                     className="w-24 h-24 rounded-full object-cover border-4 border-slate-100"
-            //                   />
-            //                 </div>
-            //               )}
-
-            //               <div className="flex-1 space-y-6">
-            //                 {/* Alumni Section */}
-            //                 <div>
-            //                   <div className="flex items-center mb-3">
-            //                     <User className="w-5 h-5 text-blue-600 mr-2" />
-            //                     <h3 className="text-lg font-semibold text-slate-900">Alumni Information</h3>
-            //                   </div>
-            //                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            //                     <div className="flex items-center">
-            //                       <span className="text-sm text-slate-500 w-16">Name:</span>
-            //                       <span className="text-sm font-medium text-slate-900">{alumni.alumniName}</span>
-            //                     </div>
-            //                     <div className="flex items-center">
-            //                       <Mail className="w-4 h-4 text-slate-400 mr-2" />
-            //                       <span className="text-sm text-slate-600">{alumni.alumniEmail}</span>
-            //                     </div>
-            //                     <div className="flex items-center">
-            //                       <span className="text-sm text-slate-500 w-16">Status:</span>
-            //                       <span className={`px-2 py-1 text-xs rounded-full font-medium ${
-            //                         alumni.status === 'pending'
-            //                           ? 'bg-yellow-100 text-yellow-800'
-            //                           : 'bg-green-100 text-green-800'
-            //                       }`}>
-            //                         {alumni.status}
-            //                       </span>
-            //                     </div>
-            //                   </div>
-            //                 </div>
-
-            //                 {/* Mentor Section */}
-            //                 <div>
-            //                   <div className="flex items-center mb-3">
-            //                     <Award className="w-5 h-5 text-green-600 mr-2" />
-            //                     <h3 className="text-lg font-semibold text-slate-900">Mentor Profile</h3>
-            //                   </div>
-
-            //                   {mentor ? (
-            //                     <div className="space-y-4">
-            //                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            //                         <div>
-            //                           <span className="text-sm text-slate-500">Title:</span>
-            //                           <p className="text-sm font-medium text-slate-900">{mentor.title}</p>
-            //                         </div>
-            //                         <div>
-            //                           <span className="text-sm text-slate-500">Name:</span>
-            //                           <p className="text-sm font-medium text-slate-900">{mentor.name}</p>
-            //                         </div>
-            //                         <div>
-            //                           <span className="text-sm text-slate-500">Degree:</span>
-            //                           <p className="text-sm font-medium text-slate-900">{mentor.degreeBranchYear}</p>
-            //                         </div>
-            //                         <div>
-            //                           <span className="text-sm text-slate-500">Contact:</span>
-            //                           <p className="text-sm font-medium text-slate-900">{mentor.contactNumber}</p>
-            //                         </div>
-            //                       </div>
-
-            //                       <div>
-            //                         <span className="text-sm text-slate-500">About:</span>
-            //                         <p className="text-sm text-slate-700 mt-1">{mentor.about}</p>
-            //                       </div>
-
-            //                       <div>
-            //                         <span className="text-sm text-slate-500">Skills:</span>
-            //                         <div className="flex flex-wrap gap-2 mt-1">
-            //                           {mentor.skills.map((skill, index) => (
-            //                             <span key={index} className="px-3 py-1 bg-blue-50 text-blue-700 text-xs rounded-full">
-            //                               {skill}
-            //                             </span>
-            //                           ))}
-            //                         </div>
-            //                       </div>
-
-            //                       <div>
-            //                         <span className="text-sm text-slate-500">LinkedIn:</span>
-            //                         <a
-            //                           href={mentor.linkedinId}
-            //                           target="_blank"
-            //                           rel="noopener noreferrer"
-            //                           className="inline-flex items-center text-sm text-blue-600 hover:text-blue-800 ml-2"
-            //                         >
-            //                           View Profile <ExternalLink className="w-3 h-3 ml-1" />
-            //                         </a>
-            //                       </div>
-            //                     </div>
-            //                   ) : (
-            //                     <div className="bg-red-50 border border-red-200 rounded-lg p-4">
-            //                       <p className="text-red-800 text-sm">No mentor profile submitted yet.</p>
-            //                     </div>
-            //                   )}
-            //                 </div>
-            //               </div>
-            //             </div>
-
-            //             {/* Actions */}
-            //             {alumni.status === 'pending' && mentor && (
-            //               <div className="mt-6 pt-6 border-t border-slate-200">
-            //                 <form onSubmit={(e) => handleMentorsSubmit(e, alumni._id)}>
-            //                   <button
-            //                     type="submit"
-            //                     className="inline-flex items-center px-6 py-3 bg-green-600 text-white text-sm font-medium rounded-lg hover:bg-green-700 transition-colors shadow-sm"
-            //                   >
-            //                     <Check className="w-4 h-4 mr-2" />
-            //                     Verify Alumni
-            //                   </button>
-            //                 </form>
-            //               </div>
-            //             )}
-            //           </div>
-            //         </div>
-            //       ))}
-            //     </div>
-            //   )}
-            // </div>
-
-            //added mentors form here
-            // registration form for mentors
+           
             <>
               <RegistrationForm />
               {/* //showing all mentors */}
@@ -839,7 +750,7 @@ const handleMagazineUpload = async (e) => {
           )}
 
           {/* CVs Tab */}
-          {activeTab === 'cvs' && (
+       {/*   {activeTab === 'cvs' && (
             <div>
               <div className="flex items-center justify-between mb-6">
                 <h2 className="text-2xl font-semibold text-slate-900">
@@ -910,6 +821,7 @@ const handleMagazineUpload = async (e) => {
               )}
             </div>
           )}
+            */}
 
           {/* Programs/Events Tab */}
           {activeTab === 'programs' && (
@@ -961,20 +873,22 @@ const handleMagazineUpload = async (e) => {
                           <img
                             src={URL.createObjectURL(imageFile)}
                             alt="Program Preview"
-                            className={`w-24 h-24 rounded-full object-cover border-4 cursor-pointer hover:border-blue-300 transition-colors ${formErrorspro.image
-                              ? 'border-red-300'
-                              : 'border-slate-100'
-                              }`}
+                            className={`w-24 h-24 rounded-full object-cover border-4 cursor-pointer hover:border-blue-300 transition-colors ${
+                              formErrorspro.image
+                                ? 'border-red-300'
+                                : 'border-slate-100'
+                            }`}
                             onClick={() => fileInputRef.current.click()}
                             title="Click to change image"
                           />
                         ) : (
                           <div
                             onClick={() => fileInputRef.current.click()}
-                            className={`w-24 h-24 border-2 border-dashed rounded-full flex items-center justify-center cursor-pointer hover:border-blue-400 transition-colors ${formErrorspro.image
-                              ? 'border-red-300 bg-red-50'
-                              : 'border-slate-300'
-                              }`}
+                            className={`w-24 h-24 border-2 border-dashed rounded-full flex items-center justify-center cursor-pointer hover:border-blue-400 transition-colors ${
+                              formErrorspro.image
+                                ? 'border-red-300 bg-red-50'
+                                : 'border-slate-300'
+                            }`}
                           >
                             <Upload className="w-6 h-6 text-slate-400" />
                           </div>
@@ -1198,7 +1112,6 @@ const handleMagazineUpload = async (e) => {
             </div>
           )}
 
-
           {/* Profiles Tab */}
           {activeTab === 'profiles' && (
             <div>
@@ -1228,10 +1141,11 @@ const handleMagazineUpload = async (e) => {
                         value={formData.Name}
                         onChange={handleChange}
                         required
-                        className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-shadow ${formErrors.Name
-                          ? 'border-red-300 bg-red-50'
-                          : 'border-slate-300'
-                          }`}
+                        className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-shadow ${
+                          formErrors.Name
+                            ? 'border-red-300 bg-red-50'
+                            : 'border-slate-300'
+                        }`}
                         placeholder="Enter full name"
                       />
                       {formErrors.Name && (
@@ -1249,10 +1163,11 @@ const handleMagazineUpload = async (e) => {
                         value={formData.Batch}
                         onChange={handleChange}
                         required
-                        className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-shadow ${formErrors.Batch
-                          ? 'border-red-300 bg-red-50'
-                          : 'border-slate-300'
-                          }`}
+                        className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-shadow ${
+                          formErrors.Batch
+                            ? 'border-red-300 bg-red-50'
+                            : 'border-slate-300'
+                        }`}
                       >
                         <option value="">Select Batch</option>
                         {years.map((year) => (
@@ -1277,10 +1192,11 @@ const handleMagazineUpload = async (e) => {
                         value={formData.CurrRole}
                         onChange={handleChange}
                         required
-                        className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-shadow ${formErrors.CurrRole
-                          ? 'border-red-300 bg-red-50'
-                          : 'border-slate-300'
-                          }`}
+                        className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-shadow ${
+                          formErrors.CurrRole
+                            ? 'border-red-300 bg-red-50'
+                            : 'border-slate-300'
+                        }`}
                         placeholder="e.g., Software Engineer at Google"
                       />
                       {formErrors.CurrRole && (
@@ -1299,10 +1215,11 @@ const handleMagazineUpload = async (e) => {
                         value={formData.Achievement}
                         onChange={handleChange}
                         required
-                        className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-shadow ${formErrors.Achievement
-                          ? 'border-red-300 bg-red-50'
-                          : 'border-slate-300'
-                          }`}
+                        className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-shadow ${
+                          formErrors.Achievement
+                            ? 'border-red-300 bg-red-50'
+                            : 'border-slate-300'
+                        }`}
                         placeholder="Key achievement or recognition"
                       />
                       {formErrors.Achievement && (
@@ -1321,10 +1238,11 @@ const handleMagazineUpload = async (e) => {
                         value={formData.LinkedInPostLink}
                         onChange={handleChange}
                         required
-                        className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-shadow ${formErrors.LinkedInPostLink
-                          ? 'border-red-300 bg-red-50'
-                          : 'border-slate-300'
-                          }`}
+                        className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-shadow ${
+                          formErrors.LinkedInPostLink
+                            ? 'border-red-300 bg-red-50'
+                            : 'border-slate-300'
+                        }`}
                         placeholder="Key achievement or recognition"
                       />
                       {formErrors.LinkedInPostLink && (
@@ -1345,10 +1263,11 @@ const handleMagazineUpload = async (e) => {
                       onChange={handleChange}
                       required
                       rows="4"
-                      className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-shadow ${formErrors.ShortBio
-                        ? 'border-red-300 bg-red-50'
-                        : 'border-slate-300'
-                        }`}
+                      className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-shadow ${
+                        formErrors.ShortBio
+                          ? 'border-red-300 bg-red-50'
+                          : 'border-slate-300'
+                      }`}
                       placeholder="Brief description about the alumni..."
                     />
                     {formErrors.ShortBio && (
@@ -1375,20 +1294,22 @@ const handleMagazineUpload = async (e) => {
                         <img
                           src={URL.createObjectURL(imageFile)}
                           alt="Profile Preview"
-                          className={`w-24 h-24 rounded-full object-cover border-4 cursor-pointer hover:border-blue-300 transition-colors ${formErrors.profilePic
-                            ? 'border-red-300'
-                            : 'border-slate-100'
-                            }`}
+                          className={`w-24 h-24 rounded-full object-cover border-4 cursor-pointer hover:border-blue-300 transition-colors ${
+                            formErrors.profilePic
+                              ? 'border-red-300'
+                              : 'border-slate-100'
+                          }`}
                           onClick={() => fileInputRef.current.click()}
                           title="Click to change image"
                         />
                       ) : (
                         <div
                           onClick={() => fileInputRef.current.click()}
-                          className={`w-24 h-24 border-2 border-dashed rounded-full flex items-center justify-center cursor-pointer hover:border-blue-400 transition-colors ${formErrors.profilePic
-                            ? 'border-red-300 bg-red-50'
-                            : 'border-slate-300'
-                            }`}
+                          className={`w-24 h-24 border-2 border-dashed rounded-full flex items-center justify-center cursor-pointer hover:border-blue-400 transition-colors ${
+                            formErrors.profilePic
+                              ? 'border-red-300 bg-red-50'
+                              : 'border-slate-300'
+                          }`}
                         >
                           <Upload className="w-6 h-6 text-slate-400" />
                         </div>
@@ -1448,7 +1369,8 @@ const handleMagazineUpload = async (e) => {
                         key={profile._id}
                         className="bg-white rounded-xl p-6 shadow-sm border border-slate-200"
                       >
-                        <div className="flex items-start space-x-4">
+                        <div className="flex flex-col sm:flex-row items-start sm:space-x-4 space-y-4 sm:space-y-0">
+
                           {profile.profilePic && (
                             <img
                               src={profile.profilePic}
@@ -1462,7 +1384,7 @@ const handleMagazineUpload = async (e) => {
                                 <h4 className="text-lg font-semibold text-slate-900">
                                   {profile.Name}
                                 </h4>
-                                <div className="flex items-center mt-1 space-x-4 text-sm text-slate-600">
+                                <div className="flex flex-col sm:flex-row items-start mt-1 space-x-4 text-sm text-slate-600">
                                   <div className="flex items-center">
                                     <Calendar className="w-4 h-4 mr-1" />
                                     Batch {profile.Batch}
@@ -1501,10 +1423,99 @@ const handleMagazineUpload = async (e) => {
               </div>
             </div>
           )}
+
+          {/* Gallery Section */}
+          {activeTab === 'gallery' && (
+            <div>
+              <div className="flex items-center justify-between mb-6">
+                <h2 className="text-2xl font-semibold text-slate-900">
+                  Gallery
+                </h2>
+              </div>
+
+              <div className="bg-white rounded-xl p-6 shadow-sm border border-slate-200 mb-8">
+                <h3 className="text-lg font-semibold text-slate-900 mb-4">
+                  Upload New Photo
+                </h3>
+
+                <form onSubmit={handleSubmitGallery} className="space-y-6">
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={handleImageChangeGallery}
+                    ref={fileInputRefGallery}
+                    required
+                    className="hidden"
+                  />
+
+                  <div className="flex items-center space-x-6">
+                    {galleryImageFile ? (
+                      <img
+                        src={URL.createObjectURL(galleryImageFile)}
+                        alt="Preview"
+                        className="w-24 h-24 rounded-full object-cover border-4 cursor-pointer hover:border-blue-300"
+                        onClick={() => fileInputRefGallery.current.click()}
+                      />
+                    ) : (
+                      <div
+                        onClick={() => fileInputRefGallery.current.click()}
+                        className="w-24 h-24 border-2 border-dashed rounded-full flex items-center justify-center cursor-pointer hover:border-blue-400"
+                      >
+                        <Upload className="w-6 h-6 text-slate-400" />
+                      </div>
+                    )}
+                    <div>
+                      <button
+                        type="button"
+                        onClick={() => fileInputRefGallery.current.click()}
+                        className="inline-flex items-center px-4 py-2 bg-slate-100 text-slate-700 text-sm font-medium rounded-lg hover:bg-slate-200 transition-colors"
+                      >
+                        Upload Image
+                      </button>
+                      <p className="text-xs text-slate-500 mt-1">
+                        PNG, JPG, GIF up to 10MB
+                      </p>
+                    </div>
+                  </div>
+
+                  {/* Submit */}
+                  <div className="flex justify-end">
+                    <button
+                      type="submit"
+                      className="inline-flex items-center px-6 py-3 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 transition-colors shadow-sm"
+                    >
+                      Add to Gallery
+                    </button>
+                  </div>
+                </form>
+              </div>
+
+              <h1 className="text-4xl mb-4">Gallery Photos</h1>
+              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+                {gallery.map((photo) => (
+                  <div key={photo._id} className="border p-2 rounded-lg shadow">
+                    <img
+                      src={photo.image}
+                      alt="gallery"
+                      className="w-full h-40 object-cover rounded"
+                    />
+                    <div className="mt-2 flex justify-between">
+                      <button
+                        onClick={() => handleDeleteGallery(photo._id)}
+                        className="text-red-600 font-bold text-sm"
+                      >
+                        DELETE
+                      </button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
         </div>
       </div>
     </div>
-  );
+  )
 };
 
 export default AdminDashboard;
