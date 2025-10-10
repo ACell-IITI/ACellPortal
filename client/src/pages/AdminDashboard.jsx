@@ -505,6 +505,24 @@ const handleNewsletterUpload = async (e) => {
   }
 };
 
+//HANDLE DELETE
+const handleDeleteNewsletter = async (id) => {
+  if (!window.confirm("Are you sure you want to delete this newsletter?")) return;
+
+  try {
+    await axios.delete(`${API_BASE_URL}/admin/delete-newsletter/${id}`, {
+      withCredentials: true,
+    });
+
+    alert("Newsletter deleted successfully!");
+    fetchNewsletters(); 
+  } catch (err) {
+    console.error("Delete error:", err);
+    alert("Failed to delete newsletter!");
+  }
+};
+
+
 //HANDLE MAGAZINE UPLOAD
 const handleMagazineUpload = async (e) => {
   e.preventDefault();
@@ -532,7 +550,23 @@ const handleMagazineUpload = async (e) => {
     if (fileInput) fileInput.value = "";
   }
 };
-  
+  //HANDLE DELETE
+const handleDeleteMagazine = async (id) => {
+  if (!window.confirm("Are you sure you want to delete this magazine?")) return;
+
+  try {
+    await axios.delete(`${API_BASE_URL}/admin/delete-magazine/${id}`, {
+      withCredentials: true,
+    });
+
+    alert("Magazine deleted successfully!");
+    fetchMagazines(); 
+  } catch (err) {
+    console.error("Delete error:", err);
+    alert("Failed to delete magazine!");
+  }
+};
+
   const tabs = [
     {
       id: 'mentors',
@@ -1048,21 +1082,32 @@ const handleMagazineUpload = async (e) => {
                 </button>
               </form>
 
-              <h3 className="text-xl mt-8 mb-4">All Newsletters</h3>
-              <ul>
-                {newsletters.map((nl) => (
-                  <li key={nl._id} className="mb-2">
-                    <a
-                      href={nl.pdfUrl}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-blue-600 underline"
-                    >
-                      {nl.title}
-                    </a>
-                  </li>
-                ))}
-              </ul>
+             <h3 className="text-xl mt-8 mb-4">All Newsletters</h3>
+<ul>
+  {newsletters.map((nl) => (
+    <li
+      key={nl._id}
+      className="mb-2 flex items-center justify-between bg-gray-50 p-2 rounded"
+    >
+      <a
+        href={nl.pdfUrl}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="text-blue-600 underline"
+      >
+        {nl.title}
+      </a>
+
+      <button
+        onClick={() => handleDeleteNewsletter(nl._id)}
+        className="ml-4 px-3 py-1 text-sm bg-red-500 text-white rounded hover:bg-red-600 transition"
+      >
+        Delete
+      </button>
+    </li>
+  ))}
+</ul>
+
             </div>
           )}
 
@@ -1094,21 +1139,31 @@ const handleMagazineUpload = async (e) => {
                 </button>
               </form>
 
-              <h3 className="text-xl mt-8 mb-4">All Magazines</h3>
-              <ul>
-                {magazines.map((mg) => (
-                  <li key={mg._id} className="mb-2">
-                    <a
-                      href={mg.pdfUrl}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-blue-600 underline"
-                    >
-                      {mg.title}
-                    </a>
-                  </li>
-                ))}
-              </ul>
+            <h3 className="text-xl mt-8 mb-4">All Magazines</h3>
+<ul>
+  {magazines.map((mg) => (
+    <li
+      key={mg._id}
+      className="mb-2 flex items-center justify-between bg-gray-50 p-2 rounded"
+    >
+      <a
+        href={mg.pdfUrl}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="text-blue-600 underline"
+      >
+        {mg.title}
+      </a>
+
+      <button
+        onClick={() => handleDeleteMagazine(mg._id)}
+        className="ml-4 px-3 py-1 text-sm bg-red-500 text-white rounded hover:bg-red-600 transition"
+      >
+        Delete
+      </button>
+    </li>
+  ))}
+</ul>
             </div>
           )}
 

@@ -18,8 +18,10 @@ import upload from "../middleware/multer.js";
 import uploadPdf from '../middleware/pdfUpload.js';
 import {
   addNewsletter,
+  deleteNewsletter,
   getNewsletters,
   addMagazine,
+  deleteMagazine,
   getMagazines,
   getLatestNewsletter,
   getLatestMagazine 
@@ -52,10 +54,12 @@ router.delete('/delete-program/:id', deleteProgram);
 // Newsletter routes
 router.post('/add-newsletter', uploadPdf.single('pdf'), addNewsletter);
 router.get('/get-newsletters', getNewsletters);
+router.delete('/delete-newsletter/:id', deleteNewsletter);
 
 // Magazine routes
 router.post('/add-magazine', uploadPdf.single('pdf'), addMagazine);
 router.get('/get-magazines', getMagazines);
+router.delete('/delete-magazine/:id', deleteMagazine);
 
 // Latest Newsletter & Magazine
 router.get('/latest-newsletter', getLatestNewsletter);

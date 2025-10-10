@@ -33,6 +33,28 @@ export const addNewsletter = async (req, res) => {
   }
 };
 
+// Delete Newsletter
+export const deleteNewsletter = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const newsletter = await Newsletter.findById(id);
+    if (!newsletter) {
+      return res.status(404).json({ success: false, message: 'Newsletter not found' });
+    }
+    const parts = newsletter.pdfUrl.split('/');
+    const fileName = parts[parts.length - 1].split('.')[0]; 
+    const publicId = `newsletters/${fileName}`;
+
+    await cloudinary.uploader.destroy(publicId, { resource_type: 'raw' });
+    await Newsletter.findByIdAndDelete(id);
+
+    res.status(200).json({ success: true, message: 'Newsletter deleted successfully' });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ success: false, message: 'Internal server error' });
+  }
+};
+
 // Get All Newsletters
 export const getNewsletters = async (req, res) => {
   try {
@@ -67,6 +89,27 @@ export const addMagazine = async (req, res) => {
   }
 };
 
+// Delete Magazine
+export const deleteMagazine = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const magazine = await Magazine.findById(id);
+    if (!magazine) {
+      return res.status(404).json({ success: false, message: 'Magazine not found' });
+    }
+    const urlParts = magazine.pdfUrl.split('/');
+    const fileName = urlParts[urlParts.length - 1].split('.')[0]; 
+    const publicId = `magazines/${fileName}`;
+    await cloudinary.uploader.destroy(publicId, { resource_type: 'raw' });
+    await Magazine.findByIdAndDelete(id);
+
+    res.status(200).json({ success: true, message: 'Magazine deleted successfully' });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ success: false, message: 'Internal server error' });
+  }
+};
 // Get All Magazines
 export const getMagazines = async (req, res) => {
   try {
