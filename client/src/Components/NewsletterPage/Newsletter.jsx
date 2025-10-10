@@ -2,8 +2,9 @@ import React, { useState, useRef, useEffect, useContext } from "react";
 import { FaArrowCircleLeft, FaArrowCircleRight, FaDownload, FaExpand, FaShareAlt } from 'react-icons/fa'
 import HTMLFlipBook from "react-pageflip";
 import { Document, Page, pdfjs } from "react-pdf";
-const pdfFile = "/newsletters/vol_1_issue_4.pdf";
+import axios from "axios";
 import { view_Gallery_Context } from "../../context/NMcontext";
+import { API_BASE_URL } from "../../api/alumni";
 
 pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.mjs`;
 
@@ -34,15 +35,39 @@ const Pages = React.forwardRef(({ children, number }, ref) => {
 Pages.displayName = "Pages";
 
 const Newsletter = () => {
-    console.log(pdfFile)
 
     const view_Gallery_Value = useContext(view_Gallery_Context)
 
     const [numPages, setNumPages] = useState(null);
     const [isFullscreen, setIsFullscreen] = useState(false)
+    const [latestNewsletter, setLatestNewsletter] = useState(null);
+    const [loading, setLoading] = useState(true);
 
     const flipBookRef = useRef(null);
     const flipbookContainerRef = useRef(null);
+
+    useEffect(() => {
+    const fetchLatestNewsletter = async () => {
+        try {
+            const res = await axios.get(`${API_BASE_URL}/admin/get-newsletters`);
+            //log 1
+            // console.log("API response data : ", res.data.data);
+
+            const newsletters = res.data.data || res.data;
+            if (newsletters && newsletters.length > 0) {
+                const sorted = newsletters.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+                setLatestNewsletter(sorted[0]); 
+            }
+        } catch (err) {
+            console.error("Error fetching newsletters:", err);
+        } finally {
+            setLoading(false);
+        }
+    };
+    fetchLatestNewsletter();
+}, []);
+
+// console.log("current state of Latest Newsletter: ", latestNewsletter); //log 2
 
     useEffect(() => {
         const handleFullscreenChange = () => {
@@ -88,7 +113,7 @@ const Newsletter = () => {
             navigator.share(
                 {
                     title: "Alumni Magazine",
-                    url: pdfFile,
+                    url: latestNewsletter?.pdfUrl,
                 }
             )
                 .then(() => console.log('Shared successfully'))
@@ -97,6 +122,16 @@ const Newsletter = () => {
             alert('Web Share is not supported on this browser.');
         }
     }
+
+    if (loading) {
+        return <div className="text-center py-10 text-lg">Loading latest newsletter...</div>;
+    }
+
+    if (!latestNewsletter) {
+        return <div className="text-center py-10 text-lg text-red-600">No newsletters available!</div>;
+    }
+
+    const pdfFile = latestNewsletter.pdfUrl;
 
     return (
         <>
@@ -107,7 +142,7 @@ const Newsletter = () => {
                 </div>
                 <div className="contentSection bg-[#B9CDC0] rounded-2xl mx-0 sm:mx-3 lg:mx-10  p-5 px-1 sm:px-1 lg:px-10 mt-7 overflow-hidden">
                     <div className='part1 flex justify-between lg:px-0 sm:px-5 px-2'>
-                        <h1 className='font-bold text-3xl italic'> POD Pulse · Vol. 1, Issue 4</h1>
+                        <h1 className='font-bold text-3xl italic'> {latestNewsletter.title || "Untitled Newsletter"} </h1>
                         <div className='flex justify-between gap-2 sm:gap-5 list-none mt-3'>
                             <FaExpand onClick={handleFullscreen} className='text-[#173460] hover:text-[#19438b] w-5 h-5 cursor-pointer transition-all transform hover:scale-125 duration-300 ease-in-out' />
                             <a href={pdfFile} download>
