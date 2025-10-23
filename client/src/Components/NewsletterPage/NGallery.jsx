@@ -79,7 +79,7 @@ const NGallery = () => {
           {newsletters.length > 0 ? (
             newsletters
               .slice()
-              .reverse()
+              // .reverse() removed so that the latest card appears at top
               .map((nl) => (
                 <div
                   key={nl._id}
