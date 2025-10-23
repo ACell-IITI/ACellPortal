@@ -23,7 +23,7 @@ export const addNewsletter = async (req, res) => {
     });
     fs.unlinkSync(req.file.path);
 
-    const newsletter = new Newsletter({ title, pdfUrl: result.secure_url });
+    const newsletter = new Newsletter({ title, pdfUrl: result.secure_url, publicId: result.public_id,}); //added publicId here
     await newsletter.save();
 
     res.status(201).json({ success: true, message: 'Newsletter uploaded', data: newsletter });
@@ -41,11 +41,11 @@ export const deleteNewsletter = async (req, res) => {
     if (!newsletter) {
       return res.status(404).json({ success: false, message: 'Newsletter not found' });
     }
-    const parts = newsletter.pdfUrl.split('/');
-    const fileName = parts[parts.length - 1].split('.')[0]; 
-    const publicId = `newsletters/${fileName}`;
+    // const parts = newsletter.pdfUrl.split('/');
+    // const fileName = parts[parts.length - 1].split('.')[0]; 
+    // const publicId = `newsletters/${fileName}`;
 
-    await cloudinary.uploader.destroy(publicId, { resource_type: 'raw' });
+    if(newsletter.publicId){await cloudinary.uploader.destroy(newsletter.publicId, { resource_type: 'raw' });}
     await Newsletter.findByIdAndDelete(id);
 
     res.status(200).json({ success: true, message: 'Newsletter deleted successfully' });
@@ -79,7 +79,7 @@ export const addMagazine = async (req, res) => {
     });
     fs.unlinkSync(req.file.path);
 
-    const magazine = new Magazine({ title, pdfUrl: result.secure_url });
+    const magazine = new Magazine({ title, pdfUrl: result.secure_url,publicId: result.public_id, }); // publicId added here also
     await magazine.save();
 
     res.status(201).json({ success: true, message: 'Magazine uploaded', data: magazine });
@@ -98,10 +98,10 @@ export const deleteMagazine = async (req, res) => {
     if (!magazine) {
       return res.status(404).json({ success: false, message: 'Magazine not found' });
     }
-    const urlParts = magazine.pdfUrl.split('/');
-    const fileName = urlParts[urlParts.length - 1].split('.')[0]; 
-    const publicId = `magazines/${fileName}`;
-    await cloudinary.uploader.destroy(publicId, { resource_type: 'raw' });
+    // const urlParts = magazine.pdfUrl.split('/');
+    // const fileName = urlParts[urlParts.length - 1].split('.')[0]; 
+    // const publicId = `magazines/${fileName}`;
+   if(magazine.publicId){ await cloudinary.uploader.destroy(magazine.publicId, { resource_type: 'raw' });}
     await Magazine.findByIdAndDelete(id);
 
     res.status(200).json({ success: true, message: 'Magazine deleted successfully' });
