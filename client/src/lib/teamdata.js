@@ -76,7 +76,7 @@ export const teamMembers = [
   {
     id: 5,
     name: "Chetan Verma",
-    role: "Front-End Developer",
+    role: "Full-Stack Developer",
     image: "../Team/ChetanVerma.jpg",
     linkedin: "https://in.linkedin.com/in/chetan-verma-a82239324",
     insta: "/team",
