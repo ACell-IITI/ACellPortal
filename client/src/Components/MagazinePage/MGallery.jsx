@@ -75,7 +75,7 @@ const MGallery = () => {
                     {magazines.length > 0 ? (
                         magazines
                             .slice()
-                            .reverse()
+                            // .reverse() similarly removed here also
                             .map((mag) => (
                                 <div
                                     key={mag._id}
