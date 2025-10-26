@@ -91,62 +91,6 @@ useEffect(() => {
         </div>
       <div className="gallery-section">
         <p className="titlec">Gallery</p>
-        {/* <div className="gallery-grid">
-          <div className="gallery-item">
-            <img src="/Media/image-g1.JPG" alt="gallery1" />
-          </div>
-          <div className="gallery-item">
-            <img src="/Media/image-g2.jpg" alt="gallery2" />
-          </div>
-          <div className="gallery-item">
-            <img src="/Media/image-g3.JPG" alt="gallery3" />
-          </div>
-          <div className="gallery-item">
-            <img src="/Media/image-g4.jpg" alt="gallery4" />
-          </div>
-          <div className="gallery-item">
-            <img src="/Media/image-g5.JPG" alt="gallery4" />
-          </div>
-        </div> */}
-<div
-  className="gallery-grid"
->
-  {/* Top Row */}
-  {recentPhotos[0] && (
-    <img
-      src={recentPhotos[0].image}
-      alt=""
-    />
-  )}
-  {recentPhotos[1] && (
-    <img
-      src={recentPhotos[1].image}
-      alt=""
-    />
-  )}
-
-  {/* Bottom Row */}
-  {recentPhotos[2] && (
-    <img
-      src={recentPhotos[2].image}
-      alt=""
-    />
-  )}
-  {recentPhotos[3] && (
-    <img
-      src={recentPhotos[3].image}
-      alt=""
-    />
-  )}
-  {recentPhotos[4] && (
-    <img
-      src={recentPhotos[4].image}
-      alt=""
-    />
-  )}
-</div>
-
-
       </div>
         <div className="program-section">
   <img className='bubble' src='/Media/bubble.png'></img>

@@ -21,6 +21,7 @@ import { API_BASE_URL } from "./api/alumni";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import GuestRoute from "./routes/GuestRoute";
+import Gallery from "./Components/Gallery/Gallery";
 
 import AdminSettings from "./pages/AdminDashboard";
 
@@ -73,6 +74,7 @@ function App() {
           <Route path="/team" element={<TeamSection />} />
           <Route path="/admin-dashboard" element={<AdminRoute><AdminDashboard /></AdminRoute>} />
           <Route path="/verified-mentors" element={<VerifiedMentorsPage />} />
+          <Route path="/gallery" element={<Gallery />} />
         </Routes>
         <Footer />
        

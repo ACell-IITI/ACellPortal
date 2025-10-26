@@ -63,7 +63,7 @@ export default function Navbar() {
   const navLinks = [
     { name: 'Home', path: '/' },
     { name: 'KYA', path: '/KYA' },
-    { name: 'Team', path: '/team' },
+
     {
       name: 'Publications',
       dropdown: [
@@ -73,6 +73,8 @@ export default function Navbar() {
     },
     { name: 'CV Review', path: '/cv-review' },
     { name: 'Mentors', path: '/verified-mentors' },
+    { name: 'Gallery' , path: '/gallery' },
+    { name: 'Team', path: '/team' },
   ];
 
   if (role === 'admin') {
