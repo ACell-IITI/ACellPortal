@@ -15,6 +15,17 @@ import {
   deleteMentorProfile
 } from "../controllers/admin.controller.js";
 import upload from "../middleware/multer.js";
+import uploadPdf from '../middleware/pdfUpload.js';
+import {
+  addNewsletter,
+  deleteNewsletter,
+  getNewsletters,
+  addMagazine,
+  deleteMagazine,
+  getMagazines,
+  getLatestNewsletter,
+  getLatestMagazine 
+} from '../controllers/admin.controller.js';
 
 const router = express.Router();
 
@@ -40,5 +51,18 @@ router.post('/add-program', upload.single('image'), addProgram);
 router.get('/get-programs', getPrograms);
 router.delete('/delete-program/:id', deleteProgram);
 
+// Newsletter routes
+router.post('/add-newsletter', uploadPdf.single('pdf'), addNewsletter);
+router.get('/get-newsletters', getNewsletters);
+router.delete('/delete-newsletter/:id', deleteNewsletter);
+
+// Magazine routes
+router.post('/add-magazine', uploadPdf.single('pdf'), addMagazine);
+router.get('/get-magazines', getMagazines);
+router.delete('/delete-magazine/:id', deleteMagazine);
+
+// Latest Newsletter & Magazine
+router.get('/latest-newsletter', getLatestNewsletter);
+router.get('/latest-magazine', getLatestMagazine);
 
 export default router;

@@ -29,7 +29,30 @@ export const teamMembers = [
     group: "Head",
     team: "Web Dev",
   },
+  
   {
+    id: 8,
+    name: "Devika Manoharan",
+    role: "Back-End Developer",
+    image: "../Team/DevikaManoharan.jpeg",
+    linkedin: "https://www.linkedin.com/in/devika-manoharan-12774b330",
+    insta: "/team",
+    group: "Member",
+    team: "Web Dev",
+  },
+  
+
+  {
+    id: 4,
+    name: "Veer Doria",
+    role: "Back-End Developer",
+    image: "../Team/VeerDoria.jpg",
+    linkedin: "https://www.linkedin.com/in/veer-doria-16567b330/",
+    insta: "/team",
+    group: "Member",
+    team: "Web Dev",
+  },
+   {
     id: 2,
     name: "Aviral Sharma",
     role: "Team Lead",
@@ -39,6 +62,7 @@ export const teamMembers = [
     group: "Member",
     team: "Web Dev",
   },
+
   {
     id: 3,
     name: "Vaatsalya Sahu",
@@ -50,19 +74,9 @@ export const teamMembers = [
     team: "Web Dev",
   },
   {
-    id: 4,
-    name: "Veer Doria",
-    role: "Back-End Developer",
-    image: "../Team/VeerDoria.jpg",
-    linkedin: "https://www.linkedin.com/in/veer-doria-16567b330/",
-    insta: "/team",
-    group: "Member",
-    team: "Web Dev",
-  },
-  {
     id: 5,
     name: "Chetan Verma",
-    role: "Front-End Developer",
+    role: "Full-Stack Developer",
     image: "../Team/ChetanVerma.jpg",
     linkedin: "https://in.linkedin.com/in/chetan-verma-a82239324",
     insta: "/team",
@@ -90,16 +104,9 @@ export const teamMembers = [
     group: "Member",
     team: "Web Dev",
   },
-  {
-    id: 8,
-    name: "Devika Manoharan",
-    role: "Back-End Developer",
-    image: "../Team/DevikaManoharan.jpeg",
-    linkedin: "https://www.linkedin.com/in/devika-manoharan-12774b330",
-    insta: "/team",
-    group: "Member",
-    team: "Web Dev",
-  },
+
+
+
 
   {
     id: 9,
@@ -111,6 +118,13 @@ export const teamMembers = [
     group: "Member",
     team:"Web Dev"
   },
+ 
+  
+
+
+
+
+
    {
     id: 15,
     name: "Vedansh Shrivastava",

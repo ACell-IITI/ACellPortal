@@ -71,7 +71,6 @@ export default function Navbar() {
         { name: 'Magazine', path: '/Magazine' },
       ],
     },
-    { name: 'CV Review', path: '/cv-review' },
     { name: 'Mentors', path: '/verified-mentors' },
     { name: 'Gallery' , path: '/gallery' },
     { name: 'Team', path: '/team' },
