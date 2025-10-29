@@ -72,7 +72,6 @@ export default function Navbar() {
       ],
     },
     { name: 'Mentors', path: '/verified-mentors' },
-    { name: 'Gallery' , path: '/gallery' },
     { name: 'Team', path: '/team' },
   ];
 

@@ -183,21 +183,24 @@
   font-size: clamp(0.9rem, 3vw, 3rem);
 }
 }
-
-.gallery-section {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  height: 100vh;
-  width: 90vw;
+ /* Gallery */
+.gallery-container {
+  width: 100%;
+  padding: 10px;
+  margin: 0 auto;
 }
 
-.gallery-grid{
-  display: flex;
-  justify-content: center;
+.gallery-title {
+  text-align: center;
+  font-size: 2rem;
+  margin-bottom: 20px;
 }
 
-img{
-  max-width: 400px;
+.gallery-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr); 
+  gap: 8px;
+  grid-auto-rows: fit-content; 
 }
+
 
