@@ -46,7 +46,7 @@ background-size: cover;
   width: 80%;
   height: 18vw;
   border-radius: 1vw;
-  object-fit: cover;
+  object-fit: fill;
 }
 
 /* Content */

@@ -63,7 +63,8 @@ const [recentPhotos, setRecentPhotos] = useState([]);
 useEffect(() => {
   fetch(`${API_BASE_URL}/api/gallery/recent`)
     .then((res) => res.json())
-    .then((data) => setRecentPhotos(data));
+   .then((data) => {setRecentPhotos(data);
+      });
 }, []);
 
   return (
@@ -89,9 +90,35 @@ useEffect(() => {
           />
         </div>
         </div>
-      <div className="gallery-section">
-        <p className="titlec">Gallery</p>
+ {/* Gallery */}
+<div className="w-[90%] max-w-6xl mx-auto my-10">
+      <h2 className="text-4xl font-bold mb-6 text-center">Gallery</h2>
+      <div className="columns-2 md:columns-3 lg:columns-4 gap-3 space-y-3">
+        {recentPhotos.map((photo, index) => (
+          <div
+            key={index}
+            className="relative mb-3 break-inside-avoid overflow-hidden rounded-2xl shadow-md group"
+          >
+            <img
+              src={photo.image}
+              alt={`Gallery item ${index + 1}`}
+              className="w-full h-auto rounded-2xl object-cover transition-transform duration-300 group-hover:scale-105"
+            />
+          </div>
+        ))}
       </div>
+
+      <div className="flex justify-center mt-6 mb-10">
+        <Link
+          to="/gallery"
+          className="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-6 py-2 rounded-lg transition-colors duration-300"
+        >
+          View more
+        </Link>
+      </div>
+    </div>
+
+{/* PROGRAM & WEBINARS */}
         <div className="program-section">
   <img className='bubble' src='/Media/bubble.png'></img>
     <img className='bubble1' src='/Media/bubble.png'></img>
@@ -101,6 +128,7 @@ useEffect(() => {
 </p>
 <Program />
 </div>
+{/* EVENTS */}
 <div className="event-section">
 <p className="titlec eve">EVENTS</p>
 <p className="subtitlec eve">
@@ -108,6 +136,7 @@ useEffect(() => {
 </p>
 <Eventh />
 </div>
+{/* Saathi banner */}
 
    <div  className="saathih"> <img className='bubble' src='/Media/bubble.png'></img>
     <img className='bubble1' src='/Media/bubble.png'></img>
