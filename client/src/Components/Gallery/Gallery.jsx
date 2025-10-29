@@ -13,7 +13,7 @@ export default function Gallery() {
     return(
         <div className="w-[90%] max-w-6xl mx-auto my-10">
             <h2 className="text-4xl font-bold mb-6 text-center">
-                Gallery
+                Gallery Wall
             </h2>
 
             {/* Masonry / Pinterest Style Layout */}
