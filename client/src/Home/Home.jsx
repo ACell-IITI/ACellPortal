@@ -57,15 +57,17 @@ const Home = () => {
     }
   });
 });
-const [recentPhotos, setRecentPhotos] = useState([]);
+ const [recentPhotos, setRecentPhotos] = useState([]);
 
-
-useEffect(() => {
-  fetch(`${API_BASE_URL}/api/gallery/recent`)
-    .then((res) => res.json())
-   .then((data) => {setRecentPhotos(data);
-      });
-}, []);
+  useEffect(() => {
+    fetch(`${API_BASE_URL}/api/gallery/recent`)
+      .then((res) => res.json())
+      .then((data) => {
+        const recentFive = data.slice(0, 5); 
+        setRecentPhotos(recentFive);
+      })
+      .catch((error) => console.error("Error fetching recent photos:", error));
+  }, []);
 
   return (
     <>
@@ -93,16 +95,16 @@ useEffect(() => {
  {/* Gallery */}
 <div className="w-[90%] max-w-6xl mx-auto my-10">
       <h2 className="text-4xl font-bold mb-6 text-center">Gallery</h2>
-      <div className="columns-2 md:columns-3 lg:columns-4 gap-3 space-y-3">
+      <div className="columns-5 sm:columns-5 gap-3 space-y-3">
         {recentPhotos.map((photo, index) => (
           <div
             key={index}
-            className="relative mb-3 break-inside-avoid overflow-hidden rounded-2xl shadow-md group"
+            className="relative mb-3 break-inside-avoid overflow-hidden  rounded-none sm:rounded-2xl  shadow-md group"
           >
             <img
               src={photo.image}
               alt={`Gallery item ${index + 1}`}
-              className="w-full h-auto rounded-2xl object-cover transition-transform duration-300 group-hover:scale-105"
+              className="w-full h-auto rounded-none  sm:rounded-2xl  object-cover transition-transform duration-300 group-hover:scale-105"
             />
           </div>
         ))}
