@@ -95,7 +95,7 @@ const Home = () => {
  {/* Gallery */}
 <div className="w-[90%] max-w-6xl mx-auto my-10">
       <h2 className="text-4xl font-bold mb-6 text-center">Gallery</h2>
-      <div className="columns-5 sm:columns-5 gap-3 space-y-3">
+      <div className="columns-2 sm:columns-3 md:columns-4 lg:columns-5 gap-3 space-y-3">
         {recentPhotos.map((photo, index) => (
           <div
             key={index}
