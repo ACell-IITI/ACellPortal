@@ -108,15 +108,16 @@ background-size: cover;
 
   .slick-prev {
     left: 35%;
-    top: 130%;
+    top: 115%;
   }
 
   .slick-next {
     right: 35%;
-    top: 130%;
+    top: 115%;
   }
   .program-container {
   padding: 5px;
+    margin-bottom: 10vw;
 
  }
 }
@@ -138,8 +139,9 @@ background-size: cover;
   .program-card {
   margin:0;
   padding: 2px;
-  width: 92px;
-  height: 220px;
+  width: 142px;
+  height: 240px;
+  overflow: hidden;
 
  }
  .program-slide {
@@ -147,9 +149,10 @@ background-size: cover;
   display:flex;
   place-items: center;
   height: fit-content;
+  width: 200px;
  }
  .program-container {
-  width: 150px;
+  width: 60vw;
   height: fit-content;
   margin-left: 4rem;
 
