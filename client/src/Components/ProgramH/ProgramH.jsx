@@ -7,11 +7,13 @@ import { gsap } from 'gsap';
 import { useGSAP } from '@gsap/react';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 gsap.registerPlugin(useGSAP, ScrollTrigger);
 
 const Program = () => {
   const [programs, setPrograms] = useState([]);
+  const navigate = useNavigate();
 
   
   useEffect(() => {
@@ -69,7 +71,7 @@ const Program = () => {
       <Slider {...settings}>
         {programs.filter((program) => program.type === "program")
     .map((program) =>(
-          <div key={program._id} className="program-slide">
+          <div key={program._id} onClick={() => navigate(`/about-eventProgram/${program._id}`)} className="program-slide">
             <div className="program-card">
               <img
                 src={program.image}
