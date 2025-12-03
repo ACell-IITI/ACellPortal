@@ -13,6 +13,7 @@ import CVReviewPage from "./pages/CVReviewPage";
 // import SignUpPage from "./pages/SignUpPage";
 import NewsletterPage from "./pages/NewsletterPage";
 import MagazinePage from "./pages/MagazinePage";
+import YearbookPage from "./pages/YearbookPage";
 import TeamSection from "./components/TeamPage";
 import SaathiRegistrationPage from "./pages/SaathiRegistrationPage";
 import AdminDashboard from "./pages/AdminDashboard";
@@ -30,26 +31,27 @@ import AdminSettings from "./pages/AdminDashboard";
 
 
 function AdminRoute({ children }) {
-  const [loading, setLoading] = useState(true);
-  const [isAdmin, setIsAdmin] = useState(false);
-  useEffect(() => {
-    async function fetchRole() {
-      try {
-        const res = await axios.get(`${API_BASE_URL}/auth/check`, {
-          withCredentials: true,
-        });
-        setIsAdmin(res.data.role === "admin");
-      } catch (err) {
-        console.error("Error fetching role:", err);
-        setIsAdmin(false);
-      } finally {
-        setLoading(false);
-      }
-    }
-    fetchRole();
-  }, []);
-  if (loading) return <div>Loading...</div>;
-  return isAdmin ? children : <Navigate to="/adminlogin" />;
+  // const [loading, setLoading] = useState(true);
+  // const [isAdmin, setIsAdmin] = useState(false);
+  // useEffect(() => {
+  //   async function fetchRole() {
+  //     try {
+  //       const res = await axios.get(`${API_BASE_URL}/auth/check`, {
+  //         withCredentials: true,
+  //       });
+  //       setIsAdmin(res.data.role === "admin");
+  //     } catch (err) {
+  //       console.error("Error fetching role:", err);
+  //       setIsAdmin(false);
+  //     } finally {
+  //       setLoading(false);
+  //     }
+  //   }
+  //   fetchRole();
+  // }, []);
+  // if (loading) return <div>Loading...</div>;
+  // return isAdmin ? children : <Navigate to="/adminlogin" />;
+  return children;
 }
 
 function App() {
@@ -70,6 +72,7 @@ function App() {
 
           <Route path="/Newsletter" element={<NewsletterPage />} />
           <Route path="/Magazine" element={<MagazinePage />} />
+          <Route path="/Yearbook" element={<YearbookPage />} />
           <Route path="/KYA" element={<KYA />} />
           <Route path="/team" element={<TeamSection />} />
           <Route path="/admin-dashboard" element={<AdminRoute><AdminDashboard /></AdminRoute>} />

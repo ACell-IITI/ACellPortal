@@ -23,8 +23,12 @@ import {
   addMagazine,
   deleteMagazine,
   getMagazines,
+  addYearbook,
+  deleteYearbook,
+  getYearbooks,
   getLatestNewsletter,
-  getLatestMagazine 
+  getLatestMagazine,
+  getLatestYearbook
 } from '../controllers/admin.controller.js';
 
 const router = express.Router();
@@ -61,8 +65,14 @@ router.post('/add-magazine', uploadPdf.single('pdf'), addMagazine);
 router.get('/get-magazines', getMagazines);
 router.delete('/delete-magazine/:id', deleteMagazine);
 
+// Yearbook routes
+router.post('/add-yearbook', uploadPdf.single('pdf'), addYearbook);
+router.get('/get-yearbooks', getYearbooks);
+router.delete('/delete-yearbook/:id', deleteYearbook);
+
 // Latest Newsletter & Magazine
 router.get('/latest-newsletter', getLatestNewsletter);
 router.get('/latest-magazine', getLatestMagazine);
+router.get('/latest-yearbook', getLatestYearbook);
 
 export default router;
