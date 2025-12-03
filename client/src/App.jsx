@@ -31,27 +31,26 @@ import AdminSettings from "./pages/AdminDashboard";
 
 
 function AdminRoute({ children }) {
-  // const [loading, setLoading] = useState(true);
-  // const [isAdmin, setIsAdmin] = useState(false);
-  // useEffect(() => {
-  //   async function fetchRole() {
-  //     try {
-  //       const res = await axios.get(`${API_BASE_URL}/auth/check`, {
-  //         withCredentials: true,
-  //       });
-  //       setIsAdmin(res.data.role === "admin");
-  //     } catch (err) {
-  //       console.error("Error fetching role:", err);
-  //       setIsAdmin(false);
-  //     } finally {
-  //       setLoading(false);
-  //     }
-  //   }
-  //   fetchRole();
-  // }, []);
-  // if (loading) return <div>Loading...</div>;
-  // return isAdmin ? children : <Navigate to="/adminlogin" />;
-  return children;
+  const [loading, setLoading] = useState(true);
+  const [isAdmin, setIsAdmin] = useState(false);
+  useEffect(() => {
+    async function fetchRole() {
+      try {
+        const res = await axios.get(`${API_BASE_URL}/auth/check`, {
+          withCredentials: true,
+        });
+        setIsAdmin(res.data.role === "admin");
+      } catch (err) {
+        console.error("Error fetching role:", err);
+        setIsAdmin(false);
+      } finally {
+        setLoading(false);
+      }
+    }
+    fetchRole();
+  }, []);
+  if (loading) return <div>Loading...</div>;
+  return isAdmin ? children : <Navigate to="/adminlogin" />;
 }
 
 function App() {
