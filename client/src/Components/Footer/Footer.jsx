@@ -97,8 +97,32 @@ const Footer = () => (
             </a>
           ))}
         </div>
-      </div>
-    </div></div>
+     </div>
+    </div><div
+  style={{
+    display: "flex",
+    justifyContent: "center",
+    width: "100%",
+    marginTop: "20px"
+  }}
+>
+  <iframe
+    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d29483.636549601182!2d75.89017811562502!3d22.524638499999995!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3962efcccbce7145%3A0x784e8cb69818596b!2sIndian%20Institute%20of%20Technology%20Indore!5e0!3m2!1sen!2sin!4v1764866836815!5m2!1sen!2sin"
+    style={{
+      border: 0,
+      width: "80vw",
+      height: "50vw",
+      maxWidth: "90vw",
+      maxHeight: "200px",
+      borderRadius: "10px"
+    }}
+    allowFullScreen
+    loading="lazy"
+    referrerPolicy="no-referrer-when-downgrade"
+  ></iframe>
+</div>
+
+ </div>
     
   </footer>
   <div className="rights">© 2025 - All Rights with IIT Indore</div>
