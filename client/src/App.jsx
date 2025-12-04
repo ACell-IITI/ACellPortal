@@ -13,6 +13,7 @@ import CVReviewPage from "./pages/CVReviewPage";
 // import SignUpPage from "./pages/SignUpPage";
 import NewsletterPage from "./pages/NewsletterPage";
 import MagazinePage from "./pages/MagazinePage";
+import YearbookPage from "./pages/YearbookPage";
 import TeamSection from "./components/TeamPage";
 import SaathiRegistrationPage from "./pages/SaathiRegistrationPage";
 import AdminDashboard from "./pages/AdminDashboard";
@@ -70,6 +71,7 @@ function App() {
 
           <Route path="/Newsletter" element={<NewsletterPage />} />
           <Route path="/Magazine" element={<MagazinePage />} />
+          <Route path="/Yearbook" element={<YearbookPage />} />
           <Route path="/KYA" element={<KYA />} />
           <Route path="/team" element={<TeamSection />} />
           <Route path="/admin-dashboard" element={<AdminRoute><AdminDashboard /></AdminRoute>} />
