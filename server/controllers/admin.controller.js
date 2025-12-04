@@ -10,6 +10,8 @@ import 'dotenv/config';
 import Newsletter from '../models/Newsletter_model.js';
 import Magazine from '../models/Magazine_model.js';
 import EventProgram from "../models/Program_model.js";
+import Yearbook from '../models/Yearbook_model.js';
+
 
 // Add Newsletter
 export const addNewsletter = async (req, res) => {
@@ -155,6 +157,60 @@ export const getMagazines = async (req, res) => {
     res.status(500).json({ success: false, message: 'Internal server error' });
   }
 };
+// Add Yearbook
+export const addYearbook = async (req, res) => {
+  try {
+    const { title } = req.body;
+    if (!req.file) return res.status(400).json({ message: 'PDF file required' });
+
+    const result = await cloudinary.uploader.upload(req.file.path, {
+      folder: 'yearbooks',
+      resource_type: 'raw',
+      access_mode: 'public',
+    });
+    fs.unlinkSync(req.file.path);
+
+    const yearbook = new Yearbook({ title, pdfUrl: result.secure_url, publicId: result.public_id });
+    await yearbook.save();
+
+    res.status(201).json({ success: true, message: 'Yearbook uploaded', data: yearbook });
+  } catch (err) {
+    console.error('Error in addYearbook:', err);
+    res.status(500).json({ success: false, message: 'Internal server error' });
+  }
+};
+
+// Delete Yearbook
+export const deleteYearbook = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const yearbook = await Yearbook.findById(id);
+    if (!yearbook) {
+      return res.status(404).json({ success: false, message: 'Yearbook not found' });
+    }
+
+    if (yearbook.publicId) {
+      await cloudinary.uploader.destroy(yearbook.publicId, { resource_type: 'raw' });
+    }
+
+    await Yearbook.findByIdAndDelete(id);
+    res.status(200).json({ success: true, message: 'Yearbook deleted successfully' });
+  } catch (err) {
+    console.error('Error in deleteYearbook:', err);
+    res.status(500).json({ success: false, message: 'Internal server error' });
+  }
+};
+
+// Get All Yearbooks
+export const getYearbooks = async (req, res) => {
+  try {
+    const yearbooks = await Yearbook.find().sort({ createdAt: -1 });
+    res.status(200).json({ success: true, data: yearbooks });
+  } catch (err) {
+    console.error('Error in getYearbooks:', err);
+    res.status(500).json({ success: false, message: 'Internal server error' });
+  }
+};
 
 // Get Latest Newsletter
 export const getLatestNewsletter = async (req, res) => {
@@ -187,6 +243,22 @@ export const getLatestMagazine = async (req, res) => {
     res.status(500).json({ success: false, message: 'Internal server error' });
   }
 };
+
+
+// Get Latest Yearbook
+export const getLatestYearbook = async (req, res) => {
+  try {
+    const latestYearbook = await Yearbook.findOne().sort({ createdAt: -1 });
+    if (!latestYearbook) {
+      return res.status(404).json({ success: false, message: "No yearbook found" });
+    }
+    res.status(200).json({ success: true, data: latestYearbook });
+  } catch (err) {
+    console.error("Error in getLatestYearbook:", err);
+    res.status(500).json({ success: false, message: "Internal server error" });
+  }
+};
+
 
 export const getAdminProfiles = async (req, res) => {
   try {

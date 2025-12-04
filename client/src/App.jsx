@@ -11,17 +11,22 @@ import KYA from './Components/KYA';
 import LoginPage from './pages/LoginPage';
 import CVReviewPage from './pages/CVReviewPage';
 // import SignUpPage from "./pages/SignUpPage";
-import NewsletterPage from './pages/NewsletterPage';
-import MagazinePage from './pages/MagazinePage';
-import TeamSection from './components/TeamPage';
-import SaathiRegistrationPage from './pages/SaathiRegistrationPage';
-import AdminDashboard from './pages/AdminDashboard';
-import VerifiedMentorsPage from './pages/VerifiedMentorsPage';
-import { API_BASE_URL } from './api/alumni';
-import { useEffect, useState } from 'react';
-import axios from 'axios';
-import GuestRoute from './routes/GuestRoute';
-import Gallery from './Components/Gallery/Gallery';
+
+import NewsletterPage from "./pages/NewsletterPage";
+import MagazinePage from "./pages/MagazinePage";
+import YearbookPage from "./pages/YearbookPage";
+import TeamSection from "./components/TeamPage";
+import SaathiRegistrationPage from "./pages/SaathiRegistrationPage";
+import AdminDashboard from "./pages/AdminDashboard";
+import VerifiedMentorsPage from "./pages/VerifiedMentorsPage";
+import { API_BASE_URL } from "./api/alumni";
+import { useEffect, useState } from "react";
+import axios from "axios";
+import GuestRoute from "./routes/GuestRoute";
+import Gallery from "./Components/Gallery/Gallery";
+
+import AdminSettings from "./pages/AdminDashboard";
+
 
 import AdminSettings from './pages/AdminDashboard';
 import AboutEvent from './pages/AboutEvent';
@@ -80,6 +85,7 @@ function App() {
 
           <Route path="/Newsletter" element={<NewsletterPage />} />
           <Route path="/Magazine" element={<MagazinePage />} />
+          <Route path="/Yearbook" element={<YearbookPage />} />
           <Route path="/KYA" element={<KYA />} />
           <Route path="/team" element={<TeamSection />} />
           <Route

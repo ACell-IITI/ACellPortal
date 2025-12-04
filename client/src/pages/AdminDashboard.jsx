@@ -453,10 +453,16 @@ const handleDeleteGallery = async (id) => {
   const [magazineFile, setMagazineFile] = useState(null);
   const [magazines, setMagazines] = useState([]);
 
+  // YEARBOOK STATE VARIABLES (added to mirror magazine)
+  const [yearbookTitle, setYearbookTitle] = useState("");
+  const [yearbookFile, setYearbookFile] = useState(null);
+  const [yearbooks, setYearbooks] = useState([]);
+
   // FETCH EXISTING pdfs
   useEffect(() => {
     fetchNewsletters();
     fetchMagazines();
+    fetchYearbooks(); // fetch yearbooks as well
   }, []);
 
   const fetchNewsletters = async () => {
@@ -474,6 +480,16 @@ const handleDeleteGallery = async (id) => {
       setMagazines(res.data.data);
     } catch (err) {
       console.error("Error fetching magazines:", err);
+    }
+  };
+
+  // FETCH YEARBOOKS (mirror magazines)
+  const fetchYearbooks = async () => {
+    try {
+      const res = await axios.get(`${API_BASE_URL}/admin/get-yearbooks`);
+      setYearbooks(res.data.data);
+    } catch (err) {
+      console.error("Error fetching yearbooks:", err);
     }
   };
 
@@ -567,6 +583,51 @@ const handleDeleteMagazine = async (id) => {
   }
 };
 
+// HANDLE YEARBOOK UPLOAD (mirrors magazine)
+const handleYearbookUpload = async (e) => {
+  e.preventDefault();
+  if (!yearbookTitle || !yearbookFile) return alert("Fill all fields");
+
+  const formData = new FormData();
+  formData.append("title", yearbookTitle);
+  formData.append("pdf", yearbookFile);
+
+  try {
+    await axios.post(`${API_BASE_URL}/admin/add-yearbook`, formData, {
+      headers: { "Content-Type": "multipart/form-data" },
+      withCredentials: true,
+    });
+    alert("Yearbook uploaded!");
+    setYearbookTitle("");
+    setYearbookFile(null);
+    fetchYearbooks();
+  } catch (err) {
+    console.error("Upload error:", err);
+    alert("Upload failed!");
+  } finally {
+    //Reset file input
+    const fileInput = document.getElementById("yearbookFileInput");
+    if (fileInput) fileInput.value = "";
+  }
+};
+
+// HANDLE DELETE YEARBOOK (mirrors magazine)
+const handleDeleteYearbook = async (id) => {
+  if (!window.confirm("Are you sure you want to delete this yearbook?")) return;
+
+  try {
+    await axios.delete(`${API_BASE_URL}/admin/delete-yearbook/${id}`, {
+      withCredentials: true,
+    });
+
+    alert("Yearbook deleted successfully!");
+    fetchYearbooks(); 
+  } catch (err) {
+    console.error("Delete error:", err);
+    alert("Failed to delete yearbook!");
+  }
+};
+
   const tabs = [
     {
       id: 'mentors',
@@ -602,6 +663,11 @@ const handleDeleteMagazine = async (id) => {
       label: 'Magazines',
       icon: BookOpen,
       // count: magazines.length,
+    },
+    {
+      id: 'yearbooks',
+      label: 'Yearbooks',
+      icon: BookOpenText,
     },
   ];
 
@@ -1157,6 +1223,62 @@ const handleDeleteMagazine = async (id) => {
 
       <button
         onClick={() => handleDeleteMagazine(mg._id)}
+        className="ml-4 px-3 py-1 text-sm bg-red-500 text-white rounded hover:bg-red-600 transition"
+      >
+        Delete
+      </button>
+    </li>
+  ))}
+</ul>
+            </div>
+          )}
+
+          {/* yearbooks tab (mirror of magazines) */}
+          {activeTab === 'yearbooks' && (
+            <div>
+              <h2 className="text-2xl font-semibold mb-4">Upload Yearbook</h2>
+              <form onSubmit={handleYearbookUpload} className="space-y-4">
+                <input
+                  type="text"
+                  placeholder="Yearbook Title"
+                  value={yearbookTitle}
+                  onChange={(e) => setYearbookTitle(e.target.value)}
+                  className="w-full px-4 py-2 border rounded"
+                  required
+                />
+                <input
+                  type="file"
+                  id="yearbookFileInput"
+                  accept="application/pdf"
+                  onChange={(e) => setYearbookFile(e.target.files[0])}
+                  required
+                />
+                <button
+                  type="submit"
+                  className="bg-blue-600 text-white px-4 py-2 rounded"
+                >
+                  Upload Yearbook
+                </button>
+              </form>
+
+            <h3 className="text-xl mt-8 mb-4">All Yearbooks</h3>
+<ul>
+  {yearbooks.map((yb) => (
+    <li
+      key={yb._id}
+      className="mb-2 flex items-center justify-between bg-gray-50 p-2 rounded"
+    >
+      <a
+        href={yb.pdfUrl}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="text-blue-600 underline"
+      >
+        {yb.title}
+      </a>
+
+      <button
+        onClick={() => handleDeleteYearbook(yb._id)}
         className="ml-4 px-3 py-1 text-sm bg-red-500 text-white rounded hover:bg-red-600 transition"
       >
         Delete
