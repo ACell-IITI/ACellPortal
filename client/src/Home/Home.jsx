@@ -126,7 +126,7 @@ const Home = () => {
     <img className='bubble1' src='/Media/bubble.png'></img>
 <p className="titlec pr">PROGRAM & WEBINARS</p>
 <p className="subtitlec pr">
-  Explore our upcoming sessions and expert-led discussions to boost your professional journey.
+  Explore our sessions and expert-led discussions to boost your professional journey.
 </p>
 <Program />
 </div>
@@ -134,7 +134,7 @@ const Home = () => {
 <div className="event-section">
 <p className="titlec eve">EVENTS</p>
 <p className="subtitlec eve">
-  Stay updated on recent and future events held at IIT Indore and beyond.
+  Stay updated on events held at IIT Indore and beyond.
 </p>
 <Eventh />
 </div>

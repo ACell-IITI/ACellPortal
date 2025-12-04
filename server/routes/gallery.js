@@ -43,7 +43,7 @@ router.get("/", async (req, res) => {
 // Get 5 most recent
 router.get("/recent", async (req, res) => {
   try {
-    const photos = await Gallery.find().sort({ createdAt: -1 }).limit(5);
+    const photos = await Gallery.find().sort({ createdAt: -1 }).limit(8);
     res.json(photos);
   } catch (err) {
     res.status(500).json({ error: err.message });
