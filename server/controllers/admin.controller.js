@@ -1,6 +1,6 @@
 import cloudinary from '../config/cloudinary.js';
 import KYA_db from '../models/KYA_model.js';
-import bcrypt from "bcrypt";
+import bcrypt from 'bcrypt';
 import Mentorship_db from '../models/Mentorship_model.js';
 import { Admin_db, Alumni_db } from '../models/User_model.js';
 import Program from '../models/Program_model.js';
@@ -9,6 +9,7 @@ import jwt from 'jsonwebtoken';
 import 'dotenv/config';
 import Newsletter from '../models/Newsletter_model.js';
 import Magazine from '../models/Magazine_model.js';
+import EventProgram from "../models/Program_model.js";
 import Yearbook from '../models/Yearbook_model.js';
 
 
@@ -16,19 +17,30 @@ import Yearbook from '../models/Yearbook_model.js';
 export const addNewsletter = async (req, res) => {
   try {
     const { title } = req.body;
-    if (!req.file) return res.status(400).json({ message: 'PDF file required' });
+    if (!req.file)
+      return res.status(400).json({ message: 'PDF file required' });
 
     const result = await cloudinary.uploader.upload(req.file.path, {
       folder: 'newsletters',
-      resource_type: 'raw', 
+      resource_type: 'raw',
       access_mode: 'public',
     });
     fs.unlinkSync(req.file.path);
 
-    const newsletter = new Newsletter({ title, pdfUrl: result.secure_url, publicId: result.public_id,}); //added publicId here
+    const newsletter = new Newsletter({
+      title,
+      pdfUrl: result.secure_url,
+      publicId: result.public_id,
+    }); //added publicId here
     await newsletter.save();
 
-    res.status(201).json({ success: true, message: 'Newsletter uploaded', data: newsletter });
+    res
+      .status(201)
+      .json({
+        success: true,
+        message: 'Newsletter uploaded',
+        data: newsletter,
+      });
   } catch (err) {
     console.error(err);
     res.status(500).json({ success: false, message: 'Internal server error' });
@@ -41,16 +53,24 @@ export const deleteNewsletter = async (req, res) => {
     const { id } = req.params;
     const newsletter = await Newsletter.findById(id);
     if (!newsletter) {
-      return res.status(404).json({ success: false, message: 'Newsletter not found' });
+      return res
+        .status(404)
+        .json({ success: false, message: 'Newsletter not found' });
     }
     // const parts = newsletter.pdfUrl.split('/');
-    // const fileName = parts[parts.length - 1].split('.')[0]; 
+    // const fileName = parts[parts.length - 1].split('.')[0];
     // const publicId = `newsletters/${fileName}`;
 
-    if(newsletter.publicId){await cloudinary.uploader.destroy(newsletter.publicId, { resource_type: 'raw' });}
+    if (newsletter.publicId) {
+      await cloudinary.uploader.destroy(newsletter.publicId, {
+        resource_type: 'raw',
+      });
+    }
     await Newsletter.findByIdAndDelete(id);
 
-    res.status(200).json({ success: true, message: 'Newsletter deleted successfully' });
+    res
+      .status(200)
+      .json({ success: true, message: 'Newsletter deleted successfully' });
   } catch (err) {
     console.error(err);
     res.status(500).json({ success: false, message: 'Internal server error' });
@@ -72,7 +92,8 @@ export const getNewsletters = async (req, res) => {
 export const addMagazine = async (req, res) => {
   try {
     const { title } = req.body;
-    if (!req.file) return res.status(400).json({ message: 'PDF file required' });
+    if (!req.file)
+      return res.status(400).json({ message: 'PDF file required' });
 
     const result = await cloudinary.uploader.upload(req.file.path, {
       folder: 'magazines',
@@ -81,10 +102,16 @@ export const addMagazine = async (req, res) => {
     });
     fs.unlinkSync(req.file.path);
 
-    const magazine = new Magazine({ title, pdfUrl: result.secure_url,publicId: result.public_id, }); // publicId added here also
+    const magazine = new Magazine({
+      title,
+      pdfUrl: result.secure_url,
+      publicId: result.public_id,
+    }); // publicId added here also
     await magazine.save();
 
-    res.status(201).json({ success: true, message: 'Magazine uploaded', data: magazine });
+    res
+      .status(201)
+      .json({ success: true, message: 'Magazine uploaded', data: magazine });
   } catch (err) {
     console.error(err);
     res.status(500).json({ success: false, message: 'Internal server error' });
@@ -98,15 +125,23 @@ export const deleteMagazine = async (req, res) => {
 
     const magazine = await Magazine.findById(id);
     if (!magazine) {
-      return res.status(404).json({ success: false, message: 'Magazine not found' });
+      return res
+        .status(404)
+        .json({ success: false, message: 'Magazine not found' });
     }
     // const urlParts = magazine.pdfUrl.split('/');
-    // const fileName = urlParts[urlParts.length - 1].split('.')[0]; 
+    // const fileName = urlParts[urlParts.length - 1].split('.')[0];
     // const publicId = `magazines/${fileName}`;
-   if(magazine.publicId){ await cloudinary.uploader.destroy(magazine.publicId, { resource_type: 'raw' });}
+    if (magazine.publicId) {
+      await cloudinary.uploader.destroy(magazine.publicId, {
+        resource_type: 'raw',
+      });
+    }
     await Magazine.findByIdAndDelete(id);
 
-    res.status(200).json({ success: true, message: 'Magazine deleted successfully' });
+    res
+      .status(200)
+      .json({ success: true, message: 'Magazine deleted successfully' });
   } catch (err) {
     console.error(err);
     res.status(500).json({ success: false, message: 'Internal server error' });
@@ -182,12 +217,14 @@ export const getLatestNewsletter = async (req, res) => {
   try {
     const latestNewsletter = await Newsletter.findOne().sort({ createdAt: -1 });
     if (!latestNewsletter) {
-      return res.status(404).json({ success: false, message: "No newsletter found" });
+      return res
+        .status(404)
+        .json({ success: false, message: 'No newsletter found' });
     }
     res.status(200).json({ success: true, data: latestNewsletter });
   } catch (err) {
-    console.error("Error in getLatestNewsletter:", err);
-    res.status(500).json({ success: false, message: "Internal server error" });
+    console.error('Error in getLatestNewsletter:', err);
+    res.status(500).json({ success: false, message: 'Internal server error' });
   }
 };
 
@@ -196,12 +233,14 @@ export const getLatestMagazine = async (req, res) => {
   try {
     const latestMagazine = await Magazine.findOne().sort({ createdAt: -1 });
     if (!latestMagazine) {
-      return res.status(404).json({ success: false, message: "No magazine found" });
+      return res
+        .status(404)
+        .json({ success: false, message: 'No magazine found' });
     }
     res.status(200).json({ success: true, data: latestMagazine });
   } catch (err) {
-    console.error("Error in getLatestMagazine:", err);
-    res.status(500).json({ success: false, message: "Internal server error" });
+    console.error('Error in getLatestMagazine:', err);
+    res.status(500).json({ success: false, message: 'Internal server error' });
   }
 };
 
@@ -297,7 +336,8 @@ export const addKyaProfile = async (req, res) => {
       return res.status(401).json({ message: 'Invalid or expired token' });
     }
 
-    const { Name, Batch, CurrRole, Achievement, ShortBio,LinkedInPostLink } = req.body;
+    const { Name, Batch, CurrRole, Achievement, ShortBio, LinkedInPostLink } =
+      req.body;
 
     const result = await cloudinary.uploader.upload(req.file.path, {
       folder: 'kya-profiles',
@@ -326,9 +366,30 @@ export const addKyaProfile = async (req, res) => {
 
 export const getKyaProfiles = async (req, res) => {
   try {
-    const profilesList = await KYA_db.find()
-      .select('-__v')
-      .sort({ createdAt: -1 }); // Newest first
+    const profilesList = await KYA_db.aggregate([
+      {
+        $addFields: {
+          isEntrepreneur: {
+            $regexMatch: {
+              input: '$CurrRole',
+              regex: /Founder|Co-Founder/i,
+            },
+          },
+        },
+      },
+      {
+        $sort: {
+          isEntrepreneur: -1,
+          createdAt: -1,
+        },
+      },
+      {
+        $project: {
+          isEntrepreneur: 0,
+          __v: 0,
+        },
+      },
+    ]);
 
     res.status(200).json({
       success: true,
@@ -338,7 +399,7 @@ export const getKyaProfiles = async (req, res) => {
     console.error('Error in getKyaProfiles:', error.message);
     res.status(500).json({
       success: false,
-      message: 'Failed to fetch KYA profiles. Please try again later.',
+      message: 'Failed to fetch KYA profiles.',
     });
   }
 };
@@ -466,7 +527,7 @@ export const addMentorProfile = async (req, res) => {
       // email,
       // contactNumber,
       linkedinId,
-      skills : JSON.parse(skills),
+      skills: JSON.parse(skills),
       about,
       profilePic: result.secure_url,
     });
@@ -516,7 +577,7 @@ export const deleteMentorProfile = async (req, res) => {
 // ADD program/event
 export const addProgram = async (req, res) => {
   console.log('addProgram req.body:', req.body);
-console.log('addProgram req.file:', req.file);
+  console.log('addProgram req.file:', req.file);
   try {
     const { type, title, date, time, venue } = req.body;
 
@@ -525,7 +586,7 @@ console.log('addProgram req.file:', req.file);
     }
 
     const result = await cloudinary.uploader.upload(req.file.path, {
-      folder: 'programs-events'
+      folder: 'programs-events',
     });
     fs.unlinkSync(req.file.path);
 
@@ -535,12 +596,14 @@ console.log('addProgram req.file:', req.file);
       title,
       date,
       time,
-      venue
+      venue,
     });
 
     await program.save();
 
-    res.status(201).json({ success: true, message: 'Program/Event added', data: program });
+    res
+      .status(201)
+      .json({ success: true, message: 'Program/Event added', data: program });
   } catch (err) {
     console.error('Error in addProgram:', err);
     res.status(500).json({ success: false, message: 'Internal server error' });
@@ -562,13 +625,40 @@ export const getPrograms = async (req, res) => {
 export const deleteProgram = async (req, res) => {
   try {
     const program = await Program.findById(req.params.id);
-    if (!program) return res.status(404).json({ message: 'Program/Event not found' });
+    if (!program)
+      return res.status(404).json({ message: 'Program/Event not found' });
 
     await Program.findByIdAndDelete(req.params.id);
-    res.status(200).json({ success: true, message: 'Program/Event deleted successfully' });
+    res
+      .status(200)
+      .json({ success: true, message: 'Program/Event deleted successfully' });
   } catch (err) {
     console.error('Error in deleteProgram:', err);
     res.status(500).json({ success: false, message: 'Internal server error' });
   }
 };
 
+export const aboutEvent = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const eventDetails = await EventProgram.findById(id).select("-__v");
+    if (!eventDetails) {
+      return res.status(404).json({
+        success: false,
+        message: "Event not found",
+      });
+    }
+
+    res.status(200).json({
+      success: true,
+      data: eventDetails,
+    });
+  } catch (error) {
+    console.error("Error in aboutEvent:", error.message);
+    res.status(500).json({
+      success: false,
+      message: "Failed to fetch event details",
+    });
+  }
+};

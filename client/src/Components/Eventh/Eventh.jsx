@@ -8,9 +8,12 @@ import { useGSAP } from '@gsap/react';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import axios from "axios";
 
+import { useNavigate } from "react-router-dom";
+
 gsap.registerPlugin(useGSAP, ScrollTrigger);
 
 const EventCarousel = () => {
+  const navigate = useNavigate();
   const [events, setEvents] = useState([]);
 {/*const events = [
   {
@@ -110,7 +113,7 @@ const settings = {
     <div className="carousel-container">
       <Slider {...settings}>
         {events.map((event) => (
-          <div key={event._id} className="event-slide">
+          <div key={event._id} onClick={() => navigate(`/about-eventProgram/${event._id}`)} className="event-slide">
             <div className="event-card">
               <img
                 src={event.image}

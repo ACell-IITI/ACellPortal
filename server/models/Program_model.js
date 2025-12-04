@@ -7,6 +7,8 @@ const eventProgramSchema = new mongoose.Schema({
   date: { type: String, required: true },
   time: { type: String, required: true },
   venue: { type: String, required: true },
+  about: {type:String},
+  attendance: {type:Number}
 }, { timestamps: true });
 
 export default mongoose.model('EventProgram', eventProgramSchema);

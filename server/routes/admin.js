@@ -12,7 +12,8 @@ import {
   updateAdminProfile,
   addMentorProfile,
   // getMentorsProfile,
-  deleteMentorProfile
+  deleteMentorProfile,
+  aboutEvent
 } from "../controllers/admin.controller.js";
 import upload from "../middleware/multer.js";
 import uploadPdf from '../middleware/pdfUpload.js';
@@ -52,6 +53,7 @@ router.delete('/delete-mentor/:id', deleteMentorProfile);
 
 // Program/Event Routes
 router.post('/add-program', upload.single('image'), addProgram);
+router.get('/about-eventProgram/:id', aboutEvent);
 router.get('/get-programs', getPrograms);
 router.delete('/delete-program/:id', deleteProgram);
 
