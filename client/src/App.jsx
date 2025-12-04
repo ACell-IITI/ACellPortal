@@ -25,10 +25,6 @@ import axios from "axios";
 import GuestRoute from "./routes/GuestRoute";
 import Gallery from "./Components/Gallery/Gallery";
 
-import AdminSettings from "./pages/AdminDashboard";
-
-
-import AdminSettings from './pages/AdminDashboard';
 import AboutEvent from './pages/AboutEvent';
 
 // import AdminSettings from "./pages/AdminSettings";
