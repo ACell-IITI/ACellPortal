@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
+import "./AboutEvent.css";
 
 const AboutEvent = () => {
   const { id } = useParams();
@@ -23,27 +24,31 @@ const AboutEvent = () => {
     fetchEvent();
   }, [id]);
 
-  if (loading) return <div>Loading...</div>;
-  if (!event) return <div>Event not found.</div>;
+  if (loading) return <div className="eventas-loader">Loading...</div>;
+  if (!event) return <div className="eventas-error">Event not found.</div>;
 
   return (
-    <div>
-      <h1>{event.title}</h1>
+    <div className="eventas-container">
+      <div className="eventas-card">
+        <h1 className="eventas-title">{event.title}</h1>
 
-      <p><strong>Date:</strong> {event.date}</p>
-      <p><strong>Time:</strong> {event.time}</p>
-      <p><strong>Venue:</strong> {event.venue}</p>
+        <div className="eventas-info">
+          <p><span>Date:</span> {event.date}</p>
+          <p><span>Time:</span> {event.time}</p>
+          <p><span>Venue:</span> {event.venue}</p>
 
-      {event.attendance && (
-        <p><strong>Attendance:</strong> {event.attendance}</p>
-      )}
+          {event.attendance && (
+            <p><span>Attendance:</span> {event.attendance}</p>
+          )}
+        </div>
 
-      {event.about && (
-        <>
-          <h2>About</h2>
-          <p>{event.about}</p>
-        </>
-      )}
+        {event.about && (
+          <div className="eventas-about">
+            <h2>About the Event</h2>
+            <p>{event.about}</p>
+          </div>
+        )}
+      </div>
     </div>
   );
 };

@@ -76,7 +76,7 @@ export default function TeamPage() {
       </div>
 
       {/* Teams */}
-      <div className="container mx-auto px-6 pb-24 space-y-20">
+      <div className="container mx-auto px-6 pb-24 space-y-20 w-100vw">
         {Object.keys(teams).map((team) => (
           <div key={team}>
             <Comp title={team} members={teams[team]} />

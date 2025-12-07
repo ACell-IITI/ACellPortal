@@ -1,6 +1,6 @@
-import axios from 'axios';
-import { useState, useEffect, useRef } from 'react';
-import { useNavigate } from 'react-router-dom';
+import axios from "axios";
+import { useState, useEffect, useRef } from "react";
+import { useNavigate } from "react-router-dom";
 import {
   Users,
   FileText,
@@ -19,10 +19,10 @@ import {
   Settings,
   Bell,
   BookOpen,
-  BookOpenText
-} from 'lucide-react';
-import { API_BASE_URL } from '../api/alumni';
-import RegistrationForm from '../Components/RegistrationForm/RegistrationForm';
+  BookOpenText,
+} from "lucide-react";
+import { API_BASE_URL } from "../api/alumni";
+import RegistrationForm from "../Components/RegistrationForm/RegistrationForm";
 import {
   FaEnvelope,
   FaLinkedin,
@@ -30,8 +30,8 @@ import {
   FaGraduationCap,
   FaWrench,
   FaCogs,
-} from 'react-icons/fa';
-import '../Components/MentorCard/MentorCard.css';
+} from "react-icons/fa";
+import "../Components/MentorCard/MentorCard.css";
 
 const AdminDashboard = () => {
   const navigate = useNavigate();
@@ -40,76 +40,74 @@ const AdminDashboard = () => {
   // to view mentors profiles
   const [mentorsData, setMentorsData] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [activeTab, setActiveTab] = useState('mentors');
+  const [activeTab, setActiveTab] = useState("mentors");
   //CV Review
   //const [submittedCVs, setSubmittedCVs] = useState([]);
   //const [unseenCVCount, setUnseenCVCount] = useState(0);
   //Gallery
-  const [gallery, setGallery] = useState([]);           
-  const [galleryImageFile, setGalleryImageFile] = useState(null); 
+  const [gallery, setGallery] = useState([]);
+  const [galleryImageFile, setGalleryImageFile] = useState(null);
   const fileInputRefGallery = useRef(null);
-
 
   const fileInputRef = useRef(null);
 
   // when file is selected
-const handleImageChangeGallery = (e) => {
-  setGalleryImageFile(e.target.files[0]);
-};
+  const handleImageChangeGallery = (e) => {
+    setGalleryImageFile(e.target.files[0]);
+  };
 
-// submit new image
-const handleSubmitGallery = async (e) => {
-  e.preventDefault();
+  // submit new image
+  const handleSubmitGallery = async (e) => {
+    e.preventDefault();
 
-  if (!galleryImageFile) return;
+    if (!galleryImageFile) return;
 
-  const formData = new FormData();
-  formData.append("image", galleryImageFile);
+    const formData = new FormData();
+    formData.append("image", galleryImageFile);
 
-  try {
-    const res = await fetch("http://localhost:8000/api/gallery", {
-      method: "POST",
-      body: formData,
-    });
+    try {
+      const res = await fetch("http://localhost:8000/api/gallery", {
+        method: "POST",
+        body: formData,
+      });
 
-    const data = await res.json();
-    setGallery((prev) => [data, ...prev]); // add new photo on top
-    setGalleryImageFile(null); // reset file
-  } catch (err) {
-    console.error("Error uploading image:", err);
-  }
-};
+      const data = await res.json();
+      setGallery((prev) => [data, ...prev]); // add new photo on top
+      setGalleryImageFile(null); // reset file
+    } catch (err) {
+      console.error("Error uploading image:", err);
+    }
+  };
 
- useEffect(() => {
+  useEffect(() => {
     fetch("http://localhost:8000/api/gallery")
       .then((res) => res.json())
       .then((data) => setGallery(data))
       .catch((err) => console.error("Error fetching gallery:", err));
   }, []);
 
-// delete photo
-const handleDeleteGallery = async (id) => {
-  try {
-    await fetch(`http://localhost:8000/api/gallery/${id}`, {
-      method: "DELETE",
-    });
-    setGallery((prev) => prev.filter((photo) => photo._id !== id));
-  } catch (err) {
-    console.error("Error deleting image:", err);
-  }
-};
-
+  // delete photo
+  const handleDeleteGallery = async (id) => {
+    try {
+      await fetch(`http://localhost:8000/api/gallery/${id}`, {
+        method: "DELETE",
+      });
+      setGallery((prev) => prev.filter((photo) => photo._id !== id));
+    } catch (err) {
+      console.error("Error deleting image:", err);
+    }
+  };
 
   //to fetch mentors
   const fetchMentors = async () => {
     try {
-      const res = await axios.get('http://localhost:8000/mentors/get', {
+      const res = await axios.get("http://localhost:8000/mentors/get", {
         withCredentials: true,
       });
       setMentorsData(res.data);
     } catch (error) {
       console.log(
-        'Error while sending request to verified mentors route',
+        "Error while sending request to verified mentors route",
         error
       );
     } finally {
@@ -128,7 +126,7 @@ const handleDeleteGallery = async (id) => {
       await axios.delete(`${API_BASE_URL}/admin/delete-mentor/${id}`);
       fetchMentors();
     } catch (err) {
-      console.error('Error deleting profile', err);
+      console.error("Error deleting profile", err);
     }
   }
 
@@ -150,7 +148,8 @@ const handleDeleteGallery = async (id) => {
   }, []);
 
   // Fetching CV submissions
-  {/*useEffect(() => {
+  {
+    /*useEffect(() => {
     const fetchCVs = async () => {
       try {
         const res3 = await axios.get(`${API_BASE_URL}/cv/getCV`);
@@ -178,7 +177,8 @@ const handleDeleteGallery = async (id) => {
       setUnseenCVCount(0);
     }
   }, [activeTab]);
-  */}
+  */
+  }
 
   // const handleMentorsSubmit = async (e, alumniId) => {
   //   e.preventDefault();
@@ -199,21 +199,21 @@ const handleDeleteGallery = async (id) => {
   const [imageFilepro, setImageFilepro] = useState(null);
   const [formErrorspro, setFormErrorspro] = useState({});
   const [formDataprogram, setFormDataprogram] = useState({
-    type: 'program',
-    image: '',
-    title: '',
-    date: '',
-    time: '',
-    venue: '',
+    type: "program",
+    image: "",
+    title: "",
+    date: "",
+    time: "",
+    venue: "",
   });
 
   useEffect(() => {
     const fetchPrograms = async () => {
       try {
-        const res = await axios.get('http://localhost:8000/admin/get-programs');
+        const res = await axios.get("http://localhost:8000/admin/get-programs");
         setPrograms(res.data.data);
       } catch (err) {
-        console.error('Error fetching programs:', err);
+        console.error("Error fetching programs:", err);
       }
     };
 
@@ -223,7 +223,7 @@ const handleDeleteGallery = async (id) => {
   const handleChangeprogram = (e) => {
     setFormDataprogram({ ...formDataprogram, [e.target.name]: e.target.value });
     if (formErrors[e.target.name]) {
-      setFormErrorspro({ ...formErrorspro, [e.target.name]: '' });
+      setFormErrorspro({ ...formErrorspro, [e.target.name]: "" });
     }
   };
 
@@ -231,17 +231,17 @@ const handleDeleteGallery = async (id) => {
     setImageFilepro(e.target.files[0]);
 
     if (formErrorspro.image) {
-      setFormErrorspro({ ...formErrorspro, image: '' });
+      setFormErrorspro({ ...formErrorspro, image: "" });
     }
   };
 
   const validateProgramForm = () => {
     const errors = {};
-    if (!formDataprogram.title.trim()) errors.title = 'Title is required';
-    if (!formDataprogram.date.trim()) errors.date = 'Date is required';
-    if (!formDataprogram.time.trim()) errors.time = 'Time is required';
-    if (!formDataprogram.venue.trim()) errors.venue = 'Venue is required';
-    if (!imageFilepro) errors.image = 'Program/Event image is required';
+    if (!formDataprogram.title.trim()) errors.title = "Title is required";
+    if (!formDataprogram.date.trim()) errors.date = "Date is required";
+    if (!formDataprogram.time.trim()) errors.time = "Time is required";
+    if (!formDataprogram.venue.trim()) errors.venue = "Venue is required";
+    if (!imageFilepro) errors.image = "Program/Event image is required";
     return errors;
   };
 
@@ -255,36 +255,36 @@ const handleDeleteGallery = async (id) => {
 
     try {
       const data = new FormData();
-      data.append('type', formDataprogram.type);
-      data.append('title', formDataprogram.title);
-      data.append('date', formDataprogram.date);
-      data.append('time', formDataprogram.time);
-      data.append('venue', formDataprogram.venue);
-      data.append('image', imageFilepro);
+      data.append("type", formDataprogram.type);
+      data.append("title", formDataprogram.title);
+      data.append("date", formDataprogram.date);
+      data.append("time", formDataprogram.time);
+      data.append("venue", formDataprogram.venue);
+      data.append("image", imageFilepro);
 
-      await axios.post('http://localhost:8000/admin/add-program', data, {
+      await axios.post("http://localhost:8000/admin/add-program", data, {
         headers: {
-          'Content-Type': 'multipart/form-data',
+          "Content-Type": "multipart/form-data",
         },
       });
 
-      alert('Program/Event added successfully!');
+      alert("Program/Event added successfully!");
 
       setFormDataprogram({
-        type: 'program',
-        image: '',
-        title: '',
-        date: '',
-        time: '',
-        venue: '',
+        type: "program",
+        image: "",
+        title: "",
+        date: "",
+        time: "",
+        venue: "",
       });
       setImageFilepro(null);
       setFormErrors({});
 
-      const res = await axios.get('http://localhost:8000/admin/get-programs');
+      const res = await axios.get("http://localhost:8000/admin/get-programs");
       setPrograms(res.data.data);
     } catch (err) {
-      console.error('Error adding program:', err);
+      console.error("Error adding program:", err);
     }
   };
 
@@ -296,10 +296,10 @@ const handleDeleteGallery = async (id) => {
 
     try {
       await axios.delete(`http://localhost:8000/admin/delete-program/${id}`);
-      const res = await axios.get('http://localhost:8000/admin/get-programs');
+      const res = await axios.get("http://localhost:8000/admin/get-programs");
       setPrograms(res.data.data);
     } catch (err) {
-      console.error('Error deleting program:', err);
+      console.error("Error deleting program:", err);
     }
   };
 
@@ -308,13 +308,13 @@ const handleDeleteGallery = async (id) => {
   const [imageFile, setImageFile] = useState(null);
   const [formErrors, setFormErrors] = useState({});
   const [formData, setFormData] = useState({
-    Name: '',
-    Batch: '',
-    CurrRole: '',
-    Achievement: '',
-    ShortBio: '',
-    profilePic: '',
-    LinkedInPostLink: '',
+    Name: "",
+    Batch: "",
+    CurrRole: "",
+    Achievement: "",
+    ShortBio: "",
+    profilePic: "",
+    LinkedInPostLink: "",
   });
 
   const fetchKyaProfiles = async () => {
@@ -322,7 +322,7 @@ const handleDeleteGallery = async (id) => {
       const res = await axios.get(`${API_BASE_URL}/admin/get-kya-profiles`);
       setProfiles(res.data.data);
     } catch (err) {
-      console.error('Error fetching profiles', err);
+      console.error("Error fetching profiles", err);
       setProfiles([]);
     }
   };
@@ -340,7 +340,7 @@ const handleDeleteGallery = async (id) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
     // Clear error for this field when user starts typing
     if (formErrors[e.target.name]) {
-      setFormErrors({ ...formErrors, [e.target.name]: '' });
+      setFormErrors({ ...formErrors, [e.target.name]: "" });
     }
   };
 
@@ -348,7 +348,7 @@ const handleDeleteGallery = async (id) => {
     setImageFile(e.target.files[0]);
     // Clear image error when user selects a file
     if (formErrors.profilePic) {
-      setFormErrors({ ...formErrors, profilePic: '' });
+      setFormErrors({ ...formErrors, profilePic: "" });
     }
   };
 
@@ -356,27 +356,27 @@ const handleDeleteGallery = async (id) => {
     const errors = {};
 
     if (!formData.Name.trim()) {
-      errors.Name = 'Name is required';
+      errors.Name = "Name is required";
     }
 
     if (!formData.Batch) {
-      errors.Batch = 'Please select a batch';
+      errors.Batch = "Please select a batch";
     }
 
     if (!formData.CurrRole.trim()) {
-      errors.CurrRole = 'Current role is required';
+      errors.CurrRole = "Current role is required";
     }
 
     if (!formData.Achievement.trim()) {
-      errors.Achievement = 'Achievement is required';
+      errors.Achievement = "Achievement is required";
     }
 
     if (!formData.ShortBio.trim()) {
-      errors.ShortBio = 'Short bio is required';
+      errors.ShortBio = "Short bio is required";
     }
 
     if (!imageFile) {
-      errors.profilePic = 'Profile picture is required';
+      errors.profilePic = "Profile picture is required";
     }
 
     return errors;
@@ -392,15 +392,15 @@ const handleDeleteGallery = async (id) => {
     }
     try {
       const data = new FormData();
-      data.append('Name', formData.Name);
-      data.append('Batch', formData.Batch);
-      data.append('CurrRole', formData.CurrRole);
-      data.append('Achievement', formData.Achievement);
-      data.append('ShortBio', formData.ShortBio);
-      data.append('LinkedInPostLink', formData.LinkedInPostLink);
+      data.append("Name", formData.Name);
+      data.append("Batch", formData.Batch);
+      data.append("CurrRole", formData.CurrRole);
+      data.append("Achievement", formData.Achievement);
+      data.append("ShortBio", formData.ShortBio);
+      data.append("LinkedInPostLink", formData.LinkedInPostLink);
       console.log(formData.LinkedInPostLink);
       if (imageFile) {
-        data.append('profilePic', imageFile);
+        data.append("profilePic", imageFile);
       }
 
       const res = await axios.post(
@@ -409,7 +409,7 @@ const handleDeleteGallery = async (id) => {
         {
           withCredentials: true,
           headers: {
-            'Content-Type': 'multipart/form-data',
+            "Content-Type": "multipart/form-data",
           },
         }
       );
@@ -417,17 +417,17 @@ const handleDeleteGallery = async (id) => {
       fetchKyaProfiles();
 
       setFormData({
-        Name: '',
-        Batch: '',
-        CurrRole: '',
-        Achievement: '',
-        ShortBio: '',
-        LinkedInPostLink:'',
+        Name: "",
+        Batch: "",
+        CurrRole: "",
+        Achievement: "",
+        ShortBio: "",
+        LinkedInPostLink: "",
       });
       setImageFile(null);
       setFormErrors({});
     } catch (err) {
-      console.error('Error adding profile:', err);
+      console.error("Error adding profile:", err);
     }
   };
 
@@ -441,11 +441,11 @@ const handleDeleteGallery = async (id) => {
       await axios.delete(`${API_BASE_URL}/admin/delete-kya-profile/${id}`);
       fetchKyaProfiles();
     } catch (err) {
-      console.error('Error deleting profile', err);
+      console.error("Error deleting profile", err);
     }
   };
 
-  // STATE VARIABLES 
+  // STATE VARIABLES
   const [newsletterTitle, setNewsletterTitle] = useState("");
   const [newsletterFile, setNewsletterFile] = useState(null);
   const [newsletters, setNewsletters] = useState([]);
@@ -494,179 +494,181 @@ const handleDeleteGallery = async (id) => {
   };
 
   //HANDLE UPLOAD
-const handleNewsletterUpload = async (e) => {
-  e.preventDefault();
-  if (!newsletterTitle || !newsletterFile) return alert("Fill all fields");
+  const handleNewsletterUpload = async (e) => {
+    e.preventDefault();
+    if (!newsletterTitle || !newsletterFile) return alert("Fill all fields");
 
-  const formData = new FormData();
-  formData.append("title", newsletterTitle);
-  formData.append("pdf", newsletterFile);
+    const formData = new FormData();
+    formData.append("title", newsletterTitle);
+    formData.append("pdf", newsletterFile);
 
-  try {
-    await axios.post(`${API_BASE_URL}/admin/add-newsletter`, formData, {
-      headers: { "Content-Type": "multipart/form-data" },
-      withCredentials: true,
-    });
-    alert("Newsletter uploaded!");
-    setNewsletterTitle("");
-    setNewsletterFile(null);
-    fetchNewsletters();
-  } catch (err) {
-    console.error("Upload error:", err);
-    alert("Upload failed!");
-  } finally {
-    // Reset file input
-    const fileInput = document.getElementById("newsletterFileInput");
-    if (fileInput) fileInput.value = "";
-  }
-};
+    try {
+      await axios.post(`${API_BASE_URL}/admin/add-newsletter`, formData, {
+        headers: { "Content-Type": "multipart/form-data" },
+        withCredentials: true,
+      });
+      alert("Newsletter uploaded!");
+      setNewsletterTitle("");
+      setNewsletterFile(null);
+      fetchNewsletters();
+    } catch (err) {
+      console.error("Upload error:", err);
+      alert("Upload failed!");
+    } finally {
+      // Reset file input
+      const fileInput = document.getElementById("newsletterFileInput");
+      if (fileInput) fileInput.value = "";
+    }
+  };
 
-//HANDLE DELETE
-const handleDeleteNewsletter = async (id) => {
-  if (!window.confirm("Are you sure you want to delete this newsletter?")) return;
-
-  try {
-    await axios.delete(`${API_BASE_URL}/admin/delete-newsletter/${id}`, {
-      withCredentials: true,
-    });
-
-    alert("Newsletter deleted successfully!");
-    fetchNewsletters(); 
-  } catch (err) {
-    console.error("Delete error:", err);
-    alert("Failed to delete newsletter!");
-  }
-};
-
-
-//HANDLE MAGAZINE UPLOAD
-const handleMagazineUpload = async (e) => {
-  e.preventDefault();
-  if (!magazineTitle || !magazineFile) return alert("Fill all fields");
-
-  const formData = new FormData();
-  formData.append("title", magazineTitle);
-  formData.append("pdf", magazineFile);
-
-  try {
-    await axios.post(`${API_BASE_URL}/admin/add-magazine`, formData, {
-      headers: { "Content-Type": "multipart/form-data" },
-      withCredentials: true,
-    });
-    alert("Magazine uploaded!");
-    setMagazineTitle("");
-    setMagazineFile(null);
-    fetchMagazines();
-  } catch (err) {
-    console.error("Upload error:", err);
-    alert("Upload failed!");
-  } finally {
-    //Reset file input
-    const fileInput = document.getElementById("magazineFileInput");
-    if (fileInput) fileInput.value = "";
-  }
-};
   //HANDLE DELETE
-const handleDeleteMagazine = async (id) => {
-  if (!window.confirm("Are you sure you want to delete this magazine?")) return;
+  const handleDeleteNewsletter = async (id) => {
+    if (!window.confirm("Are you sure you want to delete this newsletter?"))
+      return;
 
-  try {
-    await axios.delete(`${API_BASE_URL}/admin/delete-magazine/${id}`, {
-      withCredentials: true,
-    });
+    try {
+      await axios.delete(`${API_BASE_URL}/admin/delete-newsletter/${id}`, {
+        withCredentials: true,
+      });
 
-    alert("Magazine deleted successfully!");
-    fetchMagazines(); 
-  } catch (err) {
-    console.error("Delete error:", err);
-    alert("Failed to delete magazine!");
-  }
-};
+      alert("Newsletter deleted successfully!");
+      fetchNewsletters();
+    } catch (err) {
+      console.error("Delete error:", err);
+      alert("Failed to delete newsletter!");
+    }
+  };
 
-// HANDLE YEARBOOK UPLOAD (mirrors magazine)
-const handleYearbookUpload = async (e) => {
-  e.preventDefault();
-  if (!yearbookTitle || !yearbookFile) return alert("Fill all fields");
+  //HANDLE MAGAZINE UPLOAD
+  const handleMagazineUpload = async (e) => {
+    e.preventDefault();
+    if (!magazineTitle || !magazineFile) return alert("Fill all fields");
 
-  const formData = new FormData();
-  formData.append("title", yearbookTitle);
-  formData.append("pdf", yearbookFile);
+    const formData = new FormData();
+    formData.append("title", magazineTitle);
+    formData.append("pdf", magazineFile);
 
-  try {
-    await axios.post(`${API_BASE_URL}/admin/add-yearbook`, formData, {
-      headers: { "Content-Type": "multipart/form-data" },
-      withCredentials: true,
-    });
-    alert("Yearbook uploaded!");
-    setYearbookTitle("");
-    setYearbookFile(null);
-    fetchYearbooks();
-  } catch (err) {
-    console.error("Upload error:", err);
-    alert("Upload failed!");
-  } finally {
-    //Reset file input
-    const fileInput = document.getElementById("yearbookFileInput");
-    if (fileInput) fileInput.value = "";
-  }
-};
+    try {
+      await axios.post(`${API_BASE_URL}/admin/add-magazine`, formData, {
+        headers: { "Content-Type": "multipart/form-data" },
+        withCredentials: true,
+      });
+      alert("Magazine uploaded!");
+      setMagazineTitle("");
+      setMagazineFile(null);
+      fetchMagazines();
+    } catch (err) {
+      console.error("Upload error:", err);
+      alert("Upload failed!");
+    } finally {
+      //Reset file input
+      const fileInput = document.getElementById("magazineFileInput");
+      if (fileInput) fileInput.value = "";
+    }
+  };
+  //HANDLE DELETE
+  const handleDeleteMagazine = async (id) => {
+    if (!window.confirm("Are you sure you want to delete this magazine?"))
+      return;
 
-// HANDLE DELETE YEARBOOK (mirrors magazine)
-const handleDeleteYearbook = async (id) => {
-  if (!window.confirm("Are you sure you want to delete this yearbook?")) return;
+    try {
+      await axios.delete(`${API_BASE_URL}/admin/delete-magazine/${id}`, {
+        withCredentials: true,
+      });
 
-  try {
-    await axios.delete(`${API_BASE_URL}/admin/delete-yearbook/${id}`, {
-      withCredentials: true,
-    });
+      alert("Magazine deleted successfully!");
+      fetchMagazines();
+    } catch (err) {
+      console.error("Delete error:", err);
+      alert("Failed to delete magazine!");
+    }
+  };
 
-    alert("Yearbook deleted successfully!");
-    fetchYearbooks(); 
-  } catch (err) {
-    console.error("Delete error:", err);
-    alert("Failed to delete yearbook!");
-  }
-};
+  // HANDLE YEARBOOK UPLOAD (mirrors magazine)
+  const handleYearbookUpload = async (e) => {
+    e.preventDefault();
+    if (!yearbookTitle || !yearbookFile) return alert("Fill all fields");
+
+    const formData = new FormData();
+    formData.append("title", yearbookTitle);
+    formData.append("pdf", yearbookFile);
+
+    try {
+      await axios.post(`${API_BASE_URL}/admin/add-yearbook`, formData, {
+        headers: { "Content-Type": "multipart/form-data" },
+        withCredentials: true,
+      });
+      alert("Yearbook uploaded!");
+      setYearbookTitle("");
+      setYearbookFile(null);
+      fetchYearbooks();
+    } catch (err) {
+      console.error("Upload error:", err);
+      alert("Upload failed!");
+    } finally {
+      //Reset file input
+      const fileInput = document.getElementById("yearbookFileInput");
+      if (fileInput) fileInput.value = "";
+    }
+  };
+
+  // HANDLE DELETE YEARBOOK (mirrors magazine)
+  const handleDeleteYearbook = async (id) => {
+    if (!window.confirm("Are you sure you want to delete this yearbook?"))
+      return;
+
+    try {
+      await axios.delete(`${API_BASE_URL}/admin/delete-yearbook/${id}`, {
+        withCredentials: true,
+      });
+
+      alert("Yearbook deleted successfully!");
+      fetchYearbooks();
+    } catch (err) {
+      console.error("Delete error:", err);
+      alert("Failed to delete yearbook!");
+    }
+  };
 
   const tabs = [
     {
-      id: 'mentors',
-      label: 'Mentor Verification',
+      id: "mentors",
+      label: "Mentor Verification",
       icon: Users,
       count: mentors.length,
     },
     {
-      id: 'programs',
-      label: 'ProgramsEvents',
+      id: "programs",
+      label: "ProgramsEvents",
       icon: Users,
       count: programs.length,
     },
     {
-      id: 'profiles',
-      label: 'KYA Profiles',
+      id: "profiles",
+      label: "KYA Profiles",
       icon: Award,
       count: profiles.length,
     },
     {
-      id: 'gallery',
-      label: 'Add to gallery',
+      id: "gallery",
+      label: "Add to gallery",
       icon: Upload,
     },
     {
-      id: 'newsletters',
-      label: 'Newsletters',
+      id: "newsletters",
+      label: "Newsletters",
       icon: BookOpenText,
       // count: newsletters.length,
     },
     {
-      id: 'magazines',
-      label: 'Magazines',
+      id: "magazines",
+      label: "Magazines",
       icon: BookOpen,
       // count: magazines.length,
     },
     {
-      id: 'yearbooks',
-      label: 'Yearbooks',
+      id: "yearbooks",
+      label: "Yearbooks",
       icon: BookOpenText,
     },
   ];
@@ -729,26 +731,34 @@ const handleDeleteYearbook = async (id) => {
 
       {/* Navigation Tabs */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div className="flex space-x-1 bg-slate-100 p-1 rounded-lg mb-8">
+        <div className="flex flex-wrap gap-2 bg-slate-50 p-1.5 rounded-xl mb-8 border border-slate-200 shadow-sm">
           {tabs.map((tab) => (
             <button
               key={tab.id}
               onClick={() => setActiveTab(tab.id)}
-              className={`flex items-center px-4 py-3 rounded-md text-sm text-[8px]  sm:text-lg md:text-xl font-medium transition-all duration-200 flex-1 justify-center overflow-hidden whitespace-nowrap  ${
-                activeTab === tab.id
-                  ? 'bg-white text-blue-700 shadow-sm'
-                  : 'text-slate-600 hover:text-slate-900'
-              }`}
+              className={`inline-flex items-center justify-center px-3 sm:px-4 py-2 rounded-lg 
+                  text-[10px] sm:text-sm md:text-base font-medium 
+                  transition-all duration-200 whitespace-nowrap
+                  ${
+                    activeTab === tab.id
+                      ? "bg-white text-blue-700 shadow-sm ring-1 ring-blue-100"
+                      : "text-slate-600 hover:bg-slate-100 hover:text-slate-900"
+                  }`}
             >
-              <tab.icon className="w-5 h-5 mr-2" />
+              {/* icon – hide on very small screens */}
+              <tab.icon className="hidden sm:block w-4 h-4 mr-2" />
+
               {tab.label}
+
               {tab.count > 0 && (
                 <span
-                  className={`ml-2 px-2 py-1 text-xs rounded-full ${
-                    activeTab === tab.id
-                      ? 'bg-blue-100 text-blue-700'
-                      : 'bg-slate-200 text-slate-600'
-                  }`}
+                  className={`ml-2 inline-flex items-center justify-center 
+                      min-w-[1.5rem] h-5 px-1.5 text-[10px] font-semibold 
+                      rounded-full ${
+                        activeTab === tab.id
+                          ? "bg-blue-100 text-blue-700"
+                          : "bg-slate-200 text-slate-600"
+                      }`}
                 >
                   {tab.count}
                 </span>
@@ -760,8 +770,7 @@ const handleDeleteYearbook = async (id) => {
         {/* Content */}
         <div className="space-y-6">
           {/* Mentors Tab */}
-          {activeTab === 'mentors' && (
-           
+          {activeTab === "mentors" && (
             <>
               <RegistrationForm />
               {/* //showing all mentors */}
@@ -850,7 +859,7 @@ const handleDeleteYearbook = async (id) => {
           )}
 
           {/* CVs Tab */}
-       {/*   {activeTab === 'cvs' && (
+          {/*   {activeTab === 'cvs' && (
             <div>
               <div className="flex items-center justify-between mb-6">
                 <h2 className="text-2xl font-semibold text-slate-900">
@@ -924,7 +933,7 @@ const handleDeleteYearbook = async (id) => {
             */}
 
           {/* Programs/Events Tab */}
-          {activeTab === 'programs' && (
+          {activeTab === "programs" && (
             <div>
               <div className="flex items-center justify-between mb-6">
                 <h2 className="text-2xl font-semibold text-slate-900">
@@ -975,8 +984,8 @@ const handleDeleteYearbook = async (id) => {
                             alt="Program Preview"
                             className={`w-24 h-24 rounded-full object-cover border-4 cursor-pointer hover:border-blue-300 transition-colors ${
                               formErrorspro.image
-                                ? 'border-red-300'
-                                : 'border-slate-100'
+                                ? "border-red-300"
+                                : "border-slate-100"
                             }`}
                             onClick={() => fileInputRef.current.click()}
                             title="Click to change image"
@@ -986,8 +995,8 @@ const handleDeleteYearbook = async (id) => {
                             onClick={() => fileInputRef.current.click()}
                             className={`w-24 h-24 border-2 border-dashed rounded-full flex items-center justify-center cursor-pointer hover:border-blue-400 transition-colors ${
                               formErrorspro.image
-                                ? 'border-red-300 bg-red-50'
-                                : 'border-slate-300'
+                                ? "border-red-300 bg-red-50"
+                                : "border-slate-300"
                             }`}
                           >
                             <Upload className="w-6 h-6 text-slate-400" />
@@ -1000,7 +1009,7 @@ const handleDeleteYearbook = async (id) => {
                             className="inline-flex items-center px-4 py-2 bg-slate-100 text-slate-700 text-sm font-medium rounded-lg hover:bg-slate-200 transition-colors"
                           >
                             <Upload className="w-4 h-4 mr-2" />
-                            {imageFilepro ? 'Change Image' : 'Upload Image'}
+                            {imageFilepro ? "Change Image" : "Upload Image"}
                           </button>
                           <p className="text-xs text-slate-500 mt-1">
                             PNG, JPG, GIF up to 10MB
@@ -1121,7 +1130,7 @@ const handleDeleteYearbook = async (id) => {
           )}
 
           {/* newsletters tab */}
-          {activeTab === 'newsletters' && (
+          {activeTab === "newsletters" && (
             <div>
               <h2 className="text-2xl font-semibold mb-4">Upload Newsletter</h2>
               <form onSubmit={handleNewsletterUpload} className="space-y-4">
@@ -1148,37 +1157,36 @@ const handleDeleteYearbook = async (id) => {
                 </button>
               </form>
 
-             <h3 className="text-xl mt-8 mb-4">All Newsletters</h3>
-<ul>
-  {newsletters.map((nl) => (
-    <li
-      key={nl._id}
-      className="mb-2 flex items-center justify-between bg-gray-50 p-2 rounded"
-    >
-      <a
-        href={nl.pdfUrl}
-        target="_blank"
-        rel="noopener noreferrer"
-        className="text-blue-600 underline"
-      >
-        {nl.title}
-      </a>
+              <h3 className="text-xl mt-8 mb-4">All Newsletters</h3>
+              <ul>
+                {newsletters.map((nl) => (
+                  <li
+                    key={nl._id}
+                    className="mb-2 flex items-center justify-between bg-gray-50 p-2 rounded"
+                  >
+                    <a
+                      href={nl.pdfUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-blue-600 underline"
+                    >
+                      {nl.title}
+                    </a>
 
-      <button
-        onClick={() => handleDeleteNewsletter(nl._id)}
-        className="ml-4 px-3 py-1 text-sm bg-red-500 text-white rounded hover:bg-red-600 transition"
-      >
-        Delete
-      </button>
-    </li>
-  ))}
-</ul>
-
+                    <button
+                      onClick={() => handleDeleteNewsletter(nl._id)}
+                      className="ml-4 px-3 py-1 text-sm bg-red-500 text-white rounded hover:bg-red-600 transition"
+                    >
+                      Delete
+                    </button>
+                  </li>
+                ))}
+              </ul>
             </div>
           )}
 
           {/* magazines tab */}
-          {activeTab === 'magazines' && (
+          {activeTab === "magazines" && (
             <div>
               <h2 className="text-2xl font-semibold mb-4">Upload Magazine</h2>
               <form onSubmit={handleMagazineUpload} className="space-y-4">
@@ -1205,36 +1213,36 @@ const handleDeleteYearbook = async (id) => {
                 </button>
               </form>
 
-            <h3 className="text-xl mt-8 mb-4">All Magazines</h3>
-<ul>
-  {magazines.map((mg) => (
-    <li
-      key={mg._id}
-      className="mb-2 flex items-center justify-between bg-gray-50 p-2 rounded"
-    >
-      <a
-        href={mg.pdfUrl}
-        target="_blank"
-        rel="noopener noreferrer"
-        className="text-blue-600 underline"
-      >
-        {mg.title}
-      </a>
+              <h3 className="text-xl mt-8 mb-4">All Magazines</h3>
+              <ul>
+                {magazines.map((mg) => (
+                  <li
+                    key={mg._id}
+                    className="mb-2 flex items-center justify-between bg-gray-50 p-2 rounded"
+                  >
+                    <a
+                      href={mg.pdfUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-blue-600 underline"
+                    >
+                      {mg.title}
+                    </a>
 
-      <button
-        onClick={() => handleDeleteMagazine(mg._id)}
-        className="ml-4 px-3 py-1 text-sm bg-red-500 text-white rounded hover:bg-red-600 transition"
-      >
-        Delete
-      </button>
-    </li>
-  ))}
-</ul>
+                    <button
+                      onClick={() => handleDeleteMagazine(mg._id)}
+                      className="ml-4 px-3 py-1 text-sm bg-red-500 text-white rounded hover:bg-red-600 transition"
+                    >
+                      Delete
+                    </button>
+                  </li>
+                ))}
+              </ul>
             </div>
           )}
 
           {/* yearbooks tab (mirror of magazines) */}
-          {activeTab === 'yearbooks' && (
+          {activeTab === "yearbooks" && (
             <div>
               <h2 className="text-2xl font-semibold mb-4">Upload Yearbook</h2>
               <form onSubmit={handleYearbookUpload} className="space-y-4">
@@ -1261,36 +1269,36 @@ const handleDeleteYearbook = async (id) => {
                 </button>
               </form>
 
-            <h3 className="text-xl mt-8 mb-4">All Yearbooks</h3>
-<ul>
-  {yearbooks.map((yb) => (
-    <li
-      key={yb._id}
-      className="mb-2 flex items-center justify-between bg-gray-50 p-2 rounded"
-    >
-      <a
-        href={yb.pdfUrl}
-        target="_blank"
-        rel="noopener noreferrer"
-        className="text-blue-600 underline"
-      >
-        {yb.title}
-      </a>
+              <h3 className="text-xl mt-8 mb-4">All Yearbooks</h3>
+              <ul>
+                {yearbooks.map((yb) => (
+                  <li
+                    key={yb._id}
+                    className="mb-2 flex items-center justify-between bg-gray-50 p-2 rounded"
+                  >
+                    <a
+                      href={yb.pdfUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-blue-600 underline"
+                    >
+                      {yb.title}
+                    </a>
 
-      <button
-        onClick={() => handleDeleteYearbook(yb._id)}
-        className="ml-4 px-3 py-1 text-sm bg-red-500 text-white rounded hover:bg-red-600 transition"
-      >
-        Delete
-      </button>
-    </li>
-  ))}
-</ul>
+                    <button
+                      onClick={() => handleDeleteYearbook(yb._id)}
+                      className="ml-4 px-3 py-1 text-sm bg-red-500 text-white rounded hover:bg-red-600 transition"
+                    >
+                      Delete
+                    </button>
+                  </li>
+                ))}
+              </ul>
             </div>
           )}
 
           {/* Profiles Tab */}
-          {activeTab === 'profiles' && (
+          {activeTab === "profiles" && (
             <div>
               <div className="flex items-center justify-between mb-6">
                 <h2 className="text-2xl font-semibold text-slate-900">
@@ -1320,8 +1328,8 @@ const handleDeleteYearbook = async (id) => {
                         required
                         className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-shadow ${
                           formErrors.Name
-                            ? 'border-red-300 bg-red-50'
-                            : 'border-slate-300'
+                            ? "border-red-300 bg-red-50"
+                            : "border-slate-300"
                         }`}
                         placeholder="Enter full name"
                       />
@@ -1342,8 +1350,8 @@ const handleDeleteYearbook = async (id) => {
                         required
                         className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-shadow ${
                           formErrors.Batch
-                            ? 'border-red-300 bg-red-50'
-                            : 'border-slate-300'
+                            ? "border-red-300 bg-red-50"
+                            : "border-slate-300"
                         }`}
                       >
                         <option value="">Select Batch</option>
@@ -1371,8 +1379,8 @@ const handleDeleteYearbook = async (id) => {
                         required
                         className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-shadow ${
                           formErrors.CurrRole
-                            ? 'border-red-300 bg-red-50'
-                            : 'border-slate-300'
+                            ? "border-red-300 bg-red-50"
+                            : "border-slate-300"
                         }`}
                         placeholder="e.g., Software Engineer at Google"
                       />
@@ -1394,8 +1402,8 @@ const handleDeleteYearbook = async (id) => {
                         required
                         className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-shadow ${
                           formErrors.Achievement
-                            ? 'border-red-300 bg-red-50'
-                            : 'border-slate-300'
+                            ? "border-red-300 bg-red-50"
+                            : "border-slate-300"
                         }`}
                         placeholder="Key achievement or recognition"
                       />
@@ -1417,8 +1425,8 @@ const handleDeleteYearbook = async (id) => {
                         required
                         className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-shadow ${
                           formErrors.LinkedInPostLink
-                            ? 'border-red-300 bg-red-50'
-                            : 'border-slate-300'
+                            ? "border-red-300 bg-red-50"
+                            : "border-slate-300"
                         }`}
                         placeholder="Key achievement or recognition"
                       />
@@ -1442,8 +1450,8 @@ const handleDeleteYearbook = async (id) => {
                       rows="4"
                       className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-shadow ${
                         formErrors.ShortBio
-                          ? 'border-red-300 bg-red-50'
-                          : 'border-slate-300'
+                          ? "border-red-300 bg-red-50"
+                          : "border-slate-300"
                       }`}
                       placeholder="Brief description about the alumni..."
                     />
@@ -1473,8 +1481,8 @@ const handleDeleteYearbook = async (id) => {
                           alt="Profile Preview"
                           className={`w-24 h-24 rounded-full object-cover border-4 cursor-pointer hover:border-blue-300 transition-colors ${
                             formErrors.profilePic
-                              ? 'border-red-300'
-                              : 'border-slate-100'
+                              ? "border-red-300"
+                              : "border-slate-100"
                           }`}
                           onClick={() => fileInputRef.current.click()}
                           title="Click to change image"
@@ -1484,8 +1492,8 @@ const handleDeleteYearbook = async (id) => {
                           onClick={() => fileInputRef.current.click()}
                           className={`w-24 h-24 border-2 border-dashed rounded-full flex items-center justify-center cursor-pointer hover:border-blue-400 transition-colors ${
                             formErrors.profilePic
-                              ? 'border-red-300 bg-red-50'
-                              : 'border-slate-300'
+                              ? "border-red-300 bg-red-50"
+                              : "border-slate-300"
                           }`}
                         >
                           <Upload className="w-6 h-6 text-slate-400" />
@@ -1498,7 +1506,7 @@ const handleDeleteYearbook = async (id) => {
                           className="inline-flex items-center px-4 py-2 bg-slate-100 text-slate-700 text-sm font-medium rounded-lg hover:bg-slate-200 transition-colors"
                         >
                           <Upload className="w-4 h-4 mr-2" />
-                          {imageFile ? 'Change Image' : 'Upload Image'}
+                          {imageFile ? "Change Image" : "Upload Image"}
                         </button>
                         <p className="text-xs text-slate-500 mt-1">
                           PNG, JPG, GIF up to 10MB
@@ -1547,7 +1555,6 @@ const handleDeleteYearbook = async (id) => {
                         className="bg-white rounded-xl p-6 shadow-sm border border-slate-200"
                       >
                         <div className="flex flex-col sm:flex-row items-start sm:space-x-4 space-y-4 sm:space-y-0">
-
                           {profile.profilePic && (
                             <img
                               src={profile.profilePic}
@@ -1602,7 +1609,7 @@ const handleDeleteYearbook = async (id) => {
           )}
 
           {/* Gallery Section */}
-          {activeTab === 'gallery' && (
+          {activeTab === "gallery" && (
             <div>
               <div className="flex items-center justify-between mb-6">
                 <h2 className="text-2xl font-semibold text-slate-900">
@@ -1692,7 +1699,7 @@ const handleDeleteYearbook = async (id) => {
         </div>
       </div>
     </div>
-  )
+  );
 };
 
 export default AdminDashboard;
