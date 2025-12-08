@@ -205,6 +205,8 @@ const AdminDashboard = () => {
     date: "",
     time: "",
     venue: "",
+    attendance: "",
+    about: "",
   });
 
   useEffect(() => {
@@ -222,7 +224,8 @@ const AdminDashboard = () => {
 
   const handleChangeprogram = (e) => {
     setFormDataprogram({ ...formDataprogram, [e.target.name]: e.target.value });
-    if (formErrors[e.target.name]) {
+
+    if (formErrorspro[e.target.name]) {
       setFormErrorspro({ ...formErrorspro, [e.target.name]: "" });
     }
   };
@@ -241,6 +244,9 @@ const AdminDashboard = () => {
     if (!formDataprogram.date.trim()) errors.date = "Date is required";
     if (!formDataprogram.time.trim()) errors.time = "Time is required";
     if (!formDataprogram.venue.trim()) errors.venue = "Venue is required";
+    if (!formDataprogram.attendance.trim())
+      errors.attendance = "Attendance is required";
+    if (!formDataprogram.about.trim()) errors.about = "Description is required";
     if (!imageFilepro) errors.image = "Program/Event image is required";
     return errors;
   };
@@ -260,6 +266,8 @@ const AdminDashboard = () => {
       data.append("date", formDataprogram.date);
       data.append("time", formDataprogram.time);
       data.append("venue", formDataprogram.venue);
+      data.append("attendance", formDataprogram.attendance); // ✅ NEW
+      data.append("about", formDataprogram.about); // ✅ NEW
       data.append("image", imageFilepro);
 
       await axios.post("http://localhost:8000/admin/add-program", data, {
@@ -277,9 +285,11 @@ const AdminDashboard = () => {
         date: "",
         time: "",
         venue: "",
+        attendance: "",
+        about: "",
       });
       setImageFilepro(null);
-      setFormErrors({});
+      setFormErrorspro({});
 
       const res = await axios.get("http://localhost:8000/admin/get-programs");
       setPrograms(res.data.data);
@@ -858,80 +868,6 @@ const AdminDashboard = () => {
             </>
           )}
 
-          {/* CVs Tab */}
-          {/*   {activeTab === 'cvs' && (
-            <div>
-              <div className="flex items-center justify-between mb-6">
-                <h2 className="text-2xl font-semibold text-slate-900">
-                  CV Reviews
-                </h2>
-                <div className="text-sm text-slate-500">
-                  {submittedCVs.length} submissions
-                </div>
-              </div>
-
-              {submittedCVs.length === 0 ? (
-                <div className="bg-white rounded-xl p-12 text-center shadow-sm border border-slate-200">
-                  <FileText className="w-16 h-16 text-slate-300 mx-auto mb-4" />
-                  <h3 className="text-lg font-medium text-slate-900 mb-2">
-                    No CVs submitted
-                  </h3>
-                  <p className="text-slate-600">
-                    CV submissions will appear here for review.
-                  </p>
-                </div>
-              ) : (
-                <div className="grid gap-4">
-                  {submittedCVs.map((cv, index) => (
-                    <div
-                      key={index}
-                      className="bg-white rounded-xl p-6 shadow-sm border border-slate-200"
-                    >
-                      <div className="flex flex-col md:flex-row md:items-center justify-between">
-                        <div className="space-y-2">
-                          <div className="flex items-center">
-                            <User className="w-4 h-4 text-slate-400 mr-2" />
-                            <span className="font-medium text-slate-900">
-                              {cv.Name}
-                            </span>
-                            <span className="mx-2 text-slate-300">•</span>
-                            <span className="text-sm text-slate-600">
-                              {cv.Roll_No}
-                            </span>
-                          </div>
-                          <div className="flex items-center">
-                            <Mail className="w-4 h-4 text-slate-400 mr-2" />
-                            <span className="text-sm text-slate-600">
-                              {cv.Student_Email}
-                            </span>
-                          </div>
-                          <div className="flex items-center">
-                            <Briefcase className="w-4 h-4 text-slate-400 mr-2" />
-                            <span className="text-sm text-slate-600">
-                              {cv.Target_Profile}
-                            </span>
-                          </div>
-                        </div>
-                        <div className="mt-4 md:mt-0">
-                          <a
-                            href={cv.CV_link}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="inline-flex items-center px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-lg hover:bg-blue-700 transition-colors"
-                          >
-                            <Eye className="w-4 h-4 mr-2" />
-                            View CV
-                          </a>
-                        </div>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              )}
-            </div>
-          )}
-            */}
-
           {/* Programs/Events Tab */}
           {activeTab === "programs" && (
             <div>
@@ -1081,6 +1017,51 @@ const AdminDashboard = () => {
                         placeholder="e.g. 6:00 PM"
                         className="w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-shadow border-slate-300"
                       />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-slate-700 mb-2">
+                        Attendance
+                      </label>
+                      <input
+                        type="text"
+                        name="attendance"
+                        value={formDataprogram.attendance}
+                        onChange={handleChangeprogram}
+                        required
+                        placeholder="e.g. 120 students"
+                        className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-shadow ${
+                          formErrorspro.attendance
+                            ? "border-red-300 bg-red-50"
+                            : "border-slate-300"
+                        }`}
+                      />
+                      {formErrorspro.attendance && (
+                        <p className="mt-1 text-sm text-red-600">
+                          {formErrorspro.attendance}
+                        </p>
+                      )}
+                    </div>
+                    <div className="md:col-span-2">
+                      <label className="block text-sm font-medium text-slate-700 mb-2">
+                        Description
+                      </label>
+                      <textarea
+                        name="about"
+                        value={formDataprogram.about}
+                        onChange={handleChangeprogram}
+                        rows={4}
+                        placeholder="Enter a short description of the program/event"
+                        className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-shadow ${
+                          formErrorspro.about
+                            ? "border-red-300 bg-red-50"
+                            : "border-slate-300"
+                        }`}
+                      />
+                      {formErrorspro.about && (
+                        <p className="mt-1 text-sm text-red-600">
+                          {formErrorspro.about}
+                        </p>
+                      )}
                     </div>
                   </div>
 
