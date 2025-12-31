@@ -27,6 +27,10 @@ import Gallery from "./Components/Gallery/Gallery";
 
 import AboutEvent from './pages/AboutEvent';
 
+import AlumniContribution from "./pages/AlumniContribution";
+import Sponsors from "./pages/Sponsors";
+
+
 // import AdminSettings from "./pages/AdminSettings";
 
 function AdminRoute({ children }) {
@@ -84,6 +88,10 @@ function App() {
           <Route path="/Yearbook" element={<YearbookPage />} />
           <Route path="/KYA" element={<KYA />} />
           <Route path="/team" element={<TeamSection />} />
+          {/* Two New pages  */}
+          <Route path="/alumni-contribution" element={<AlumniContribution />} />
+          <Route path="/sponsors" element={<Sponsors />} />
+
           <Route
             path="/admin-dashboard"
             element={
