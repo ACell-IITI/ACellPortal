@@ -165,13 +165,7 @@ const Sponsors = () => {
         )}
       </section>
 
-      {/* Footer */}
-      <footer
-        className="border-t border-gray-200 py-8 sm:py-10
-                   text-center text-xs sm:text-sm text-gray-500 px-4"
-      >
-        © {new Date().getFullYear()} · Alumni Cell · IIT
-      </footer>
+
     </motion.div>
   );
 };
