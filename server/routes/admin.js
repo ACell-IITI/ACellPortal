@@ -31,6 +31,11 @@ import {
   getLatestMagazine,
   getLatestYearbook
 } from '../controllers/admin.controller.js';
+import {
+  addAlumniContribution,
+  getAlumniContributions,
+  deleteAlumniContribution,
+} from '../controllers/alumniContributionController.js';
 
 const router = express.Router();
 
@@ -76,5 +81,10 @@ router.delete('/delete-yearbook/:id', deleteYearbook);
 router.get('/latest-newsletter', getLatestNewsletter);
 router.get('/latest-magazine', getLatestMagazine);
 router.get('/latest-yearbook', getLatestYearbook);
+
+// Alumni Contribution routes
+router.post('/add-alumni-contribution', upload.single('photo'), addAlumniContribution);
+router.get('/get-alumni-contributions', getAlumniContributions);
+router.delete('/delete-alumni-contribution/:id', deleteAlumniContribution);
 
 export default router;

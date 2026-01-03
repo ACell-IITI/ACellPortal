@@ -1,54 +1,8 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { Users } from "lucide-react";
 import { motion } from "framer-motion";
 
-// Random Data
-
-const alumniData = [
-  {
-    id: 1,
-    name: "Rahul Verma",
-    batch: 2019,
-    photo:
-      "https://images.pexels.com/photos/2379004/pexels-photo-2379004.jpeg?auto=compress&cs=tinysrgb&w=300&h=300&fit=crop",
-  },
-  {
-    id: 2,
-    name: "Ananya Singh",
-    batch: 2018,
-   photo:
-      "https://images.pexels.com/photos/2379004/pexels-photo-2379004.jpeg?auto=compress&cs=tinysrgb&w=300&h=300&fit=crop",
-  },
-  {
-    id: 3,
-    name: "Amit Sharma",
-    batch: 2020,
-    photo:
-      "https://images.pexels.com/photos/2379004/pexels-photo-2379004.jpeg?auto=compress&cs=tinysrgb&w=300&h=300&fit=crop",
-  },
-  {
-    id: 4,
-    name: "Neha Gupta",
-    batch: 2017,
-    photo:
-      "https://images.pexels.com/photos/2379004/pexels-photo-2379004.jpeg?auto=compress&cs=tinysrgb&w=300&h=300&fit=crop",
-  },
-  {
-    id: 5,
-    name: "Vikram Patel",
-    batch: 2021,
-    photo:
-      "https://images.pexels.com/photos/2379004/pexels-photo-2379004.jpeg?auto=compress&cs=tinysrgb&w=300&h=300&fit=crop",
-  },
-  {
-    id: 6,
-    name: "Priya Reddy",
-    batch: 2022,
-    photo:
-      "https://images.pexels.com/photos/2379004/pexels-photo-2379004.jpeg?auto=compress&cs=tinysrgb&w=300&h=300&fit=crop",
-  },
-];
-
+// Random Data (removed hard-coded data)
 
 const fadeUp = {
   hidden: { opacity: 0, y: 24 },
@@ -130,6 +84,25 @@ const AlumniCard = ({ alumni }) => {
 
 
 const AlumniContributions = () => {
+  const [alumniData, setAlumniData] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetch("http://localhost:8000/api/alumni-contributions")
+      .then((res) => res.json())
+      .then((data) => setAlumniData(data))
+      .catch((err) => console.error("Error fetching alumni contributions:", err))
+      .finally(() => setLoading(false));
+  }, []);
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-gray-100 flex items-center justify-center">
+        <p className="text-gray-500">Loading alumni contributions...</p>
+      </div>
+    );
+  }
+
   return (
     <motion.div
       initial={{ opacity: 0 }}
@@ -204,7 +177,7 @@ const AlumniContributions = () => {
           "
         >
           {alumniData.map((alumni) => (
-            <AlumniCard key={alumni.id} alumni={alumni} />
+            <AlumniCard key={alumni._id} alumni={alumni} />
           ))}
         </motion.div>
       </div>

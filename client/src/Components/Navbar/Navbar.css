@@ -261,7 +261,7 @@ display: flex;
 }
 
 .navbar-link:last-child {
-    margin-right: 180px;
+    margin-right: 20vw;
   }
 
 @media (max-width: 1190px) {

@@ -10,8 +10,10 @@ import adminRoute from './routes/admin.js';
 import alumniRoute from './routes/alumni.js';
 import mentorsRoute from './routes/mentors.js';
 import galleryRoutes from "./routes/gallery.js"
+import sponsorRoutes from "./routes/sponsorRoutes.js";
 // Optional: if you have other grouped routes
 import allRoutes from "./routes/index.js";
+import { getAlumniContributions } from './controllers/alumniContributionController.js';
 
 const app = express();
 
@@ -40,6 +42,10 @@ app.use('/mentors', mentorsRoute);
 app.use("/", allRoutes);
 app.use("/api/gallery", galleryRoutes);
 app.use("/uploads", express.static("uploads"));
+app.use("/api", sponsorRoutes);
+
+// Public routes
+app.get('/api/alumni-contributions', getAlumniContributions);
 
 // MongoDB connection
 const mongodbLink = process.env.MONGO_URI || process.env.MONGODB_LINK;

@@ -44,6 +44,137 @@ const AdminDashboard = () => {
   //CV Review
   //const [submittedCVs, setSubmittedCVs] = useState([]);
   //const [unseenCVCount, setUnseenCVCount] = useState(0);
+
+  // SPONSORS
+  const [sponsors, setSponsors] = useState([]);
+  const [sponsorForm, setSponsorForm] = useState({
+    name: "",
+    type: "",
+  });
+
+  const [sponsorLogo, setSponsorLogo] = useState(null);
+  const sponsorLogoRef = useRef(null);
+
+  // ALUMNI CONTRIBUTIONS
+  const [alumniContributions, setAlumniContributions] = useState([]);
+  const [contributionForm, setContributionForm] = useState({
+    name: "",
+    batch: "",
+  });
+  const [contributionPhoto, setContributionPhoto] = useState(null);
+  const contributionPhotoRef = useRef(null);
+
+  const fetchSponsors = async () => {
+    try {
+      const res = await axios.get("http://localhost:8000/api/sponsors");
+      setSponsors(res.data);
+    } catch (err) {
+      console.error("Error fetching sponsors:", err);
+    }
+  };
+
+  const fetchAlumniContributions = async () => {
+    try {
+      const res = await axios.get(`${API_BASE_URL}/admin/get-alumni-contributions`);
+      setAlumniContributions(res.data);
+    } catch (err) {
+      console.error("Error fetching alumni contributions:", err);
+    }
+  };
+
+  useEffect(() => {
+    fetchSponsors();
+    fetchAlumniContributions();
+  }, []);
+
+  const handleSponsorLogoChange = (e) => {
+    setSponsorLogo(e.target.files[0]);
+  };
+
+  const handleAddSponsor = async (e) => {
+    e.preventDefault();
+
+    if (!sponsorForm.name || !sponsorForm.type || !sponsorLogo) {
+      alert("All fields including logo are required");
+      return;
+    }
+
+    try {
+      const data = new FormData();
+      data.append("name", sponsorForm.name);
+      data.append("type", sponsorForm.type);
+      data.append("logo", sponsorLogo);
+
+      await axios.post("http://localhost:8000/api/admin/add-sponsor", data, {
+        headers: { "Content-Type": "multipart/form-data" },
+      });
+
+      setSponsorForm({ name: "", type: "" });
+      setSponsorLogo(null);
+      fetchSponsors();
+    } catch (err) {
+      console.error("Error adding sponsor:", err);
+    }
+  };
+
+  const handleDeleteSponsor = async (id, name) => {
+    if (!window.confirm(`Delete sponsor "${name}"?`)) return;
+
+    try {
+      await axios.delete(
+        `http://localhost:8000/api/admin/delete-sponsor/${id}`
+      );
+      fetchSponsors();
+    } catch (err) {
+      console.error("Error deleting sponsor:", err);
+    }
+  };
+
+  const handleContributionPhotoChange = (e) => {
+    setContributionPhoto(e.target.files[0]);
+  };
+
+  const handleAddAlumniContribution = async (e) => {
+    e.preventDefault();
+
+    if (!contributionForm.name || !contributionForm.batch || !contributionPhoto) {
+      alert("Please fill all fields and upload a photo.");
+      return;
+    }
+
+    try {
+      const formData = new FormData();
+      formData.append("name", contributionForm.name);
+      formData.append("batch", contributionForm.batch);
+      formData.append("photo", contributionPhoto);
+
+      await axios.post(`${API_BASE_URL}/admin/add-alumni-contribution`, formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      });
+
+      alert("Alumni contribution added successfully!");
+      setContributionForm({ name: "", batch: "" });
+      setContributionPhoto(null);
+      fetchAlumniContributions();
+    } catch (err) {
+      console.error('Error adding alumni contribution:', err);
+      alert('Error adding alumni contribution.');
+    }
+  };
+
+  const handleDeleteAlumniContribution = async (id, name) => {
+    if (!window.confirm(`Delete alumni contribution for "${name}"?`)) return;
+
+    try {
+      await axios.delete(`${API_BASE_URL}/admin/delete-alumni-contribution/${id}`);
+      fetchAlumniContributions();
+    } catch (err) {
+      console.error("Error deleting alumni contribution:", err);
+    }
+  };
+
   //Gallery
   const [gallery, setGallery] = useState([]);
   const [galleryImageFile, setGalleryImageFile] = useState(null);
@@ -680,6 +811,18 @@ const AdminDashboard = () => {
       id: "yearbooks",
       label: "Yearbooks",
       icon: BookOpenText,
+    },
+    {
+      id: "sponsors",
+      label: "Sponsors",
+      icon: Award,
+      count: sponsors.length,
+    },
+    {
+      id: "alumni-contributions",
+      label: "Alumni Contributions",
+      icon: Users,
+      count: alumniContributions.length,
     },
   ];
 
@@ -1672,6 +1815,220 @@ const AdminDashboard = () => {
                         DELETE
                       </button>
                     </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Sponsors Section */}
+          {activeTab === "sponsors" && (
+            <div>
+              <h2 className="text-2xl font-semibold mb-6">Manage Sponsors</h2>
+
+              {/* Add Sponsor Form */}
+              <div className="bg-white rounded-xl p-6 shadow-sm border mb-8">
+                <h3 className="text-lg font-semibold mb-4">Add New Sponsor</h3>
+
+                <form
+                  onSubmit={handleAddSponsor}
+                  className="grid md:grid-cols-3 gap-4"
+                >
+                  <input
+                    type="text"
+                    placeholder="Sponsor Name"
+                    value={sponsorForm.name}
+                    onChange={(e) =>
+                      setSponsorForm({ ...sponsorForm, name: e.target.value })
+                    }
+                    className="border rounded px-4 py-2"
+                  />
+
+                  <input
+                    type="text"
+                    placeholder="Sponsor Type"
+                    value={sponsorForm.type}
+                    onChange={(e) =>
+                      setSponsorForm({ ...sponsorForm, type: e.target.value })
+                    }
+                    className="border rounded px-4 py-2"
+                  />
+
+                  <input
+                    type="file"
+                    accept="image/*"
+                    ref={sponsorLogoRef}
+                    onChange={handleSponsorLogoChange}
+                    className="hidden"
+                  />
+
+                  <div className="flex items-center gap-4">
+                    {sponsorLogo ? (
+                      <img
+                        src={URL.createObjectURL(sponsorLogo)}
+                        alt="Sponsor Logo Preview"
+                        className="w-20 h-20 rounded-lg object-contain border cursor-pointer"
+                        onClick={() => sponsorLogoRef.current.click()}
+                      />
+                    ) : (
+                      <div
+                        onClick={() => sponsorLogoRef.current.click()}
+                        className="w-20 h-20 border-2 border-dashed rounded-lg flex items-center justify-center cursor-pointer hover:border-blue-400"
+                      >
+                        <Upload className="w-6 h-6 text-slate-400" />
+                      </div>
+                    )}
+
+                    <button
+                      type="button"
+                      onClick={() => sponsorLogoRef.current.click()}
+                      className="px-4 py-2 bg-slate-100 rounded hover:bg-slate-200 text-sm"
+                    >
+                      Upload Logo
+                    </button>
+                  </div>
+
+                  <button
+                    type="submit"
+                    className="md:col-span-3 bg-blue-600 text-white py-2 rounded hover:bg-blue-700"
+                  >
+                    Add Sponsor
+                  </button>
+                </form>
+              </div>
+
+              {/* Sponsors List */}
+              <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {sponsors.map((sponsor) => (
+                  <div
+                    key={sponsor._id}
+                    className="bg-white border rounded-xl p-4 shadow-sm flex justify-between items-center"
+                  >
+                    <div>
+                      <h4 className="font-semibold">{sponsor.name}</h4>
+                      <p className="text-sm text-gray-500">{sponsor.type}</p>
+                      <img
+                        src={sponsor.icon}
+                        alt={sponsor.name}
+                        className="w-14 h-14 object-contain mt-2"
+                      />
+                    </div>
+
+                    <button
+                      onClick={() =>
+                        handleDeleteSponsor(sponsor._id, sponsor.name)
+                      }
+                      className="text-red-600 font-bold"
+                    >
+                      DELETE
+                    </button>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Alumni Contributions Section */}
+          {activeTab === "alumni-contributions" && (
+            <div>
+              <h2 className="text-2xl font-semibold mb-6">Manage Alumni Contributions</h2>
+
+              {/* Add Alumni Contribution Form */}
+              <div className="bg-white rounded-xl p-6 shadow-sm border mb-8">
+                <h3 className="text-lg font-semibold mb-4">Add New Alumni Contribution</h3>
+
+                <form
+                  onSubmit={handleAddAlumniContribution}
+                  className="grid md:grid-cols-3 gap-4"
+                >
+                  <input
+                    type="text"
+                    placeholder="Alumni Name"
+                    value={contributionForm.name}
+                    onChange={(e) =>
+                      setContributionForm({ ...contributionForm, name: e.target.value })
+                    }
+                    className="border rounded px-4 py-2"
+                  />
+
+                  <input
+                    type="number"
+                    placeholder="Batch Year"
+                    value={contributionForm.batch}
+                    onChange={(e) =>
+                      setContributionForm({ ...contributionForm, batch: e.target.value })
+                    }
+                    className="border rounded px-4 py-2"
+                  />
+
+                  <input
+                    type="file"
+                    accept="image/*"
+                    ref={contributionPhotoRef}
+                    onChange={handleContributionPhotoChange}
+                    className="hidden"
+                  />
+
+                  <div className="flex items-center gap-4">
+                    {contributionPhoto ? (
+                      <img
+                        src={URL.createObjectURL(contributionPhoto)}
+                        alt="Alumni Photo Preview"
+                        className="w-20 h-20 rounded-lg object-contain border cursor-pointer"
+                        onClick={() => contributionPhotoRef.current.click()}
+                      />
+                    ) : (
+                      <div
+                        onClick={() => contributionPhotoRef.current.click()}
+                        className="w-20 h-20 border-2 border-dashed rounded-lg flex items-center justify-center cursor-pointer hover:border-blue-400"
+                      >
+                        <Upload className="w-6 h-6 text-slate-400" />
+                      </div>
+                    )}
+
+                    <button
+                      type="button"
+                      onClick={() => contributionPhotoRef.current.click()}
+                      className="px-4 py-2 bg-slate-100 rounded hover:bg-slate-200 text-sm"
+                    >
+                      Upload Photo
+                    </button>
+                  </div>
+
+                  <button
+                    type="submit"
+                    className="md:col-span-3 bg-blue-600 text-white py-2 rounded hover:bg-blue-700"
+                  >
+                    Add Alumni Contribution
+                  </button>
+                </form>
+              </div>
+
+              {/* Alumni Contributions List */}
+              <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {alumniContributions.map((contribution) => (
+                  <div
+                    key={contribution._id}
+                    className="bg-white border rounded-xl p-4 shadow-sm flex justify-between items-center"
+                  >
+                    <div>
+                      <h4 className="font-semibold">{contribution.name}</h4>
+                      <p className="text-sm text-gray-500">Batch {contribution.batch}</p>
+                      <img
+                        src={contribution.photo}
+                        alt={contribution.name}
+                        className="w-14 h-14 object-contain mt-2 rounded"
+                      />
+                    </div>
+
+                    <button
+                      onClick={() =>
+                        handleDeleteAlumniContribution(contribution._id, contribution.name)
+                      }
+                      className="text-red-600 font-bold"
+                    >
+                      DELETE
+                    </button>
                   </div>
                 ))}
               </div>
