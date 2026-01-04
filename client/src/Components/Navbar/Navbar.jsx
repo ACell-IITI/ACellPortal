@@ -9,7 +9,6 @@ import { Fade as Hamburger } from 'hamburger-react'
 
 import UserDropdown from '../UserDropdown/UserDropdown';
 
-
 export default function Navbar() {
   const [dropdownOpen, setDropdownOpen] = useState(null);
   const [menuOpen, setMenuOpen] = useState(false);
@@ -33,8 +32,8 @@ export default function Navbar() {
       } catch (error) {
         console.log('Error in useEffect:', error);
         setRole(null);
-      }finally {
-      setLoading(false); 
+      } finally {
+        setLoading(false); 
       }
     };
 
@@ -91,10 +90,11 @@ export default function Navbar() {
       className={navbarClass}
       style={{
         backgroundPosition: `center ${-offset}px`,
+        whiteSpace: 'nowrap',
       }}
     >
-      <div className="navbar-container">
-        <div className="navbar-logo-title">
+      <div className="navbar-container" style={{ whiteSpace: 'nowrap' }}>
+        <div className="navbar-logo-title" style={{ whiteSpace: 'nowrap' }}>
           <div className="logo-wrapper">
             <div className="box box1"></div>
             <div className="box box2"></div>
@@ -107,9 +107,15 @@ export default function Navbar() {
               />
             </Link>
           </div>
-          <div className="nav-title">
-            <div className="navbar-title">Alumni Cell</div>
-            <div className="navbar-subtitle">
+
+          <div className="nav-title" style={{ whiteSpace: 'nowrap' }}>
+            <div className="navbar-title" style={{ whiteSpace: 'nowrap' }}>
+              Alumni Cell
+            </div>
+            <div
+              className="navbar-subtitle"
+              style={{ whiteSpace: 'nowrap' }}
+            >
               Indian Institute of Technology, Indore
             </div>
           </div>
@@ -119,14 +125,22 @@ export default function Navbar() {
           <Hamburger toggled={menuOpen} toggle={setMenuOpen} />
         </div>
 
-        <ul className={`navbar-links${menuOpen ? ' open' : ''}`}>
+        <ul
+          className={`navbar-links${menuOpen ? ' open' : ''}`}
+          style={{ whiteSpace: 'nowrap' }}
+        >
           {navLinks.map((link) =>
             link.dropdown ? (
-              <li key={link.name} className="navbar-link dropdown-parent">
+              <li
+                key={link.name}
+                className="navbar-link dropdown-parent"
+                style={{ whiteSpace: 'nowrap' }}
+              >
                 <div
                   className="dropdown-hover-wrapper"
                   onMouseEnter={() => !isMobile && setDropdownOpen(link.name)}
                   onMouseLeave={() => !isMobile && setDropdownOpen(null)}
+                  style={{ whiteSpace: 'nowrap' }}
                 >
                   <span
                     className={`navbar-link-text ${
@@ -136,6 +150,7 @@ export default function Navbar() {
                         ? 'active'
                         : ''
                     }`}
+                    style={{ whiteSpace: 'nowrap' }}
                     onClick={() =>
                       isMobile
                         ? setDropdownOpen(
@@ -147,18 +162,21 @@ export default function Navbar() {
                     {link.name}
                     <span className="navbar-dropdown-arrow"></span>
                   </span>
+
                   <ul
                     className={`navbar-dropdown ${
                       dropdownOpen === link.name ? 'open' : ''
                     }`}
+                    style={{ whiteSpace: 'nowrap' }}
                   >
                     {link.dropdown.map((item) => (
-                      <li key={item.path}>
+                      <li key={item.path} style={{ whiteSpace: 'nowrap' }}>
                         <NavLink
                           to={item.path}
                           className={({ isActive }) =>
                             `navbar-dropdown-link${isActive ? ' active' : ''}`
                           }
+                          style={{ whiteSpace: 'nowrap' }}
                           onClick={() => {
                             setDropdownOpen(null);
                             handleNavClick();
@@ -172,13 +190,18 @@ export default function Navbar() {
                 </div>
               </li>
             ) : (
-              <li key={link.name} className="navbar-link">
+              <li
+                key={link.name}
+                className="navbar-link"
+                style={{ whiteSpace: 'nowrap' }}
+              >
                 <NavLink
                   to={link.path}
                   className={({ isActive }) =>
                     `navbar-link-text${isActive ? ' active' : ''}`
                   }
                   end={link.path === '/'}
+                  style={{ whiteSpace: 'nowrap' }}
                   onClick={handleNavClick}
                 >
                   {link.name}
@@ -188,10 +211,9 @@ export default function Navbar() {
           )}
         </ul>
 
-        <div className="signupbtn"> 
-           {!loading && role === "admin" ? <UserDropdown /> : null}
+        <div className="signupbtn" style={{ whiteSpace: 'nowrap' }}> 
+          {!loading && role === "admin" ? <UserDropdown /> : null}
         </div>
-
       </div>
     </nav>
   );
