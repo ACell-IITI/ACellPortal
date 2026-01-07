@@ -125,7 +125,7 @@ const Footer = () => (
  </div>
     
   </footer>
-  <div className="rights">© 2025 - All Rights with IIT Indore</div>
+  <div className="rights">© {new Date().getFullYear()} - All Rights with IIT Indore</div>
   </>
 );
 

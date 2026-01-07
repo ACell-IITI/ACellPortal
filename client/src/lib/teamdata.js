@@ -3,7 +3,7 @@ export const teamMembers = [
     id: 10,
     name: "Ansh Kyal",
     role: " Head",
-    image: "../Team/Ansh Kyal_Head.jpg",
+    image: "../Team/Ansh Kyal_Head.png",
     linkedin: "/team",
     insta: "/team",
     group: "Head",

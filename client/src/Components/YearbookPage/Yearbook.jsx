@@ -64,21 +64,21 @@ const Yearbook = () => {
                                     
                                     <h3 className='font-bold text-xl text-[#0F2A5A] mb-2 line-clamp-2 min-h-[3.5rem] flex items-center justify-center'>{yearbook.title || "Untitled Yearbook"}</h3>
                                     
-                                    <p className='text-gray-600 text-sm mb-6 flex-grow flex items-center'>
+                                    {/* <p className='text-gray-600 text-sm mb-6 flex-grow flex items-center'>
                                         {new Date(yearbook.createdAt).toLocaleDateString('en-US', {
                                             year: 'numeric',
                                             month: 'long',
                                             day: 'numeric'
                                         })}
-                                    </p>
+                                    </p> */}
                                     
                                     <div className="flex gap-3 justify-center items-center mt-auto">
                                         <a href={yearbook.pdfUrl} target="_blank" rel="noopener noreferrer" className="bg-[#173460] hover:bg-[#19438b] text-white text-sm font-semibold rounded-lg py-2 px-6 transition-all duration-300 hover:scale-105">
                                             📖 View
                                         </a>
-                                        <a href={yearbook.pdfUrl} target="_blank" rel="noopener noreferrer" className="p-3 bg-white hover:bg-gray-50 text-[#0F2A5A] rounded-full transition-all hover:scale-110 shadow-sm">
+                                        {/* <a href={yearbook.pdfUrl} target="_blank" rel="noopener noreferrer" className="p-3 bg-white hover:bg-gray-50 text-[#0F2A5A] rounded-full transition-all hover:scale-110 shadow-sm">
                                             <FaShareAlt className='w-4 h-4' />
-                                        </a>
+                                        </a> */}
                                     </div>
                                 </div>
                             </div>
