@@ -596,7 +596,7 @@ const AdminDashboard = () => {
 
   // YEARBOOK STATE VARIABLES (added to mirror magazine)
   const [yearbookTitle, setYearbookTitle] = useState("");
-  const [yearbookFile, setYearbookFile] = useState(null);
+  const [yearbookLink, setYearbookLink] = useState("");
   const [yearbooks, setYearbooks] = useState([]);
 
   // FETCH EXISTING pdfs
@@ -728,28 +728,20 @@ const AdminDashboard = () => {
   // HANDLE YEARBOOK UPLOAD (mirrors magazine)
   const handleYearbookUpload = async (e) => {
     e.preventDefault();
-    if (!yearbookTitle || !yearbookFile) return alert("Fill all fields");
-
-    const formData = new FormData();
-    formData.append("title", yearbookTitle);
-    formData.append("pdf", yearbookFile);
+    if (!yearbookTitle || !yearbookLink) return alert("Fill all fields");
 
     try {
-      await axios.post(`${API_BASE_URL}/admin/add-yearbook`, formData, {
-        headers: { "Content-Type": "multipart/form-data" },
+      await axios.post(`${API_BASE_URL}/admin/add-yearbook`, { title: yearbookTitle, link: yearbookLink }, {
+        headers: { "Content-Type": "application/json" },
         withCredentials: true,
       });
-      alert("Yearbook uploaded!");
+      alert("Yearbook added!");
       setYearbookTitle("");
-      setYearbookFile(null);
+      setYearbookLink("");
       fetchYearbooks();
     } catch (err) {
       console.error("Upload error:", err);
       alert("Upload failed!");
-    } finally {
-      //Reset file input
-      const fileInput = document.getElementById("yearbookFileInput");
-      if (fileInput) fileInput.value = "";
     }
   };
 
@@ -1368,7 +1360,7 @@ const AdminDashboard = () => {
           {/* yearbooks tab (mirror of magazines) */}
           {activeTab === "yearbooks" && (
             <div>
-              <h2 className="text-2xl font-semibold mb-4">Upload Yearbook</h2>
+              <h2 className="text-2xl font-semibold mb-4">Add Yearbook Link</h2>
               <form onSubmit={handleYearbookUpload} className="space-y-4">
                 <input
                   type="text"
@@ -1379,17 +1371,18 @@ const AdminDashboard = () => {
                   required
                 />
                 <input
-                  type="file"
-                  id="yearbookFileInput"
-                  accept="application/pdf"
-                  onChange={(e) => setYearbookFile(e.target.files[0])}
+                  type="url"
+                  placeholder="Google Drive Link"
+                  value={yearbookLink}
+                  onChange={(e) => setYearbookLink(e.target.value)}
+                  className="w-full px-4 py-2 border rounded"
                   required
                 />
                 <button
                   type="submit"
                   className="bg-blue-600 text-white px-4 py-2 rounded"
                 >
-                  Upload Yearbook
+                  Add Yearbook
                 </button>
               </form>
 

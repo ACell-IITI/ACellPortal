@@ -160,20 +160,13 @@ export const getMagazines = async (req, res) => {
 // Add Yearbook
 export const addYearbook = async (req, res) => {
   try {
-    const { title } = req.body;
-    if (!req.file) return res.status(400).json({ message: 'PDF file required' });
+    const { title, link } = req.body;
+    if (!title || !link) return res.status(400).json({ message: 'Title and link are required' });
 
-    const result = await cloudinary.uploader.upload(req.file.path, {
-      folder: 'yearbooks',
-      resource_type: 'raw',
-      access_mode: 'public',
-    });
-    fs.unlinkSync(req.file.path);
-
-    const yearbook = new Yearbook({ title, pdfUrl: result.secure_url, publicId: result.public_id });
+    const yearbook = new Yearbook({ title, pdfUrl: link });
     await yearbook.save();
 
-    res.status(201).json({ success: true, message: 'Yearbook uploaded', data: yearbook });
+    res.status(201).json({ success: true, message: 'Yearbook added', data: yearbook });
   } catch (err) {
     console.error('Error in addYearbook:', err);
     res.status(500).json({ success: false, message: 'Internal server error' });

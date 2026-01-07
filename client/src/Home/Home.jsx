@@ -95,16 +95,16 @@ const Home = () => {
  {/* Gallery */}
 <div className="w-[90%] max-w-6xl mx-auto my-10">
       <h2 className="text-4xl font-bold mb-6 text-center">Gallery</h2>
-      <div className="columns-2 sm:columns-3 md:columns-4 lg:columns-5 gap-3 space-y-3">
+      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3">
         {recentPhotos.map((photo, index) => (
           <div
             key={index}
-            className="relative mb-3 break-inside-avoid overflow-hidden  rounded-none sm:rounded-2xl  shadow-md group"
+            className="relative overflow-hidden rounded-2xl shadow-md group aspect-square"
           >
             <img
               src={photo.image}
               alt={`Gallery item ${index + 1}`}
-              className="w-full h-auto rounded-none  sm:rounded-2xl  object-cover transition-transform duration-300 group-hover:scale-105"
+              className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
             />
           </div>
         ))}
