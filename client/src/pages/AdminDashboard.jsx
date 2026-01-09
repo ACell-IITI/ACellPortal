@@ -1049,9 +1049,9 @@ const AdminDashboard = () => {
                       />
 
                       <div className="flex items-center space-x-6">
-                        {imageFile ? (
+                        {imageFilepro ? (
                           <img
-                            src={URL.createObjectURL(imageFile)}
+                            src={URL.createObjectURL(imageFilepro)}
                             alt="Program Preview"
                             className={`w-24 h-24 rounded-full object-cover border-4 cursor-pointer hover:border-blue-300 transition-colors ${
                               formErrorspro.image

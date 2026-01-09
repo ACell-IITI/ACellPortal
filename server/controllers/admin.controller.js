@@ -572,7 +572,7 @@ export const addProgram = async (req, res) => {
   console.log('addProgram req.body:', req.body);
   console.log('addProgram req.file:', req.file);
   try {
-    const { type, title, date, time, venue } = req.body;
+    const { type, title, date, time, venue, attendance, about } = req.body;
 
     if (!req.file) {
       return res.status(400).json({ message: 'Image file required' });
@@ -590,6 +590,8 @@ export const addProgram = async (req, res) => {
       date,
       time,
       venue,
+      attendance: attendance ? parseInt(attendance) : undefined,
+      about,
     });
 
     await program.save();
