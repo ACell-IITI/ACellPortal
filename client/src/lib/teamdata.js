@@ -7,7 +7,8 @@ export const teamMembers = [
     linkedin: "/team",
     insta: "/team",
     group: "Head",
-    team: "Alumni Cell Head"
+    team: "Alumni Cell Head",
+    Contact:"8391973739"
   },
   //    {
   //   id: 14,
@@ -23,22 +24,12 @@ export const teamMembers = [
     id: 1,
     name: "Yashasvi Shukla",
     role: "Head",
-    image: "../Team/YashasviShukla.jpeg",
+    image: "../Team/YashasviShukla.png",
     linkedin: "https://www.linkedin.com/in/yashasvi-shukla-49882030a/",
     insta: "/team",
     group: "Head",
     team: "Web Dev",
-  },
-  
-  {
-    id: 8,
-    name: "Devika Manoharan",
-    role: "Back-End Developer",
-    image: "../Team/DevikaManoharan.jpeg",
-    linkedin: "https://www.linkedin.com/in/devika-manoharan-12774b330",
-    insta: "/team",
-    group: "Member",
-    team: "Web Dev",
+    Contact:"6393626042"
   },
   
 
@@ -133,7 +124,8 @@ export const teamMembers = [
     linkedin: "/team",
     insta: "/team",
     group: "Head",
-    team:"ARAM"
+    team:"ARAM",
+    Contact:"9770477092"
   },
   
    {
@@ -144,7 +136,8 @@ export const teamMembers = [
     linkedin: "/team",
     insta: "/team",
     group: "Head",
-    team:"Design"
+    team:"Design",
+    Contact:"9079212029"
   },
    {
     id: 12,
@@ -154,7 +147,8 @@ export const teamMembers = [
     linkedin: "/team",
     insta: "/team",
     group: "Head",
-    team:"Logistics"
+    team:"Logistics",
+    Contact:"6263106823"
   },
      {
     id: 13,
@@ -164,7 +158,8 @@ export const teamMembers = [
     linkedin: "/team",
     insta: "/team",
     group: "Head",
-    team:"Newsletter"
+    team:"Newsletter",
+    Contact:"8949898072"
   },
 
  
@@ -176,7 +171,8 @@ export const teamMembers = [
     linkedin: "/team",
     insta: "/team",
     group: "Head",
-    team:"Content"
+    team:"Content",
+    Contact:"8147030408"
 
   },
    {

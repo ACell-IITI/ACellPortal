@@ -43,6 +43,7 @@ export default function TeamComponent({ title, members }) {
               <div className="relative z-10 text-center flex-1 flex flex-col">
                 <h3 className="text-lg sm:text-xl font-bold text-gray-800 mb-1">{member.name}</h3>
                 <p className="text-gray-600 font-semibold text-sm sm:text-base">{member.role}</p>
+               <p className="text-gray-600 font-medium text-xs sm:text-sm"><span className="font-semibold">Contact No:</span> {member.Contact}</p>
 
                 {/* Socials */}
                 <div className="mt-auto flex justify-center space-x-3">
