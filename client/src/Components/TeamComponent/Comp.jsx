@@ -130,7 +130,7 @@ export default function TeamComponent({ title, members }) {
                   </h3>
                   <p className="text-gray-600 font-semibold text-sm sm:text-base">{member.role}</p>
 
-                  {/* Socials */}
+                  {/* Socials
                   <div className="mt-auto flex justify-center space-x-3">
                     {member.linkedin && (
                       <a
@@ -152,7 +152,7 @@ export default function TeamComponent({ title, members }) {
                         <i className="fab fa-instagram"></i>
                       </a>
                     )}
-                  </div>
+                  </div> */}
                 </div>
               </div>
             </SwiperSlide>
