@@ -4,6 +4,7 @@ import bcrypt from 'bcrypt';
 import Mentorship_db from '../models/Mentorship_model.js';
 import { Admin_db, Alumni_db } from '../models/User_model.js';
 import Program from '../models/Program_model.js';
+import UpcomingEvent from '../models/UpcomingEvent_model.js';
 import fs from 'fs';
 import jwt from 'jsonwebtoken';
 import 'dotenv/config';
@@ -629,6 +630,66 @@ export const deleteProgram = async (req, res) => {
       .json({ success: true, message: 'Program/Event deleted successfully' });
   } catch (err) {
     console.error('Error in deleteProgram:', err);
+    res.status(500).json({ success: false, message: 'Internal server error' });
+  }
+};
+
+// ADD upcoming event
+export const addUpcomingEvent = async (req, res) => {
+  console.log('addUpcomingEvent req.body:', req.body);
+  console.log('addUpcomingEvent req.file:', req.file);
+  try {
+    const { title, date, venue } = req.body;
+
+    if (!req.file) {
+      return res.status(400).json({ message: 'Image file required' });
+    }
+
+    const result = await cloudinary.uploader.upload(req.file.path, {
+      folder: 'upcoming-events',
+    });
+    fs.unlinkSync(req.file.path);
+
+    const upcomingEvent = new UpcomingEvent({
+      image: result.secure_url,
+      title,
+      date,
+      venue,
+    });
+
+    await upcomingEvent.save();
+
+    res
+      .status(201)
+      .json({ success: true, message: 'Upcoming Event added', data: upcomingEvent });
+  } catch (err) {
+    console.error('Error in addUpcomingEvent:', err);
+    res.status(500).json({ success: false, message: 'Internal server error' });
+  }
+};
+
+export const getUpcomingEvents = async (req, res) => {
+  try {
+    const upcomingEvents = await UpcomingEvent.find().sort({ createdAt: -1 });
+    res.status(200).json({ success: true, data: upcomingEvents });
+  } catch (err) {
+    console.error('Error in getUpcomingEvents:', err);
+    res.status(500).json({ success: false, message: 'Internal server error' });
+  }
+};
+
+export const deleteUpcomingEvent = async (req, res) => {
+  try {
+    const upcomingEvent = await UpcomingEvent.findById(req.params.id);
+    if (!upcomingEvent)
+      return res.status(404).json({ message: 'Upcoming Event not found' });
+
+    await UpcomingEvent.findByIdAndDelete(req.params.id);
+    res
+      .status(200)
+      .json({ success: true, message: 'Upcoming Event deleted successfully' });
+  } catch (err) {
+    console.error('Error in deleteUpcomingEvent:', err);
     res.status(500).json({ success: false, message: 'Internal server error' });
   }
 };

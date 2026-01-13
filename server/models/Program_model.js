@@ -5,7 +5,7 @@ const eventProgramSchema = new mongoose.Schema({
   image: { type: String, required: true },   
   title: { type: String, required: true },
   date: { type: String, required: true },
-  time: { type: String, required: true },
+  time: { type: String },
   venue: { type: String, required: true },
   about: {type:String},
   attendance: {type:Number}

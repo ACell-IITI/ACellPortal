@@ -20,7 +20,7 @@ const Program = () => {
     const fetchPrograms = async () => {
       try {
         const res = await axios.get("http://localhost:8000/admin/get-programs");
-        setPrograms(res.data.data); 
+        setPrograms(res.data.data);
       } catch (err) {
         console.error("Error fetching programs:", err);
       }
@@ -29,24 +29,38 @@ const Program = () => {
     fetchPrograms();
   }, []);
 
+  const filteredPrograms = programs.filter((program) => program.type === "program");
+
   const settings = {
-    infinite: true,
-    autoplay: true,
+    infinite: filteredPrograms.length >= 3,
+    autoplay: filteredPrograms.length >= 3,
     autoplaySpeed: 3000,
     speed: 800,
-    slidesToShow: 3,
+    slidesToShow: Math.min(3, filteredPrograms.length),
     slidesToScroll: 1,
     cssEase: "ease",
-    arrows: true,
+    arrows: filteredPrograms.length > 1,
     pauseOnHover: true,
     responsive: [
       {
-        breakpoint: 750, 
-        settings: { slidesToShow: 3, slidesToScroll: 1 },
+        breakpoint: 750,
+        settings: {
+          slidesToShow: Math.min(3, filteredPrograms.length),
+          slidesToScroll: 1,
+          infinite: filteredPrograms.length >= 3,
+          autoplay: filteredPrograms.length >= 3,
+          arrows: filteredPrograms.length > 1,
+        },
       },
       {
-        breakpoint: 450, 
-        settings: { slidesToShow: 1, slidesToScroll: 1 },
+        breakpoint: 450,
+        settings: {
+          slidesToShow: Math.min(1, filteredPrograms.length),
+          slidesToScroll: 1,
+          infinite: filteredPrograms.length >= 1,
+          autoplay: filteredPrograms.length >= 1,
+          arrows: filteredPrograms.length > 1,
+        },
       },
     ],
   };
@@ -63,14 +77,49 @@ const Program = () => {
         start: 'top 40%',
         toggleActions: 'play none none none'
       }
-    }); 
+    });
   });
 
+  if (filteredPrograms.length === 0) {
+    return (
+      <div className="program-container">
+        <p className="text-center text-gray-500 py-8">No programs available.</p>
+      </div>
+    );
+  }
+
+  // If less than 3 programs, show in a grid instead of carousel
+  if (filteredPrograms.length < 3) {
+    return (
+      <div className="program-container">
+        <div className="flex justify-center gap-8 flex-wrap">
+          {filteredPrograms.map((program) => (
+            <div key={program._id} className="program-slide" style={{ width: 'auto', padding: '30px 20px' }}>
+              <div className="program-card" style={{ width: '300px', margin: '0 auto', cursor: 'pointer' }} onClick={() => navigate(`/about-eventProgram/${program._id}`)}>
+                <img
+                  src={program.image}
+                  alt={program.title}
+                  className="program-image"
+                />
+                <div className="program-content">
+                  <h3 className="program-title">{program.title}</h3>
+                  <p className="program-date">📅 {program.date}</p>
+                  <p className="program-time">⏰ {program.time}</p>
+                  <p className="program-venue">📍 {program.venue}</p>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    );
+  }
+
+  // For 3+ programs, use carousel
   return (
     <div className="program-container">
       <Slider {...settings}>
-        {programs.filter((program) => program.type === "program")
-    .map((program) =>(
+        {filteredPrograms.map((program) =>(
           <div key={program._id} onClick={() => navigate(`/about-eventProgram/${program._id}`)} className="program-slide">
             <div className="program-card">
               <img

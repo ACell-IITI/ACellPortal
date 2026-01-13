@@ -1,12 +1,10 @@
 import React , {useEffect, useState} from 'react'
 import './Home.css'
 import Eventh from '../Components/Eventh/Eventh'
-import Program from '../Components/ProgramH/ProgramH'
+import UpcomingEventh from '../Components/UpcomingEvents/UpcomingEventh';
 import { gsap } from 'gsap';
 import { useGSAP } from '@gsap/react';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import Registerbtn from '../Components/Registerbtn/Registerbtn'
-import RegistrationForm from '../Components/RegistrationForm/RegistrationForm'
 import { Link } from "react-router-dom";
 import { API_BASE_URL } from '../api/alumni';
 
@@ -119,25 +117,25 @@ const Home = () => {
         </Link>
       </div>
     </div>
-
-{/* PROGRAM & WEBINARS */}
-        <div className="program-section">
-  <img className='bubble' src='/Media/bubble.png'></img>
-    <img className='bubble1' src='/Media/bubble.png'></img>
-<p className="titlec pr">PROGRAM & WEBINARS</p>
-<p className="subtitlec pr">
-  Explore our sessions and expert-led discussions to boost your professional journey.
-</p>
-<Program />
-</div>
 {/* EVENTS */}
 <div className="event-section">
 <p className="titlec eve">EVENTS</p>
 <p className="subtitlec eve">
-  Stay updated on events held at IIT Indore and beyond.
+  Explore our sessions and expert-led discussions to boost your professional journey.
 </p>
 <Eventh />
 </div>
+{/* UPCOMING EVENTS*/}
+        <div className="program-section">
+  <img className='bubble' src='/Media/bubble.png'></img>
+    <img className='bubble1' src='/Media/bubble.png'></img>
+<p className="titlec pr">UPCOMING EVENTS</p>
+<p className="subtitlec pr">
+  Stay updated on events held at IIT Indore and beyond.
+</p>
+<UpcomingEventh />
+</div>
+
 {/* Saathi banner */}
 
    <div  className="saathih"> <img className='bubble' src='/Media/bubble.png'></img>

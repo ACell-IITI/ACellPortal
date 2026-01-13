@@ -8,52 +8,16 @@ import { useGSAP } from '@gsap/react';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import axios from "axios";
 
-import { useNavigate } from "react-router-dom";
-
 gsap.registerPlugin(useGSAP, ScrollTrigger);
 
-const EventCarousel = () => {
-  const navigate = useNavigate();
+const UpcomingEventh = () => {
   const [events, setEvents] = useState([]);
-{/*const events = [
-  {
-    image: "/Media/cv.jpg",
-    title: "CV Review Drive",
-    date: "July 6, 2025",
-    time: "05:00 AM",
-    venue:"IIT Indore",
-  },
- 
-  {
-    image: "/Media/NNPG.jpg",
-    title: "Flagship ML",
-    date: "August 24, 2025",
-    time: "9:00 AM",
-    venue:"IIT Indore",
-  },
 
-  {
-    image: "/Media/kmt.png",
-    title: "Reunion",
-    date: "August 30, 2025",
-    time: "9:00 AM",
-    venue:"Kolkata",
-  },
-   {
-    image: "/Media/chennaimeet.jpg",
-    title: "Reunion",
-    date: "july 20, 2025",
-    time: "9:00 AM",
-    venue:"Coal Barbecues,Chennai",
-  },
-];
-*/}
 useEffect(() => {
     const fetchEvents = async () => {
       try {
-        const res = await axios.get("http://localhost:8000/admin/get-programs");
-        const onlyEvents = res.data.data.filter(item => item.type === "event");
-        setEvents(onlyEvents);
+        const res = await axios.get("http://localhost:8000/admin/get-upcoming-events");
+        setEvents(res.data.data);
       } catch (err) {
         console.error("Error fetching events:", err);
       }
@@ -113,11 +77,11 @@ useEffect(() => {
 
          });
     },);
-
+  
   if (events.length === 0) {
     return (
       <div className="carousel-container">
-        <p className="text-center text-gray-500 py-8">No events available.</p>
+        <p className="text-center text-gray-500 py-8">No upcoming events available.</p>
       </div>
     );
   }
@@ -129,7 +93,7 @@ useEffect(() => {
         <div className="flex justify-center gap-8 flex-wrap">
           {events.map((event) => (
             <div key={event._id} className="event-slide" style={{ width: 'auto', padding: '30px 20px' }}>
-              <div className="event-card" style={{ width: '300px', margin: '0 auto', cursor: 'pointer' }} onClick={() => navigate(`/about-eventProgram/${event._id}`)}>
+              <div className="event-card" style={{ width: '300px', margin: '0 auto' }}>
                 <img
                   src={event.image}
                   alt={event.title}
@@ -138,7 +102,6 @@ useEffect(() => {
                 <div className="event-content">
                   <h3 className="event-title">{event.title}</h3>
                   <p className="event-date">📅 {event.date}</p>
-                  <p className="event-time">⏰ {event.time}</p>
                   <p className="event-venue">📍 {event.venue}</p>
                 </div>
               </div>
@@ -154,7 +117,7 @@ useEffect(() => {
     <div className="carousel-container">
       <Slider {...settings}>
         {events.map((event) => (
-          <div key={event._id} onClick={() => navigate(`/about-eventProgram/${event._id}`)} className="event-slide">
+          <div key={event._id} className="event-slide">
             <div className="event-card">
               <img
                 src={event.image}
@@ -164,7 +127,6 @@ useEffect(() => {
               <div className="event-content">
                 <h3 className="event-title">{event.title}</h3>
                 <p className="event-date">📅 {event.date}</p>
-                <p className="event-time">⏰ {event.time}</p>
                 <p className="event-venue">📍 {event.venue}</p>
               </div>
             </div>
@@ -175,6 +137,6 @@ useEffect(() => {
   );
 };
 
-export default EventCarousel;
+export default UpcomingEventh;
 
 

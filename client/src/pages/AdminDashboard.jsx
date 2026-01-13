@@ -340,6 +340,18 @@ const AdminDashboard = () => {
     about: "",
   });
 
+  // For Upcoming Events
+  const [upcomingEvents, setUpcomingEvents] = useState([]);
+  const [imageFileUpcoming, setImageFileUpcoming] = useState(null);
+  const [formErrorsUpcoming, setFormErrorsUpcoming] = useState({});
+  const [formDataUpcoming, setFormDataUpcoming] = useState({
+    type: "upcoming-event",
+    image: "",
+    title: "",
+    date: "",
+    venue: "",
+  });
+
   useEffect(() => {
     const fetchPrograms = async () => {
       try {
@@ -350,7 +362,17 @@ const AdminDashboard = () => {
       }
     };
 
+    const fetchUpcomingEvents = async () => {
+      try {
+        const res = await axios.get("http://localhost:8000/admin/get-upcoming-events");
+        setUpcomingEvents(res.data.data);
+      } catch (err) {
+        console.error("Error fetching upcoming events:", err);
+      }
+    };
+
     fetchPrograms();
+    fetchUpcomingEvents();
   }, []);
 
   const handleChangeprogram = (e) => {
@@ -437,10 +459,94 @@ const AdminDashboard = () => {
 
     try {
       await axios.delete(`http://localhost:8000/admin/delete-program/${id}`);
-      const res = await axios.get("http://localhost:8000/admin/get-programs");
-      setPrograms(res.data.data);
+      const resPrograms = await axios.get("http://localhost:8000/admin/get-programs");
+      setPrograms(resPrograms.data.data);
     } catch (err) {
       console.error("Error deleting program:", err);
+    }
+  };
+
+  const handleDeleteUpcomingEvent = async (id, title) => {
+    const confirmed = window.confirm(
+      `Are you sure you want to delete "${title}"?`
+    );
+    if (!confirmed) return;
+
+    try {
+      await axios.delete(`http://localhost:8000/admin/delete-upcoming-event/${id}`);
+      const resUpcoming = await axios.get("http://localhost:8000/admin/get-upcoming-events");
+      setUpcomingEvents(resUpcoming.data.data);
+    } catch (err) {
+      console.error("Error deleting upcoming event:", err);
+    }
+  };
+
+  // Handlers for Upcoming Events
+  const handleChangeUpcoming = (e) => {
+    setFormDataUpcoming({ ...formDataUpcoming, [e.target.name]: e.target.value });
+
+    if (formErrorsUpcoming[e.target.name]) {
+      setFormErrorsUpcoming({ ...formErrorsUpcoming, [e.target.name]: "" });
+    }
+  };
+
+  const handleImageChangeUpcoming = (e) => {
+    setImageFileUpcoming(e.target.files[0]);
+
+    if (formErrorsUpcoming.image) {
+      setFormErrorsUpcoming({ ...formErrorsUpcoming, image: "" });
+    }
+  };
+
+  const validateUpcomingForm = () => {
+    const errors = {};
+    if (!formDataUpcoming.title.trim()) errors.title = "Title is required";
+    if (!formDataUpcoming.date.trim()) errors.date = "Date is required";
+    if (!formDataUpcoming.venue.trim()) errors.venue = "Venue is required";
+    if (!imageFileUpcoming) errors.image = "Event image is required";
+    return errors;
+  };
+
+  const handleSubmitUpcoming = async (e) => {
+    e.preventDefault();
+    const errors = validateUpcomingForm();
+    if (Object.keys(errors).length > 0) {
+      setFormErrorsUpcoming(errors);
+      return;
+    }
+
+    try {
+      const data = new FormData();
+      data.append("title", formDataUpcoming.title);
+      data.append("date", formDataUpcoming.date);
+      data.append("venue", formDataUpcoming.venue);
+      data.append("image", imageFileUpcoming);
+
+      await axios.post("http://localhost:8000/admin/add-upcoming-event", data, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
+
+      alert("Upcoming Event added successfully!");
+
+      setFormDataUpcoming({
+        type: "upcoming-event",
+        image: "",
+        title: "",
+        date: "",
+        venue: "",
+      });
+      setImageFileUpcoming(null);
+      setFormErrorsUpcoming({});
+
+      const resPrograms = await axios.get("http://localhost:8000/admin/get-programs");
+      setPrograms(resPrograms.data.data);
+
+      const resUpcoming = await axios.get("http://localhost:8000/admin/get-upcoming-events");
+      setUpcomingEvents(resUpcoming.data.data);
+    } catch (err) {
+      console.error("Error adding upcoming event:", err);
     }
   };
 
@@ -772,9 +878,15 @@ const AdminDashboard = () => {
     },
     {
       id: "programs",
-      label: "ProgramsEvents",
+      label: "Events",
       icon: Users,
       count: programs.length,
+    },
+    {
+      id: "upcoming-events",
+      label: "Upcoming Events",
+      icon: Calendar,
+      count: upcomingEvents.length,
     },
     {
       id: "profiles",
@@ -1008,14 +1120,14 @@ const AdminDashboard = () => {
             <div>
               <div className="flex items-center justify-between mb-6">
                 <h2 className="text-2xl font-semibold text-slate-900">
-                  Programs & Events
+                  Events
                 </h2>
                 <div className="text-sm text-slate-500"></div>
               </div>
 
               <div className="bg-white rounded-xl p-6 shadow-sm border border-slate-200 mb-8">
                 <h3 className="text-lg font-semibold text-slate-900 mb-4">
-                  Add New Event / Program
+                  Add New Event
                 </h3>
 
                 <form onSubmit={handleSubmitprogram} className="space-y-6">
@@ -1031,14 +1143,13 @@ const AdminDashboard = () => {
                         required
                         className="w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-shadow border-slate-300"
                       >
-                        <option value="program">Program</option>
                         <option value="event">Event</option>
                       </select>
                     </div>
 
                     <div>
                       <label className="block text-sm font-medium text-slate-700 mb-4">
-                        Program/Event Image
+                        Event Image
                       </label>
                       <input
                         type="file"
@@ -1233,6 +1344,171 @@ const AdminDashboard = () => {
                       <button
                         onClick={() =>
                           handleDeleteProgram(program._id, program.title)
+                        }
+                        className="text-red-600 font-bold mt-2"
+                      >
+                        DELETE
+                      </button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Upcoming Events Tab */}
+          {activeTab === "upcoming-events" && (
+            <div>
+              <div className="flex items-center justify-between mb-6">
+                <h2 className="text-2xl font-semibold text-slate-900">
+                  Upcoming Events
+                </h2>
+                <div className="text-sm text-slate-500"></div>
+              </div>
+
+              <div className="bg-white rounded-xl p-6 shadow-sm border border-slate-200 mb-8">
+                <h3 className="text-lg font-semibold text-slate-900 mb-4">
+                  Add New Upcoming Event
+                </h3>
+
+                <form onSubmit={handleSubmitUpcoming} className="space-y-6">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                      <label className="block text-sm font-medium text-slate-700 mb-2">
+                        Event Image
+                      </label>
+                      <input
+                        type="file"
+                        accept="image/*"
+                        onChange={handleImageChangeUpcoming}
+                        ref={fileInputRef}
+                        className="hidden"
+                      />
+
+                      <div className="flex items-center space-x-6">
+                        {imageFileUpcoming ? (
+                          <img
+                            src={URL.createObjectURL(imageFileUpcoming)}
+                            alt="Event Preview"
+                            className={`w-24 h-24 rounded-full object-cover border-4 cursor-pointer hover:border-blue-300 transition-colors ${
+                              formErrorsUpcoming.image
+                                ? "border-red-300"
+                                : "border-slate-100"
+                            }`}
+                            onClick={() => fileInputRef.current.click()}
+                            title="Click to change image"
+                          />
+                        ) : (
+                          <div
+                            onClick={() => fileInputRef.current.click()}
+                            className={`w-24 h-24 border-2 border-dashed rounded-full flex items-center justify-center cursor-pointer hover:border-blue-400 transition-colors ${
+                              formErrorsUpcoming.image
+                                ? "border-red-300 bg-red-50"
+                                : "border-slate-300"
+                            }`}
+                          >
+                            <Upload className="w-6 h-6 text-slate-400" />
+                          </div>
+                        )}
+                        <div>
+                          <button
+                            type="button"
+                            onClick={() => fileInputRef.current.click()}
+                            className="inline-flex items-center px-4 py-2 bg-slate-100 text-slate-700 text-sm font-medium rounded-lg hover:bg-slate-200 transition-colors"
+                          >
+                            <Upload className="w-4 h-4 mr-2" />
+                            {imageFileUpcoming ? "Change Image" : "Upload Image"}
+                          </button>
+                          <p className="text-xs text-slate-500 mt-1">
+                            PNG, JPG, GIF up to 10MB
+                          </p>
+                        </div>
+                      </div>
+                      {formErrorsUpcoming.image && (
+                        <p className="mt-2 text-sm text-red-600">
+                          {formErrorsUpcoming.image}
+                        </p>
+                      )}
+                    </div>
+
+                    <div>
+                      <label className="block text-sm font-medium text-slate-700 mb-2">
+                        Title
+                      </label>
+                      <input
+                        type="text"
+                        name="title"
+                        value={formDataUpcoming.title}
+                        onChange={handleChangeUpcoming}
+                        required
+                        placeholder="Enter event title"
+                        className="w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-shadow border-slate-300"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-sm font-medium text-slate-700 mb-2">
+                        Venue
+                      </label>
+                      <input
+                        type="text"
+                        name="venue"
+                        value={formDataUpcoming.venue}
+                        onChange={handleChangeUpcoming}
+                        required
+                        placeholder="Enter venue"
+                        className="w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-shadow border-slate-300"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-sm font-medium text-slate-700 mb-2">
+                        Date
+                      </label>
+                      <input
+                        type="text"
+                        name="date"
+                        value={formDataUpcoming.date}
+                        onChange={handleChangeUpcoming}
+                        required
+                        placeholder="e.g. July 6, 2025"
+                        className="w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-shadow border-slate-300"
+                      />
+                    </div>
+                  </div>
+
+                  {/* Submit */}
+                  <div className="flex justify-end">
+                    <button
+                      type="submit"
+                      className="inline-flex items-center px-6 py-3 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 transition-colors shadow-sm"
+                    >
+                      Add Upcoming Event
+                    </button>
+                  </div>
+                </form>
+              </div>
+              <h1 className="text-4xl mb-4">Upcoming Events</h1>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {upcomingEvents.map((event) => (
+                  <div
+                    key={event._id}
+                    className=" border  p-4 rounded-lg shadow"
+                  >
+                    <img
+                      src={event.image}
+                      alt={event.title}
+                      className="w-full h-48 object-cover rounded mb-4"
+                    />
+                    <h3 className="text-xl font-semibold">{event.title}</h3>
+                    <p className="text-sm text-gray-500">
+                      📅 {event.date}
+                    </p>
+                    <p className="text-sm text-gray-500">📍 {event.venue}</p>
+                    <div className="mt-2">
+                      <button
+                        onClick={() =>
+                          handleDeleteUpcomingEvent(event._id, event.title)
                         }
                         className="text-red-600 font-bold mt-2"
                       >

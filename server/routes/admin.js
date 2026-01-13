@@ -8,6 +8,9 @@ import {
   addProgram,
   getPrograms,
   deleteProgram,
+  addUpcomingEvent,
+  getUpcomingEvents,
+  deleteUpcomingEvent,
   getAdminProfiles,
   updateAdminProfile,
   addMentorProfile,
@@ -61,6 +64,11 @@ router.post('/add-program', upload.single('image'), addProgram);
 router.get('/about-eventProgram/:id', aboutEvent);
 router.get('/get-programs', getPrograms);
 router.delete('/delete-program/:id', deleteProgram);
+
+// Upcoming Event Routes
+router.post('/add-upcoming-event', upload.single('image'), addUpcomingEvent);
+router.get('/get-upcoming-events', getUpcomingEvents);
+router.delete('/delete-upcoming-event/:id', deleteUpcomingEvent);
 
 // Newsletter routes
 router.post('/add-newsletter', uploadPdf.single('pdf'), addNewsletter);
