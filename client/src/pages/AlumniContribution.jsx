@@ -130,7 +130,7 @@ const AlumniContributions = () => {
               mb-4 tracking-tight
             "
           >
-            Alumni Contributions
+            Alumni Contributors
           </motion.h1>
 
           <motion.div
@@ -148,7 +148,7 @@ const AlumniContributions = () => {
             "
           >
             Honouring our alumni who supported{" "}
-            <span className="font-medium">Magnus Opus</span>
+            <span className="font-medium">Magnum Opus</span>
           </motion.p>
         </motion.header>
 

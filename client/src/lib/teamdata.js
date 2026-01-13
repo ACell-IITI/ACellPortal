@@ -3,11 +3,12 @@ export const teamMembers = [
     id: 10,
     name: "Ansh Kyal",
     role: " Head",
-    image: "../Team/Ansh Kyal_Head.jpg",
-    linkedin: "/team",
-    insta: "/team",
+    image: "../Team/Ansh Kyal_Head.png",
+    linkedin: "https://www.linkedin.com/in/anshkyal/",
+    insta: "https://www.instagram.com/ansh_kyal29/",
     group: "Head",
-    team: "Alumni Cell Head"
+    team: "Alumni Cell Head",
+    Contact:"8391973739"
   },
   //    {
   //   id: 14,
@@ -23,22 +24,12 @@ export const teamMembers = [
     id: 1,
     name: "Yashasvi Shukla",
     role: "Head",
-    image: "../Team/YashasviShukla.jpeg",
+    image: "../Team/YashasviShukla.png",
     linkedin: "https://www.linkedin.com/in/yashasvi-shukla-49882030a/",
-    insta: "/team",
+    insta: "https://www.instagram.com/_.yashasvi.__/",
     group: "Head",
     team: "Web Dev",
-  },
-  
-  {
-    id: 8,
-    name: "Devika Manoharan",
-    role: "Back-End Developer",
-    image: "../Team/DevikaManoharan.jpeg",
-    linkedin: "https://www.linkedin.com/in/devika-manoharan-12774b330",
-    insta: "/team",
-    group: "Member",
-    team: "Web Dev",
+    Contact:"6393626042"
   },
   
 
@@ -130,10 +121,11 @@ export const teamMembers = [
     name: "Vedansh Shrivastava",
     role: "Head",
     image: "../Team/Vedansh Shrivastava_ARAM Head.jpg",
-    linkedin: "/team",
+    linkedin: "https://www.linkedin.com/in/explorerr/",
     insta: "/team",
     group: "Head",
-    team:"ARAM"
+    team:"ARAM",
+    Contact:"9770477092"
   },
   
    {
@@ -141,30 +133,33 @@ export const teamMembers = [
     name: "Garvit Mathur",
     role: "Head",
     image: "../Team/Garvit Mathur_Design Head.jpg",
-    linkedin: "/team",
-    insta: "/team",
+    linkedin: "https://www.linkedin.com/in/garvit-mathur-31552b33b/",
+    insta: "https://www.instagram.com/garvitmathur05/",
     group: "Head",
-    team:"Design"
+    team:"Design",
+    Contact:"9079212029"
   },
    {
     id: 12,
     name: "Keshvi Lakhotia",
     role: "Head",
     image: "../Team/Keshvi Lakhotia_Logistics Head.jpg",
-    linkedin: "/team",
-    insta: "/team",
+    linkedin: "https://www.linkedin.com/in/keshvi-lakhotia/",
+    insta: "https://www.instagram.com/keshvi_lakhotia/",
     group: "Head",
-    team:"Logistics"
+    team:"Logistics",
+    Contact:"6263106823"
   },
      {
     id: 13,
     name: "Kavyansh Raj Singh",
     role: "Newsletter Coordinator",
     image: "../Team/Kavyansh Raj Singh_Newsletter Coordinator.jpg",
-    linkedin: "/team",
-    insta: "/team",
+    linkedin: "https://www.linkedin.com/in/kavyanshsingh/",
+    insta: "https://www.instagram.com/real_kavyansh/",
     group: "Head",
-    team:"Newsletter"
+    team:"Newsletter",
+    Contact:"8949898072"
   },
 
  
@@ -173,10 +168,11 @@ export const teamMembers = [
     name: "Anushka Krishan",
     role: "Head",
     image: "../Team/Anushka Krishan_Content Head.jpg",
-    linkedin: "/team",
-    insta: "/team",
+    linkedin: "https://www.linkedin.com/in/anushka-krishan-65689331a/",
+    insta: "https://www.instagram.com/itsanushkakrishan/",
     group: "Head",
-    team:"Content"
+    team:"Content",
+    Contact:"8147030408"
 
   },
    {

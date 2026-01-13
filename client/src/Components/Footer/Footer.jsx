@@ -25,16 +25,6 @@ const socialIcons = [
     ),
   },
   {
-    name: "X",
-    url: "https://x.com/",
-    svg: (
-      <svg width="24" height="24" viewBox="0 0 120 120" fill="none">
-        <rect width="120" height="120" rx="24" fill="#000" />
-        <path d="M85.5 34.5H74.6L60 54.1L45.4 34.5H34.5L54.3 60L34.5 85.5H45.4L60 65.9L74.6 85.5H85.5L65.7 60L85.5 34.5Z" fill="#fff"/>
-      </svg>
-    ),
-  },
-  {
     name: "Facebook",
     url: "https://www.facebook.com/iitialumnicell/",
     svg: (
@@ -125,7 +115,7 @@ const Footer = () => (
  </div>
     
   </footer>
-  <div className="rights">© 2025 - All Rights with IIT Indore</div>
+  <div className="rights">© {new Date().getFullYear()} - All Rights with IIT Indore</div>
   </>
 );
 
