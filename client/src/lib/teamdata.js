@@ -10,16 +10,6 @@ export const teamMembers = [
     team: "Alumni Cell Head",
     Contact:"8391973739"
   },
-  //    {
-  //   id: 14,
-  //   name: "Mohak Dadhich",
-  //   role: "Co-Head",
-  //   image: "../Team/Mohak Dadhich- Co Head.jpg",
-  //   linkedin: "/team",
-  //   insta: "/team",
-  //   group: "Co-Head",
-  //   team:"Co-Head"
-  // },
     {
     id: 1,
     name: "Yashasvi Shukla",
@@ -187,7 +177,7 @@ export const teamMembers = [
   },
   {
     id: 18,
-    name: "Gopesh Srinivasan ",
+    name: "Gopesh Srinivasan",
     role: "Member",
     image: "../Team/Gopesh Srinivasan-Content.jpg",
     linkedin: "/team",
@@ -266,16 +256,16 @@ export const teamMembers = [
     group: "Member",
     team:"Design"
   },
-  // {
-  //   id: 26,
-  //   name: "Ankita Yadav",
-  //   role: "Member",
-  //   image: "../Team/Ankita Yadav-Design.jpg",
-  //   linkedin: "/team",
-  //   insta: "/team",
-  //   group: "Member",
-  //   team:"Design"
-  // },
+  {
+    id: 26,
+    name: "Atiharsh Bhatt",
+    role: "Member",
+    image: "../Team/Atiharsh Bhatt-Design.png",
+    linkedin: "/team",
+    insta: "/team",
+    group: "Member",
+    team:"Design"
+  },
   {
     id: 27,
     name: "Yagyaparna Mandwale",
@@ -288,13 +278,13 @@ export const teamMembers = [
   },
   {
     id: 28,
-    name: "Anshuman Jha",
+    name: "Bhasuru Nikhil",
     role: "Member",
-    image: "../Team/Anshuman Jha-Logistics.jpg",
+    image: "../Team/Bhasuru Nikhil-ARAM.jpg",
     linkedin: "/team",
     insta: "/team",
     group: "Member",
-    team:"Logistics"
+    team:"ARAM"
   },
     {
     id: 29,
@@ -346,15 +336,36 @@ export const teamMembers = [
     group: "Member",
     team:"Design"
   },
-  //    {
-  //   id: 33,
-  //   name: "Arham Aneeq",
-  //   role: "Member",
-  //   image: "../Team/Vishal Shakya-ARAM.jpg",
-  //   linkedin: "/team",
-  //   insta: "/team",
-  //   group: "Member",
-  //   team:"Newsletter"
-  // },
+     {
+    id: 34,
+    name: "Arham Aneeq",
+    role: "Member",
+    image: "../Team/Arham Aneeq-Newsletter.png",
+    linkedin: "/team",
+    insta: "/team",
+    group: "Member",
+    team:"Newsletter"
+  },
+     {
+    id: 35,
+    name: "Samruddhee Jadhav",
+    role: "Member",
+    image: "../Team/Samruddhee-ARAM.jpeg",
+    linkedin: "/team",
+    insta: "/team",
+    group: "Member",
+    team:"ARAM"
+  },
+     {
+    id: 36,
+    name: "Mohit Patil",
+    role: "Member",
+    image: "../Team/Mohit Patil-ARAM.png",
+    linkedin: "/team",
+    insta: "/team",
+    group: "Member",
+    team:"ARAM"
+  },
+  
 ];
 
