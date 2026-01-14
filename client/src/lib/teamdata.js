@@ -336,6 +336,16 @@ export const teamMembers = [
     group: "Member",
     team:"Newsletter"
   },
+     {
+    id: 33,
+    name: "Ayush Varun",
+    role: "Member",
+    image: "../Team/Ayush Varun-Design.jpg",
+    linkedin: "/team",
+    insta: "/team",
+    group: "Member",
+    team:"Design"
+  },
   //    {
   //   id: 33,
   //   name: "Arham Aneeq",

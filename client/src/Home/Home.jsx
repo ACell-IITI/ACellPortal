@@ -117,15 +117,7 @@ const Home = () => {
         </Link>
       </div>
     </div>
-{/* EVENTS */}
-<div className="event-section">
-<p className="titlec eve">EVENTS</p>
-<p className="subtitlec eve">
-  Explore our sessions and expert-led discussions to boost your professional journey.
-</p>
-<Eventh />
-</div>
-{/* UPCOMING EVENTS*/}
+    {/* UPCOMING EVENTS*/}
         <div className="program-section">
   <img className='bubble' src='/Media/bubble.png'></img>
     <img className='bubble1' src='/Media/bubble.png'></img>
@@ -134,6 +126,14 @@ const Home = () => {
   Stay updated on events held at IIT Indore and beyond.
 </p>
 <UpcomingEventh />
+</div>
+{/* EVENTS */}
+<div className="event-section">
+<p className="titlec eve">PROGRAMS</p>
+<p className="subtitlec eve">
+  Explore our sessions and expert-led discussions to boost your professional journey.
+</p>
+<Eventh />
 </div>
 
 {/* Saathi banner */}
