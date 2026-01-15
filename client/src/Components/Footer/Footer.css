@@ -82,6 +82,49 @@
   gap: 16px;
   align-items: center;
 }
+
+.mail {
+  margin-top: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: 100%;
+}
+
+.mail .sub-section {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 8px 12px;
+  background-color: rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  transition: all 0.3s ease;
+}
+
+.mail .sub-section:hover {
+  background-color: rgba(255, 255, 255, 0.2);
+  transform: translateY(-2px);
+}
+
+.mail svg {
+  flex-shrink: 0;
+  color: #ffffff;
+}
+
+.mail a {
+  color: #ffffff;
+  text-decoration: none;
+  font-size: clamp(12px, 2vw, 16px);
+  font-weight: 500;
+  transition: color 0.3s ease;
+}
+
+.mail a:hover {
+  color: #007BFF;
+  text-decoration: underline;
+}
+
 .rights{
   text-align: center;
 
