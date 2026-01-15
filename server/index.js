@@ -35,14 +35,14 @@ app.get('/', (req, res) => {
 });
 
 // Use individual routes
-app.use('/auth', authRoutes);
-app.use('/admin', adminRoute);
-app.use('/alumni', alumniRoute);
-app.use('/mentors', mentorsRoute);
-app.use("/", allRoutes);
+app.use('/api/auth', authRoutes);
+app.use('/api/admin', adminRoute);
+app.use('/api/alumni', alumniRoute);
+app.use('/api/mentors', mentorsRoute);
+app.use("/api", allRoutes);
 app.use("/api/gallery", galleryRoutes);
 app.use("/uploads", express.static("uploads"));
-app.use("/api", sponsorRoutes);
+app.use("/api/sponsors", sponsorRoutes);
 
 // Public routes
 app.get('/api/alumni-contributions', getAlumniContributions);
