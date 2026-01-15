@@ -9,7 +9,7 @@ const AboutEvent = () => {
 
   const fetchEvent = async () => {
     try {
-      const res = await fetch(`https://alumnicell.iiti.ac.in:3008/api/admin/about-eventProgram/${id}`);
+      const res = await fetch(`https://alumnicell.iiti.ac.in/api/admin/about-eventProgram/${id}`);
       const data = await res.json();
 
       setEvent(data.data);

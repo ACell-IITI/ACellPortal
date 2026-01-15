@@ -24,7 +24,7 @@ export default function Navbar() {
   useEffect(() => {
     const fetchRole = async () => {
       try {
-        const res = await axios.get('https://alumnicell.iiti.ac.in:3008/api/auth/check', {
+        const res = await axios.get('https://alumnicell.iiti.ac.in/api/auth/check', {
           withCredentials: true,
         });
          console.log('Fetched role:', res.data);
