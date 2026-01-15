@@ -9,7 +9,7 @@ const KYA = () => {
   const fetchKyaProfiles = async () => {
     try {
       const res = await axios.get(
-        'http://localhost:8000/admin/get-kya-profiles'
+        'http://alumnicell.iiti.ac.in:8000/admin/get-kya-profiles'
       );
       setProfiles(res.data.data);
     } catch (err) {

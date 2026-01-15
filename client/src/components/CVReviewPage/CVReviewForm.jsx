@@ -64,7 +64,7 @@ const CVReviewForm = () => {
     console.log("Form Data to Submit:", formData);
 
     try {
-      const response = await fetch("http://localhost:8000/cv/addCV", {
+      const response = await fetch("http://alumnicell.iiti.ac.in:8000/cv/addCV", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

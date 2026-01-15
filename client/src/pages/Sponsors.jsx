@@ -88,7 +88,7 @@ const Sponsors = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch("http://localhost:8000/api/sponsors")
+    fetch("http://alumnicell.iiti.ac.in:8000/api/sponsors")
       .then((res) => res.json())
       .then((data) => setSponsors(data))
       .catch((err) => console.error("Error fetching sponsors:", err))

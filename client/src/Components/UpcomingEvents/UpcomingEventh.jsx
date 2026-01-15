@@ -16,7 +16,7 @@ const UpcomingEventh = () => {
 useEffect(() => {
     const fetchEvents = async () => {
       try {
-        const res = await axios.get("http://localhost:8000/admin/get-upcoming-events");
+        const res = await axios.get("http://alumnicell.iiti.ac.in:8000/admin/get-upcoming-events");
         setEvents(res.data.data);
       } catch (err) {
         console.error("Error fetching events:", err);

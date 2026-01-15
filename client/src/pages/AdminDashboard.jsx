@@ -66,7 +66,7 @@ const AdminDashboard = () => {
 
   const fetchSponsors = async () => {
     try {
-      const res = await axios.get("http://localhost:8000/api/sponsors");
+      const res = await axios.get("http://alumnicell.iiti.ac.in:8000/api/sponsors");
       setSponsors(res.data);
     } catch (err) {
       console.error("Error fetching sponsors:", err);
@@ -105,7 +105,7 @@ const AdminDashboard = () => {
       data.append("type", sponsorForm.type);
       data.append("logo", sponsorLogo);
 
-      await axios.post("http://localhost:8000/api/admin/add-sponsor", data, {
+      await axios.post("http://alumnicell.iiti.ac.in:8000/api/admin/add-sponsor", data, {
         headers: { "Content-Type": "multipart/form-data" },
       });
 
@@ -122,7 +122,7 @@ const AdminDashboard = () => {
 
     try {
       await axios.delete(
-        `http://localhost:8000/api/admin/delete-sponsor/${id}`
+        `http://alumnicell.iiti.ac.in:8000/api/admin/delete-sponsor/${id}`
       );
       fetchSponsors();
     } catch (err) {
@@ -197,7 +197,7 @@ const AdminDashboard = () => {
     formData.append("image", galleryImageFile);
 
     try {
-      const res = await fetch("http://localhost:8000/api/gallery", {
+      const res = await fetch("http://alumnicell.iiti.ac.in:8000/api/gallery", {
         method: "POST",
         body: formData,
       });
@@ -211,7 +211,7 @@ const AdminDashboard = () => {
   };
 
   useEffect(() => {
-    fetch("http://localhost:8000/api/gallery")
+    fetch("http://alumnicell.iiti.ac.in:8000/api/gallery")
       .then((res) => res.json())
       .then((data) => setGallery(data))
       .catch((err) => console.error("Error fetching gallery:", err));
@@ -220,7 +220,7 @@ const AdminDashboard = () => {
   // delete photo
   const handleDeleteGallery = async (id) => {
     try {
-      await fetch(`http://localhost:8000/api/gallery/${id}`, {
+      await fetch(`http://alumnicell.iiti.ac.in:8000/api/gallery/${id}`, {
         method: "DELETE",
       });
       setGallery((prev) => prev.filter((photo) => photo._id !== id));
@@ -232,7 +232,7 @@ const AdminDashboard = () => {
   //to fetch mentors
   const fetchMentors = async () => {
     try {
-      const res = await axios.get("http://localhost:8000/mentors/get", {
+      const res = await axios.get("http://alumnicell.iiti.ac.in:8000/mentors/get", {
         withCredentials: true,
       });
       setMentorsData(res.data);
@@ -355,7 +355,7 @@ const AdminDashboard = () => {
   useEffect(() => {
     const fetchPrograms = async () => {
       try {
-        const res = await axios.get("http://localhost:8000/admin/get-programs");
+        const res = await axios.get("http://alumnicell.iiti.ac.in:8000/admin/get-programs");
         setPrograms(res.data.data);
       } catch (err) {
         console.error("Error fetching programs:", err);
@@ -364,7 +364,7 @@ const AdminDashboard = () => {
 
     const fetchUpcomingEvents = async () => {
       try {
-        const res = await axios.get("http://localhost:8000/admin/get-upcoming-events");
+        const res = await axios.get("http://alumnicell.iiti.ac.in:8000/admin/get-upcoming-events");
         setUpcomingEvents(res.data.data);
       } catch (err) {
         console.error("Error fetching upcoming events:", err);
@@ -423,7 +423,7 @@ const AdminDashboard = () => {
       data.append("about", formDataprogram.about); // ✅ NEW
       data.append("image", imageFilepro);
 
-      await axios.post("http://localhost:8000/admin/add-program", data, {
+      await axios.post("http://alumnicell.iiti.ac.in:8000/admin/add-program", data, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
@@ -444,7 +444,7 @@ const AdminDashboard = () => {
       setImageFilepro(null);
       setFormErrorspro({});
 
-      const res = await axios.get("http://localhost:8000/admin/get-programs");
+      const res = await axios.get("http://alumnicell.iiti.ac.in:8000/admin/get-programs");
       setPrograms(res.data.data);
     } catch (err) {
       console.error("Error adding program:", err);
@@ -458,8 +458,8 @@ const AdminDashboard = () => {
     if (!confirmed) return;
 
     try {
-      await axios.delete(`http://localhost:8000/admin/delete-program/${id}`);
-      const resPrograms = await axios.get("http://localhost:8000/admin/get-programs");
+      await axios.delete(`http://alumnicell.iiti.ac.in:8000/admin/delete-program/${id}`);
+      const resPrograms = await axios.get("http://alumnicell.iiti.ac.in:8000/admin/get-programs");
       setPrograms(resPrograms.data.data);
     } catch (err) {
       console.error("Error deleting program:", err);
@@ -473,8 +473,8 @@ const AdminDashboard = () => {
     if (!confirmed) return;
 
     try {
-      await axios.delete(`http://localhost:8000/admin/delete-upcoming-event/${id}`);
-      const resUpcoming = await axios.get("http://localhost:8000/admin/get-upcoming-events");
+      await axios.delete(`http://alumnicell.iiti.ac.in:8000/admin/delete-upcoming-event/${id}`);
+      const resUpcoming = await axios.get("http://alumnicell.iiti.ac.in:8000/admin/get-upcoming-events");
       setUpcomingEvents(resUpcoming.data.data);
     } catch (err) {
       console.error("Error deleting upcoming event:", err);
@@ -522,7 +522,7 @@ const AdminDashboard = () => {
       data.append("venue", formDataUpcoming.venue);
       data.append("image", imageFileUpcoming);
 
-      await axios.post("http://localhost:8000/admin/add-upcoming-event", data, {
+      await axios.post("http://alumnicell.iiti.ac.in:8000/admin/add-upcoming-event", data, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
@@ -540,10 +540,10 @@ const AdminDashboard = () => {
       setImageFileUpcoming(null);
       setFormErrorsUpcoming({});
 
-      const resPrograms = await axios.get("http://localhost:8000/admin/get-programs");
+      const resPrograms = await axios.get("http://alumnicell.iiti.ac.in:8000/admin/get-programs");
       setPrograms(resPrograms.data.data);
 
-      const resUpcoming = await axios.get("http://localhost:8000/admin/get-upcoming-events");
+      const resUpcoming = await axios.get("http://alumnicell.iiti.ac.in:8000/admin/get-upcoming-events");
       setUpcomingEvents(resUpcoming.data.data);
     } catch (err) {
       console.error("Error adding upcoming event:", err);

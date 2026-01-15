@@ -11,7 +11,7 @@ const SaathiRegistrationPage = () => {
   // useEffect(() => {
   //   const fetchRoleNStatus = async () => {
   //     try {
-  //       const res = await axios.get('http://localhost:8000/auth/check', {
+  //       const res = await axios.get('http://alumnicell.iiti.ac.in:8000/auth/check', {
   //         withCredentials: true,
   //       });
   //       setRole(res.data.role);

@@ -13,7 +13,7 @@ const KYA = () => {
 
   useEffect(() => {
     axios
-      .get("http://localhost:8000/admin/get-kya-profiles")
+      .get("http://alumnicell.iiti.ac.in:8000/admin/get-kya-profiles")
       .then((res) => {
         console.log(res.data)
         if (res.data && Array.isArray(res.data.data)) {
