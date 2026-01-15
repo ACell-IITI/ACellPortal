@@ -6,7 +6,7 @@ export default function Gallery() {
   const [selectedImage, setSelectedImage] = useState(null);
 
   useEffect(() => {
-    fetch(`${API_BASE_URL}/api/gallery`)
+    fetch(`${API_BASE_URL}/gallery`)
       .then((res) => res.json())
       .then((data) => setRecentPhotos(data));
   }, []);
