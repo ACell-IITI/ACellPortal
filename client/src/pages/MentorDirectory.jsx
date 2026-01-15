@@ -15,7 +15,7 @@ const MentorDirectory = () => {
   useEffect(() => {
     const fetchMentors = async () => {
       try {
-        const res = await axios.get('http://alumnicell.iiti.ac.in:3008/mentors/get', {
+        const res = await axios.get('https://alumnicell.iiti.ac.in:3008/api/mentors/get', {
           withCredentials: true,
         });
         setMentorsData(res.data);

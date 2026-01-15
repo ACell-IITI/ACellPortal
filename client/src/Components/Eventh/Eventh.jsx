@@ -51,7 +51,7 @@ const EventCarousel = () => {
 useEffect(() => {
     const fetchEvents = async () => {
       try {
-        const res = await axios.get("http://alumnicell.iiti.ac.in:3008/api/admin/get-programs");
+        const res = await axios.get("https://alumnicell.iiti.ac.in:3008/api/admin/get-programs");
         const onlyEvents = res.data.data.filter(item => item.type === "event");
         setEvents(onlyEvents);
       } catch (err) {
