@@ -58,7 +58,7 @@ const Home = () => {
  const [recentPhotos, setRecentPhotos] = useState([]);
 
   useEffect(() => {
-    fetch(`${API_BASE_URL}/api/gallery/recent`)
+    fetch(`${API_BASE_URL}/gallery/recent`)
       .then((res) => res.json())
       .then((data) => {
         const recentFive = data.slice(0, 5); 
