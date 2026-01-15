@@ -10,7 +10,7 @@ export default function GuestRoute({ children }) {
   useEffect(() => {
     const checkAuth = async () => {
       try {
-        const res = await axios.get("http://alumnicell.iiti.ac.in:8000/auth/check", {
+        const res = await axios.get("http://alumnicell.iiti.ac.in:3008/auth/check", {
           withCredentials: true,
         });
         setLoggedIn(!!res.data.role);

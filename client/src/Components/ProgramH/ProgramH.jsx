@@ -19,7 +19,7 @@ const Program = () => {
   useEffect(() => {
     const fetchPrograms = async () => {
       try {
-        const res = await axios.get("http://alumnicell.iiti.ac.in:8000/admin/get-programs");
+        const res = await axios.get("http://alumnicell.iiti.ac.in:3008/admin/get-programs");
         setPrograms(res.data.data);
       } catch (err) {
         console.error("Error fetching programs:", err);

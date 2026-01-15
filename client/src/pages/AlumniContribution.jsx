@@ -87,7 +87,7 @@ const AlumniContributions = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch("http://alumnicell.iiti.ac.in:8000/api/alumni-contributions")
+    fetch("http://alumnicell.iiti.ac.in:3008/api/alumni-contributions")
       .then((res) => res.json())
       .then((data) => setAlumniData(data))
       .catch((err) =>

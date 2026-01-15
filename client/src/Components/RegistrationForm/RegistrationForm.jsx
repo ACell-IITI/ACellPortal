@@ -97,7 +97,7 @@ const RegistrationForm = () => {
 
       try {
         const res = await axios.post(
-          'http://alumnicell.iiti.ac.in:8000/admin/add-mentor',
+          'http://alumnicell.iiti.ac.in:3008/admin/add-mentor',
           data,
           {
             withCredentials: true,

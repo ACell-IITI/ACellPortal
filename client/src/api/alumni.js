@@ -1,5 +1,5 @@
 import axios from "axios";
-export const API_BASE_URL = "http://alumnicell.iiti.ac.in:8000";
+export const API_BASE_URL = "http://alumnicell.iiti.ac.in:3008";
 
 export const getKyaProfiles = async () => {
   const res = await axios.get(`${API_BASE_URL}/api/get/kya-profiles`);
