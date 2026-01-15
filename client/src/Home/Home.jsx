@@ -134,6 +134,14 @@ const Home = () => {
   Explore our sessions and expert-led discussions to boost your professional journey.
 </p>
 <Eventh />
+<div className="flex justify-center mt-6 mb-10">
+  <Link
+    to="/events"
+    className="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-6 py-2 rounded-lg transition-colors duration-300"
+  >
+    See More
+  </Link>
+</div>
 </div>
 
 {/* Saathi banner */}

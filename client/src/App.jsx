@@ -29,6 +29,7 @@ import AboutEvent from './pages/AboutEvent';
 
 import AlumniContribution from "./pages/AlumniContribution";
 import Sponsors from "./pages/Sponsors";
+import EventsPage from "./pages/EventsPage";
 
 
 // import AdminSettings from "./pages/AdminSettings";
@@ -102,6 +103,7 @@ function App() {
           />
           <Route path="/verified-mentors" element={<VerifiedMentorsPage />} />
           <Route path="/gallery" element={<Gallery />} />
+          <Route path="/events" element={<EventsPage />} />
         </Routes>
         <Footer />
       </BrowserRouter>
