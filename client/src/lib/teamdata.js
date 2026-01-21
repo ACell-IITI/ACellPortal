@@ -22,6 +22,17 @@ export const teamMembers = [
     Contact:"6393626042"
   },
   
+     {
+    id: 2,
+    name: "Aviral Sharma",
+    role: "Team Lead",
+    image: "../Team/AviralSharma.jpg",
+    linkedin: "https://www.linkedin.com/in/aviral-sharma-b57127299/",
+    insta: "/team",
+    group: "Member",
+    team: "Web Dev",
+  },
+
 
   {
     id: 4,
@@ -29,16 +40,6 @@ export const teamMembers = [
     role: "Back-End Developer",
     image: "../Team/VeerDoria.jpg",
     linkedin: "https://www.linkedin.com/in/veer-doria-16567b330/",
-    insta: "/team",
-    group: "Member",
-    team: "Web Dev",
-  },
-   {
-    id: 2,
-    name: "Aviral Sharma",
-    role: "Team Lead",
-    image: "../Team/AviralSharma.jpg",
-    linkedin: "https://www.linkedin.com/in/aviral-sharma-b57127299/",
     insta: "/team",
     group: "Member",
     team: "Web Dev",

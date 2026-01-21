@@ -72,7 +72,7 @@ export default function Navbar() {
       ],
     },
     { name: 'Mentors', path: '/verified-mentors' },
-    { name: 'Alumini Contributors', path: '/alumni-contribution' },
+    { name: 'Alumni Contributors', path: '/alumni-contribution' },
     { name: 'Sponsors', path: '/sponsors' },
     { name: 'Team', path: '/team' },
   ];
