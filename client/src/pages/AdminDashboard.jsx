@@ -1144,6 +1144,7 @@ const AdminDashboard = () => {
                         className="w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-shadow border-slate-300"
                       >
                         <option value="event">Event</option>
+                        <option value="program">Program</option>
                       </select>
                     </div>
 
