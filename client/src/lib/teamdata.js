@@ -88,7 +88,16 @@ export const teamMembers = [
   },
 
 
-
+{
+    id: 8,
+    name: "Sahiba Joshi",
+    role: "Front-End Developer",
+    image: "../Team/SahibaJoshi.jpg",
+    linkedin: "https://www.linkedin.com/in/sahiba-joshi/",
+    insta: "/team",
+    group: "Member",
+    team: "Web Dev",
+  },
 
   {
     id: 9,
