@@ -66,7 +66,7 @@ const AdminDashboard = () => {
 
   const fetchSponsors = async () => {
     try {
-      const res = await axios.get("https://alumnicell.iiti.ac.in/api/sponsors");
+      const res = await axios.get("https://alumnicell.iiti.ac.in/api/sponsors/sponsors");
       setSponsors(res.data);
     } catch (err) {
       console.error("Error fetching sponsors:", err);
@@ -105,7 +105,7 @@ const AdminDashboard = () => {
       data.append("type", sponsorForm.type);
       data.append("logo", sponsorLogo);
 
-      await axios.post("https://alumnicell.iiti.ac.in/api/admin/add-sponsor", data, {
+      await axios.post("https://alumnicell.iiti.ac.in/api/sponsors/admin/add-sponsor", data, {
         headers: { "Content-Type": "multipart/form-data" },
       });
 
@@ -122,7 +122,7 @@ const AdminDashboard = () => {
 
     try {
       await axios.delete(
-        `https://alumnicell.iiti.ac.in/api/admin/delete-sponsor/${id}`
+        `https://alumnicell.iiti.ac.in/api/sponsors/admin/delete-sponsor/${id}`
       );
       fetchSponsors();
     } catch (err) {
