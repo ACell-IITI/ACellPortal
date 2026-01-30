@@ -69,7 +69,11 @@ const Home = () => {
 
   return (
     <>
+    <div className="mopus">
+        <img src="/Media/MOpus.jpg" alt="banner" />
+      </div>
     <div className="banner">
+      
     <div className="content-wrapper">
         
           <div className="textbox">

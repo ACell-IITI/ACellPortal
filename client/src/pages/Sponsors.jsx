@@ -21,32 +21,6 @@ const cardVariants = {
   },
 };
 
-/* ------------ ADDED SPONSOR DATA ONLY (NOTHING ELSE CHANGED) ------------ */
-
-const sponsorsData = [
-  { name: "Go Desi", type: "Chatpata Partner", icon: "sponsors/go desi logo_registered_white bg.png" },
-  { name: "Declutter Cat", type: "Associate Partner", icon: "sponsors/DECLUTTER LOGO.jpg" },
-  { name: "Mikasa", type: "Title Sponsor", icon: "sponsors/MK_LOGO(Transparent).png" },
-  { name: "M Pop", type: "Associate Partner", icon: "sponsors/pop.png" },
-  { name: "Cool Berg", type: "Associate Partner", icon: "sponsors/Coolberg Logo_black.png" },
-  { name: "Re’equil", type: "Associate Partner", icon: "sponsors/Re'equil logo (1).png" },
-  { name: "ITC Bingo", type: "Munching Partner", icon: "sponsors/bingo.png" },
-  { name: "Neo Sip", type: "Refreshment Partner", icon: "sponsors/logo_light_bg_yellow.png" },
-  { name: "Pop Can", type: "Gold Sponsors", icon: "sponsors/POPCAN LOGO.jpeg" },
-  { name: "Unibic", type: "Snacks Partner", icon: "sponsors/UNIBIC_Logo_Red_FY_25[1].png" },
-  { name: "Abhibus", type: "Associate Partner", icon: "/sponsors/abhibus-logo (1).png" },
-  { name: "Lotte Peperro", type: "Sweet Moment Partner", icon: "sponsors/pep.png" },
-  { name: "House of BUB", type: "Associate Partner", icon: "sponsors/House-of-Bub.png" },
-  { name: "Brand Facade", type: "Lighting Partner", icon: "/logos/brandfacade.png" },
-  { name: "Patel Electronics", type: "Associate Partner", icon: "sponsors/Patel Electronics (24).png" },
-  { name: "Classmate ", type: "Partner", icon: "sponsors/CLASSMATE LOGO.png" },
-  { name: " Paper Craft", type: "Partner", icon: "sponsors/PAPERCRAFT.png" },
-  { name: "Bliss Body", type: "Associate Partner", icon: "sponsors/Blissbody logo register1.png" },
-  { name: "Cup Ji", type: "Tea and Coffee Partner", icon: "sponsors/CUPJI LOGO.png" },
-  { name: "Plum", type: "Beauty Partner", icon: "sponsors/Brown - 2.png" },
-  { name: "Chitravichar", type: "Merch Partner", icon: "sponsors/chitra vichar logo -1.png" },
-];
-
 /* ----------------------------------
    Sponsor Card
 ---------------------------------- */
@@ -114,9 +88,11 @@ const Sponsors = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // replaced API fetch with static data
-    setSponsors(sponsorsData);
-    setLoading(false);
+    fetch("https://alumnicell.iiti.ac.in/api/sponsors/sponsors")
+      .then((res) => res.json())
+      .then((data) => setSponsors(data))
+      .catch((err) => console.error("Error fetching sponsors:", err))
+      .finally(() => setLoading(false));
   }, []);
 
   return (
@@ -182,8 +158,8 @@ const Sponsors = () => {
                        lg:grid-cols-3
                        gap-6 sm:gap-8 lg:gap-10"
           >
-            {sponsors.map((sponsor, index) => (
-              <SponsorCard key={index} sponsor={sponsor} />
+            {sponsors.map((sponsor) => (
+              <SponsorCard key={sponsor._id} sponsor={sponsor} />
             ))}
           </motion.div>
         )}

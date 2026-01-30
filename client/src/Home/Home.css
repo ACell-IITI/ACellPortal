@@ -203,5 +203,26 @@
   grid-auto-rows: fit-content; 
 }
 
+.mopus {
+  width: 100%;
+}
+
+.mopus img {
+  width: 100%;
+  height: auto;      /* NEVER hides bottom */
+  max-width: 100%;
+  display: block;
+}
+
+
+@media (max-width: 768px) {
+  
+  .mopus {
+    padding: 0 6px; /* small side padding */
+  }
+}
+
+
+
 
 
