@@ -11,6 +11,11 @@ export default defineConfig({
         changeOrigin: true,
         secure: false,
       },
+      "/alumni-api": {
+      target: "https://alumnicell.iiti.ac.in",
+      changeOrigin: true,
+      secure: false,
+    },
     },
   },
 });
