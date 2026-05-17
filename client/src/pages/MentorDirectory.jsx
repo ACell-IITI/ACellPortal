@@ -1,28 +1,29 @@
 // MentorDirectory.js
-import React, { useEffect, useState } from 'react';
-import { Search } from 'lucide-react';
-import MentorCard from '../Components/MentorCard/MentorCard';
+import React, { useEffect, useState } from "react";
+import { Search } from "lucide-react";
+import MentorCard from "../Components/MentorCard/MentorCard";
 // import { mentorData } from '../lib/mentorData';
-import './MentorDirectory.css';
-import axios from 'axios';
+import "./MentorDirectory.css";
+import axios from "axios";
+import { API_BASE_URL } from "../api/alumni";
 
 const MentorDirectory = () => {
   const [mentorsData, setMentorsData] = useState([]);
-  const [searchTerm, setSearchTerm] = useState('');
+  const [searchTerm, setSearchTerm] = useState("");
   const [loading, setLoading] = useState(true);
-  const [selectedYear, setSelectedYear] = useState('');
+  const [selectedYear, setSelectedYear] = useState("");
 
   useEffect(() => {
     const fetchMentors = async () => {
       try {
-        const res = await axios.get('https://alumnicell.iiti.ac.in/api/mentors/get', {
+        const res = await axios.get(`${API_BASE_URL}/api/mentors/get`, {
           withCredentials: true,
         });
         setMentorsData(res.data);
       } catch (error) {
         console.log(
-          'Error while sending request to verified mentors route',
-          error
+          "Error while sending request to verified mentors route",
+          error,
         );
       } finally {
         setLoading(false);
@@ -37,11 +38,11 @@ const MentorDirectory = () => {
       mentor.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
       mentor.degree.toLowerCase().includes(searchTerm.toLowerCase()) ||
       mentor.skills.some((skill) =>
-        skill.toLowerCase().includes(searchTerm.toLowerCase())
+        skill.toLowerCase().includes(searchTerm.toLowerCase()),
       );
     const matchesYear =
       // selectedYear === '' || mentor.graduationYear === selectedYear;
-      selectedYear === '' || String(mentor.graduationYear) === selectedYear
+      selectedYear === "" || String(mentor.graduationYear) === selectedYear;
 
     return matchesSearch && matchesYear;
   });
@@ -54,9 +55,8 @@ const MentorDirectory = () => {
   // if(!mentorsData) return <div>No Mentors Found</div>
 
   if (!mentorsData || mentorsData.length === 0) {
-  return <div>No Mentors Found</div>;
-}
-
+    return <div>No Mentors Found</div>;
+  }
 
   return (
     <div className="mentor-directory">
@@ -106,7 +106,6 @@ const MentorDirectory = () => {
             {filteredMentors.map((mentor) => (
               // <MentorCard key={Number(mentor._id)} mentor={mentor} />
               <MentorCard key={mentor._id} mentor={mentor} />
-
             ))}
           </div>
         ) : (

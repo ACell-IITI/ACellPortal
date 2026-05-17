@@ -9,7 +9,7 @@ const EventsPage = () => {
   useEffect(() => {
     const fetchEvents = async () => {
       try {
-        const res = await axios.get(`${API_BASE_URL}/admin/get-programs`);
+        const res = await axios.get(`${API_BASE_URL}/api/admin/get-programs`);
         const onlyEvents = res.data.data.filter(item => item.type === "event");
         setEvents(onlyEvents);
       } catch (err) {

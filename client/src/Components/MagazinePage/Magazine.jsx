@@ -49,7 +49,7 @@ const Magazine = () => {
     useEffect(() => {
         const fetchLatestMagazine = async () => {
             try {
-                const res = await axios.get(`${API_BASE_URL}/admin/get-magazines`);
+                const res = await axios.get(`${API_BASE_URL}/api/admin/get-magazines`);
                 const magazines = res.data.data || res.data;
                 if (magazines && magazines.length > 0) {
                     const sorted = magazines.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));

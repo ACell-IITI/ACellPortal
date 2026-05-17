@@ -1,15 +1,15 @@
-import './App.css';
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import "./App.css";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 
-import Home from './Home/Home';
-import Footer from './Components/Footer/Footer';
-import Navbar from './Components/Navbar/Navbar';
+import Home from "./Home/Home";
+import Footer from "./Components/Footer/Footer";
+import Navbar from "./Components/Navbar/Navbar";
 // import RegistrationForm from "./Components/RegistrationForm/RegistrationForm";
 
-import KYA from './Components/KYA';
+import KYA from "./components/KYA";
 
-import LoginPage from './pages/LoginPage';
-import CVReviewPage from './pages/CVReviewPage';
+import LoginPage from "./pages/LoginPage";
+import CVReviewPage from "./pages/CVReviewPage";
 // import SignUpPage from "./pages/SignUpPage";
 
 import NewsletterPage from "./pages/NewsletterPage";
@@ -25,12 +25,11 @@ import axios from "axios";
 import GuestRoute from "./routes/GuestRoute";
 import Gallery from "./Components/Gallery/Gallery";
 
-import AboutEvent from './pages/AboutEvent';
+import AboutEvent from "./pages/AboutEvent";
 
 import AlumniContribution from "./pages/AlumniContribution";
 import Sponsors from "./pages/Sponsors";
 import EventsPage from "./pages/EventsPage";
-
 
 // import AdminSettings from "./pages/AdminSettings";
 
@@ -40,12 +39,12 @@ function AdminRoute({ children }) {
   useEffect(() => {
     async function fetchRole() {
       try {
-        const res = await axios.get(`${API_BASE_URL}/auth/check`, {
+        const res = await axios.get(`${API_BASE_URL}/api/auth/check`, {
           withCredentials: true,
         });
-        setIsAdmin(res.data.role === 'admin');
+        setIsAdmin(res.data.role === "admin");
       } catch (err) {
-        console.error('Error fetching role:', err);
+        console.error("Error fetching role:", err);
         setIsAdmin(false);
       } finally {
         setLoading(false);
@@ -62,7 +61,7 @@ function App() {
     <>
       <BrowserRouter>
         <Navbar />
-        <div style={{ height: '100px', backgroundColor: '#153462' }}></div>
+        <div style={{ height: "100px", backgroundColor: "#153462" }}></div>
         <Routes>
           <Route path="/" element={<Home />} />
           <Route

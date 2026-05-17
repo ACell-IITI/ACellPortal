@@ -1,5 +1,6 @@
 import { motion } from "framer-motion";
 import { useEffect, useState } from "react";
+import { API_BASE_URL } from "../api/alumni";
 
 /* ----------------------------------
    Animation Variants
@@ -34,11 +35,13 @@ const SponsorCard = ({ sponsor }) => {
     >
       <div className="absolute inset-0 rounded-3xl bg-gradient-to-br from-indigo-300/40 via-indigo-200/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
 
-      <div className="relative rounded-3xl bg-white/80 backdrop-blur-xl
+      <div
+        className="relative rounded-3xl bg-white/80 backdrop-blur-xl
                       px-5 py-7 sm:px-7 sm:py-9
                       shadow-md hover:shadow-2xl
                       transition-shadow duration-300
-                      border border-white/60">
+                      border border-white/60"
+      >
         <div className="flex flex-col items-center text-center gap-4 sm:gap-6">
           <motion.div
             whileHover={{ scale: 1.15, rotate: 2 }}
@@ -88,7 +91,7 @@ const Sponsors = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch("https://alumnicell.iiti.ac.in/api/sponsors/sponsors")
+    fetch(`${API_BASE_URL}/api/sponsors/sponsors`)
       .then((res) => res.json())
       .then((data) => setSponsors(data))
       .catch((err) => console.error("Error fetching sponsors:", err))
@@ -164,8 +167,6 @@ const Sponsors = () => {
           </motion.div>
         )}
       </section>
-
-
     </motion.div>
   );
 };

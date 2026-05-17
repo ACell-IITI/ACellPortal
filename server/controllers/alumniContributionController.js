@@ -1,6 +1,8 @@
 import AlumniContribution from "../models/AlumniContribution.js";
-import cloudinary from '../config/cloudinary.js';
-import fs from 'fs';
+import fs from "fs";
+import { uploadToOpeninary } from "../utils/openinary.js";
+
+const openinaryUrl = process.env.OPENINARY_URL;
 
 /**
  * @desc    Add new alumni contribution
@@ -14,13 +16,18 @@ export const addAlumniContribution = async (req, res) => {
       return res.status(400).json({ message: "All fields are required" });
     }
 
-    const result = await cloudinary.uploader.upload(req.file.path, {
-      folder: 'alumni-contributions',
-    });
+    const result = await uploadToOpeninary(
+      req.file.path,
+      "alumni-contributions",
+    );
 
     fs.unlinkSync(req.file.path);
 
-    const contribution = await AlumniContribution.create({ name, batch: parseInt(batch), photo: result.secure_url });
+    const contribution = await AlumniContribution.create({
+      name,
+      batch: parseInt(batch),
+      photo: openinaryUrl + result.files[0].url,
+    });
 
     res.status(201).json(contribution);
   } catch (error) {
@@ -35,7 +42,9 @@ export const addAlumniContribution = async (req, res) => {
  */
 export const getAlumniContributions = async (req, res) => {
   try {
-    const contributions = await AlumniContribution.find().sort({ createdAt: -1 });
+    const contributions = await AlumniContribution.find().sort({
+      createdAt: -1,
+    });
     res.status(200).json(contributions);
   } catch (error) {
     console.error("Get Alumni Contributions Error:", error);

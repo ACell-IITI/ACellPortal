@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-
-
+import { API_BASE_URL } from "../api/alumni";
 
 const fadeUp = {
   hidden: { opacity: 0, y: 24 },
@@ -19,8 +18,6 @@ const staggerContainer = {
   },
 };
 
-
-
 const AlumniCard = ({ alumni }) => {
   return (
     <motion.div
@@ -36,7 +33,6 @@ const AlumniCard = ({ alumni }) => {
         flex flex-col items-center text-center
       "
     >
-      
       <motion.div
         whileHover={{ scale: 1.05 }}
         transition={{ type: "spring", stiffness: 200 }}
@@ -87,11 +83,11 @@ const AlumniContributions = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch("https://alumnicell.iiti.ac.in/api/alumni-contributions")
+    fetch(`${API_BASE_URL}/api/alumni-contributions`)
       .then((res) => res.json())
       .then((data) => setAlumniData(data))
       .catch((err) =>
-        console.error("Error fetching alumni contributions:", err)
+        console.error("Error fetching alumni contributions:", err),
       )
       .finally(() => setLoading(false));
   }, []);
@@ -99,9 +95,7 @@ const AlumniContributions = () => {
   if (loading) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-gray-100 flex items-center justify-center">
-        <p className="text-gray-500 text-sm">
-          Loading alumni contributions...
-        </p>
+        <p className="text-gray-500 text-sm">Loading alumni contributions...</p>
       </div>
     );
   }
@@ -114,8 +108,6 @@ const AlumniContributions = () => {
       className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-gray-100"
     >
       <div className="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8 py-14 sm:py-16 md:py-20">
-        
-        
         <motion.header
           variants={staggerContainer}
           initial="hidden"
@@ -152,7 +144,6 @@ const AlumniContributions = () => {
           </motion.p>
         </motion.header>
 
-        
         <motion.div
           variants={staggerContainer}
           initial="hidden"
@@ -171,8 +162,6 @@ const AlumniContributions = () => {
           ))}
         </motion.div>
       </div>
-
-
     </motion.div>
   );
 };

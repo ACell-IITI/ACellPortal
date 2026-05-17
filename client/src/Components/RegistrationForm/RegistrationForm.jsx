@@ -1,17 +1,18 @@
-import React, { useState, useRef } from 'react'; 
-import './RegistrationForm.css';
-import axios from 'axios';
+import React, { useState, useRef } from "react";
+import "./RegistrationForm.css";
+import axios from "axios";
+import { API_BASE_URL } from "../../api/alumni";
 
 const RegistrationForm = () => {
   const [formData, setFormData] = useState({
-    name: '',
+    name: "",
     // email: '',
-    degree: '',
-    graduationYear: '',
+    degree: "",
+    graduationYear: "",
     // contactNumber: '',
-    about: '',
-    skills: '',
-    linkedinId: '',
+    about: "",
+    skills: "",
+    linkedinId: "",
   });
 
   const [profileImageFile, setProfileImageFile] = useState(null);
@@ -33,7 +34,7 @@ const RegistrationForm = () => {
     const newErrors = {};
 
     if (!formData.name) {
-      newErrors.name = 'Name is required';
+      newErrors.name = "Name is required";
     }
 
     // if (!formData.email) {
@@ -55,15 +56,15 @@ const RegistrationForm = () => {
     // }
 
     if (!formData.about) {
-      newErrors.about = 'About field is required';
+      newErrors.about = "About field is required";
     }
 
     if (!formData.skills) {
-      newErrors.skills = 'Skills field is required';
+      newErrors.skills = "Skills field is required";
     }
 
     if (!formData.linkedinId) {
-      newErrors.linkedinId = 'LinkedIn ID is required';
+      newErrors.linkedinId = "LinkedIn ID is required";
     }
 
     return newErrors;
@@ -76,76 +77,76 @@ const RegistrationForm = () => {
 
     if (Object.keys(validationErrors).length === 0) {
       const data = new FormData();
-      data.append('name', formData.name);
+      data.append("name", formData.name);
       // data.append('email', formData.email);
-      data.append('degree', formData.degree);
-      data.append('graduationYear', Number(formData.graduationYear));
+      data.append("degree", formData.degree);
+      data.append("graduationYear", Number(formData.graduationYear));
       // data.append('contactNumber', Number(formData.contactNumber));
-      data.append('about', formData.about);
-      data.append('linkedinId', formData.linkedinId);
+      data.append("about", formData.about);
+      data.append("linkedinId", formData.linkedinId);
 
       const skillArray = formData.skills
-        .split(',')
+        .split(",")
         .map((s) => s.trim())
         .filter((s) => s.length > 0);
 
-      data.append('skills', JSON.stringify(skillArray));
+      data.append("skills", JSON.stringify(skillArray));
 
       if (profileImageFile) {
-        data.append('profilePic', profileImageFile);
+        data.append("profilePic", profileImageFile);
       }
 
       try {
         const res = await axios.post(
-          'https://alumnicell.iiti.ac.in/api/admin/add-mentor',
+          `${API_BASE_URL}/api/admin/add-mentor`,
           data,
           {
             withCredentials: true,
             headers: {
-              'Content-Type': 'multipart/form-data',
+              "Content-Type": "multipart/form-data",
             },
-          }
+          },
         );
         alert(res.data.message);
       } catch (error) {
-        console.log('Error while sending req to add mentor: ', error);
-        alert('Operation Failed!');
+        console.log("Error while sending req to add mentor: ", error);
+        alert("Operation Failed!");
       }
       setFormData({
-        name: '',
+        name: "",
         // email: '',
-        degree: '',
-        graduationYear: '',
+        degree: "",
+        graduationYear: "",
         // contactNumber: '',
-        about: '',
+        about: "",
         skills: [],
-        linkedinId: '',
+        linkedinId: "",
       });
       setProfileImageFile(null);
     }
   };
 
   const profileImageStyles = {
-    width: '100px',
-    height: '100px',
-    objectFit: 'cover',
-    borderRadius: '50%',
-    marginBottom: '1rem',
-    cursor: 'pointer',
-    border: '1px solid #ccc',
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center',
-    fontSize: '0.8rem',
-    color: '#555',
-    textAlign: 'center',
-    padding: '5px',
+    width: "100px",
+    height: "100px",
+    objectFit: "cover",
+    borderRadius: "50%",
+    marginBottom: "1rem",
+    cursor: "pointer",
+    border: "1px solid #ccc",
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    fontSize: "0.8rem",
+    color: "#555",
+    textAlign: "center",
+    padding: "5px",
   };
 
   const placeholderImageStyles = {
     ...profileImageStyles,
-    border: '1px dashed #aaa',
-    backgroundColor: '#f0f0f0',
+    border: "1px dashed #aaa",
+    backgroundColor: "#f0f0f0",
   };
 
   return (
@@ -245,8 +246,7 @@ const RegistrationForm = () => {
 
         <div className="form-group">
           <label>
-            Domains(seprated by comma) :{' '}
-            <span className="required">*</span>
+            Domains(seprated by comma) : <span className="required">*</span>
           </label>
           <input
             type="text"
@@ -264,7 +264,7 @@ const RegistrationForm = () => {
             accept="image/*"
             onChange={handleFileChange}
             ref={fileInputRef}
-            style={{ display: 'none' }}
+            style={{ display: "none" }}
           />
 
           {profileImageFile ? (

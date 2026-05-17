@@ -26,7 +26,7 @@ const MGallery = () => {
 
         const fetchMagazines = async () => {
             try {
-                const res = await axios.get(`${API_BASE_URL}/admin/get-magazines`); 
+                const res = await axios.get(`${API_BASE_URL}/api/admin/get-magazines`); 
                 setMagazines(res.data.data || []);
             } catch (err) {
                 console.error("Error fetching magazines:", err);

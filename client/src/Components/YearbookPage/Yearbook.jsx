@@ -17,7 +17,7 @@ const Yearbook = () => {
     useEffect(() => {
         const fetchYearbooks = async () => {
             try {
-                const res = await axios.get(`${API_BASE_URL}/admin/get-yearbooks`);
+                const res = await axios.get(`${API_BASE_URL}/api/admin/get-yearbooks`);
                 const Yearbooks = res.data.data || res.data;
                 if (Yearbooks && Yearbooks.length > 0) {
                     const sorted = Yearbooks.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));

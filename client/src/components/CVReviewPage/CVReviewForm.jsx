@@ -2,6 +2,7 @@ import React, { useEffect, useRef } from "react";
 import "../../styles/CVReviewPage/CVReviewForm.css";
 import InputField from "./InputField";
 import CustomSelectField from "./CustomSelectField";
+import { API_BASE_URL } from "../../api/alumni";
 
 const CVReviewForm = () => {
   const nameRef = useRef();
@@ -64,7 +65,7 @@ const CVReviewForm = () => {
     console.log("Form Data to Submit:", formData);
 
     try {
-      const response = await fetch("https://alumnicell.iiti.ac.in/cv/addCV", {
+      const response = await fetch(`${API_BASE_URL}/cv/addCV`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

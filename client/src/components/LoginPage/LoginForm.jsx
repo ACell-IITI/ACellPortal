@@ -17,7 +17,7 @@ const LoginForm = () => {
 
     try {
       const res = await axios.post(
-        `${API_BASE_URL}/auth/alumni/login`,
+        `${API_BASE_URL}/api/auth/alumni/login`,
         {
           alumniEmail,
           password,
@@ -80,7 +80,7 @@ const LoginForm = () => {
         logo_alignment={'center'}
         onSuccess={async (credentialResponse) => {
           const res = await axios.post(
-            `${API_BASE_URL}/auth/google`,
+            `${API_BASE_URL}/api/auth/google`,
             {
               token: credentialResponse.credential,
             },
