@@ -2,6 +2,7 @@
 import React, { useEffect, useState } from "react";
 import { Navigate } from "react-router-dom";
 import axios from "axios";
+import { API_BASE_URL } from "../api/alumni";
 
 export default function GuestRoute({ children }) {
   const [loading, setLoading] = useState(true);
@@ -10,7 +11,7 @@ export default function GuestRoute({ children }) {
   useEffect(() => {
     const checkAuth = async () => {
       try {
-        const res = await axios.get("https://alumnicell.iiti.ac.in/api/auth/check", {
+        const res = await axios.get(`${API_BASE_URL}/api/auth/check`, {
           withCredentials: true,
         });
         setLoggedIn(!!res.data.role);

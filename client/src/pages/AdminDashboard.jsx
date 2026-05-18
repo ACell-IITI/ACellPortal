@@ -66,7 +66,7 @@ const AdminDashboard = () => {
 
   const fetchSponsors = async () => {
     try {
-      const res = await axios.get("https://alumnicell.iiti.ac.in/api/sponsors/sponsors");
+      const res = await axios.get(`${API_BASE_URL}/api/sponsors/sponsors`);
       setSponsors(res.data);
     } catch (err) {
       console.error("Error fetching sponsors:", err);
@@ -75,7 +75,9 @@ const AdminDashboard = () => {
 
   const fetchAlumniContributions = async () => {
     try {
-      const res = await axios.get(`${API_BASE_URL}/admin/get-alumni-contributions`);
+      const res = await axios.get(
+        `${API_BASE_URL}/api/admin/get-alumni-contributions`,
+      );
       setAlumniContributions(res.data);
     } catch (err) {
       console.error("Error fetching alumni contributions:", err);
@@ -105,7 +107,7 @@ const AdminDashboard = () => {
       data.append("type", sponsorForm.type);
       data.append("logo", sponsorLogo);
 
-      await axios.post("https://alumnicell.iiti.ac.in/api/sponsors/admin/add-sponsor", data, {
+      await axios.post(`${API_BASE_URL}/api/sponsors/admin/add-sponsor`, data, {
         headers: { "Content-Type": "multipart/form-data" },
       });
 
@@ -122,7 +124,7 @@ const AdminDashboard = () => {
 
     try {
       await axios.delete(
-        `https://alumnicell.iiti.ac.in/api/sponsors/admin/delete-sponsor/${id}`
+        `${API_BASE_URL}/api/sponsors/admin/delete-sponsor/${id}`,
       );
       fetchSponsors();
     } catch (err) {
@@ -137,7 +139,11 @@ const AdminDashboard = () => {
   const handleAddAlumniContribution = async (e) => {
     e.preventDefault();
 
-    if (!contributionForm.name || !contributionForm.batch || !contributionPhoto) {
+    if (
+      !contributionForm.name ||
+      !contributionForm.batch ||
+      !contributionPhoto
+    ) {
       alert("Please fill all fields and upload a photo.");
       return;
     }
@@ -148,19 +154,23 @@ const AdminDashboard = () => {
       formData.append("batch", contributionForm.batch);
       formData.append("photo", contributionPhoto);
 
-      await axios.post(`${API_BASE_URL}/admin/add-alumni-contribution`, formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
+      await axios.post(
+        `${API_BASE_URL}/api/admin/add-alumni-contribution`,
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
         },
-      });
+      );
 
       alert("Alumni contribution added successfully!");
       setContributionForm({ name: "", batch: "" });
       setContributionPhoto(null);
       fetchAlumniContributions();
     } catch (err) {
-      console.error('Error adding alumni contribution:', err);
-      alert('Error adding alumni contribution.');
+      console.error("Error adding alumni contribution:", err);
+      alert("Error adding alumni contribution.");
     }
   };
 
@@ -168,7 +178,9 @@ const AdminDashboard = () => {
     if (!window.confirm(`Delete alumni contribution for "${name}"?`)) return;
 
     try {
-      await axios.delete(`${API_BASE_URL}/admin/delete-alumni-contribution/${id}`);
+      await axios.delete(
+        `${API_BASE_URL}/api/admin/delete-alumni-contribution/${id}`,
+      );
       fetchAlumniContributions();
     } catch (err) {
       console.error("Error deleting alumni contribution:", err);
@@ -197,7 +209,7 @@ const AdminDashboard = () => {
     formData.append("image", galleryImageFile);
 
     try {
-      const res = await fetch("https://alumnicell.iiti.ac.in/api/gallery", {
+      const res = await fetch(`${API_BASE_URL}/api/gallery`, {
         method: "POST",
         body: formData,
       });
@@ -211,7 +223,7 @@ const AdminDashboard = () => {
   };
 
   useEffect(() => {
-    fetch("https://alumnicell.iiti.ac.in/api/gallery")
+    fetch(`${API_BASE_URL}/api/gallery`)
       .then((res) => res.json())
       .then((data) => setGallery(data))
       .catch((err) => console.error("Error fetching gallery:", err));
@@ -220,7 +232,7 @@ const AdminDashboard = () => {
   // delete photo
   const handleDeleteGallery = async (id) => {
     try {
-      await fetch(`https://alumnicell.iiti.ac.in/api/gallery/${id}`, {
+      await fetch(`${API_BASE_URL}/api/gallery/${id}`, {
         method: "DELETE",
       });
       setGallery((prev) => prev.filter((photo) => photo._id !== id));
@@ -232,14 +244,14 @@ const AdminDashboard = () => {
   //to fetch mentors
   const fetchMentors = async () => {
     try {
-      const res = await axios.get("https://alumnicell.iiti.ac.in/api/mentors/get", {
+      const res = await axios.get(`${API_BASE_URL}/api/mentors/get`, {
         withCredentials: true,
       });
       setMentorsData(res.data);
     } catch (error) {
       console.log(
         "Error while sending request to verified mentors route",
-        error
+        error,
       );
     } finally {
       setLoading(false);
@@ -249,12 +261,12 @@ const AdminDashboard = () => {
   //to delete mentor
   async function deleteMentor(id, name) {
     const confirmed = window.confirm(
-      `Are you sure you want to delete ${name}'s profile?`
+      `Are you sure you want to delete ${name}'s profile?`,
     );
     if (!confirmed) return;
 
     try {
-      await axios.delete(`${API_BASE_URL}/admin/delete-mentor/${id}`);
+      await axios.delete(`${API_BASE_URL}/api/admin/delete-mentor/${id}`);
       fetchMentors();
     } catch (err) {
       console.error("Error deleting profile", err);
@@ -264,7 +276,7 @@ const AdminDashboard = () => {
   useEffect(() => {
     // const fetchRoleAndMentors = async () => {
     //   try {
-    //     const res2 = await axios.get(`${API_BASE_URL}/admin/pending-mentors`);
+    //     const res2 = await axios.get(`${API_BASE_URL}/api/admin/pending-mentors`);
     //     setMentors(res2.data);
     //   } catch (error) {
     //     console.log('Error in useEffect:', error);
@@ -314,10 +326,10 @@ const AdminDashboard = () => {
   // const handleMentorsSubmit = async (e, alumniId) => {
   //   e.preventDefault();
   //   try {
-  //     await axios.patch(`${API_BASE_URL}/admin/verify-alumni/${alumniId}`);
+  //     await axios.patch(`${API_BASE_URL}/api/admin/verify-alumni/${alumniId}`);
   //     alert('Alumni verified successfully.');
 
-  //     const res2 = await axios.get(`${API_BASE_URL}/admin/pending-mentors`);
+  //     const res2 = await axios.get(`${API_BASE_URL}/api/admin/pending-mentors`);
   //     setMentors(res2.data);
   //   } catch (err) {
   //     console.error('Error verifying alumni:', err);
@@ -355,7 +367,7 @@ const AdminDashboard = () => {
   useEffect(() => {
     const fetchPrograms = async () => {
       try {
-        const res = await axios.get("https://alumnicell.iiti.ac.in/api/admin/get-programs");
+        const res = await axios.get(`${API_BASE_URL}/api/admin/get-programs`);
         setPrograms(res.data.data);
       } catch (err) {
         console.error("Error fetching programs:", err);
@@ -364,7 +376,9 @@ const AdminDashboard = () => {
 
     const fetchUpcomingEvents = async () => {
       try {
-        const res = await axios.get("https://alumnicell.iiti.ac.in/api/admin/get-upcoming-events");
+        const res = await axios.get(
+          `${API_BASE_URL}/api/admin/get-upcoming-events`,
+        );
         setUpcomingEvents(res.data.data);
       } catch (err) {
         console.error("Error fetching upcoming events:", err);
@@ -423,7 +437,7 @@ const AdminDashboard = () => {
       data.append("about", formDataprogram.about); // ✅ NEW
       data.append("image", imageFilepro);
 
-      await axios.post("https://alumnicell.iiti.ac.in/api/admin/add-program", data, {
+      await axios.post(`${API_BASE_URL}/api/admin/add-program`, data, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
@@ -444,7 +458,7 @@ const AdminDashboard = () => {
       setImageFilepro(null);
       setFormErrorspro({});
 
-      const res = await axios.get("https://alumnicell.iiti.ac.in/api/admin/get-programs");
+      const res = await axios.get(`${API_BASE_URL}/api/admin/get-programs`);
       setPrograms(res.data.data);
     } catch (err) {
       console.error("Error adding program:", err);
@@ -453,13 +467,15 @@ const AdminDashboard = () => {
 
   const handleDeleteProgram = async (id, title) => {
     const confirmed = window.confirm(
-      `Are you sure you want to delete "${title}"?`
+      `Are you sure you want to delete "${title}"?`,
     );
     if (!confirmed) return;
 
     try {
-      await axios.delete(`https://alumnicell.iiti.ac.in/api/admin/delete-program/${id}`);
-      const resPrograms = await axios.get("https://alumnicell.iiti.ac.in/api/admin/get-programs");
+      await axios.delete(`${API_BASE_URL}/api/admin/delete-program/${id}`);
+      const resPrograms = await axios.get(
+        `${API_BASE_URL}/api/admin/get-programs`,
+      );
       setPrograms(resPrograms.data.data);
     } catch (err) {
       console.error("Error deleting program:", err);
@@ -468,13 +484,17 @@ const AdminDashboard = () => {
 
   const handleDeleteUpcomingEvent = async (id, title) => {
     const confirmed = window.confirm(
-      `Are you sure you want to delete "${title}"?`
+      `Are you sure you want to delete "${title}"?`,
     );
     if (!confirmed) return;
 
     try {
-      await axios.delete(`https://alumnicell.iiti.ac.in/api/admin/delete-upcoming-event/${id}`);
-      const resUpcoming = await axios.get("https://alumnicell.iiti.ac.in/api/admin/get-upcoming-events");
+      await axios.delete(
+        `${API_BASE_URL}/api/admin/delete-upcoming-event/${id}`,
+      );
+      const resUpcoming = await axios.get(
+        `${API_BASE_URL}/api/admin/get-upcoming-events`,
+      );
       setUpcomingEvents(resUpcoming.data.data);
     } catch (err) {
       console.error("Error deleting upcoming event:", err);
@@ -483,7 +503,10 @@ const AdminDashboard = () => {
 
   // Handlers for Upcoming Events
   const handleChangeUpcoming = (e) => {
-    setFormDataUpcoming({ ...formDataUpcoming, [e.target.name]: e.target.value });
+    setFormDataUpcoming({
+      ...formDataUpcoming,
+      [e.target.name]: e.target.value,
+    });
 
     if (formErrorsUpcoming[e.target.name]) {
       setFormErrorsUpcoming({ ...formErrorsUpcoming, [e.target.name]: "" });
@@ -522,7 +545,7 @@ const AdminDashboard = () => {
       data.append("venue", formDataUpcoming.venue);
       data.append("image", imageFileUpcoming);
 
-      await axios.post("https://alumnicell.iiti.ac.in/api/admin/add-upcoming-event", data, {
+      await axios.post(`${API_BASE_URL}/api/admin/add-upcoming-event`, data, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
@@ -540,10 +563,14 @@ const AdminDashboard = () => {
       setImageFileUpcoming(null);
       setFormErrorsUpcoming({});
 
-      const resPrograms = await axios.get("https://alumnicell.iiti.ac.in/api/admin/get-programs");
+      const resPrograms = await axios.get(
+        `${API_BASE_URL}/api/admin/get-programs`,
+      );
       setPrograms(resPrograms.data.data);
 
-      const resUpcoming = await axios.get("https://alumnicell.iiti.ac.in/api/admin/get-upcoming-events");
+      const resUpcoming = await axios.get(
+        `${API_BASE_URL}/api/admin/get-upcoming-events`,
+      );
       setUpcomingEvents(resUpcoming.data.data);
     } catch (err) {
       console.error("Error adding upcoming event:", err);
@@ -566,7 +593,7 @@ const AdminDashboard = () => {
 
   const fetchKyaProfiles = async () => {
     try {
-      const res = await axios.get(`${API_BASE_URL}/admin/get-kya-profiles`);
+      const res = await axios.get(`${API_BASE_URL}/api/admin/get-kya-profiles`);
       setProfiles(res.data.data);
     } catch (err) {
       console.error("Error fetching profiles", err);
@@ -651,14 +678,14 @@ const AdminDashboard = () => {
       }
 
       const res = await axios.post(
-        `${API_BASE_URL}/admin/add-kya-profile`,
+        `${API_BASE_URL}/api/admin/add-kya-profile`,
         data,
         {
           withCredentials: true,
           headers: {
             "Content-Type": "multipart/form-data",
           },
-        }
+        },
       );
 
       fetchKyaProfiles();
@@ -680,12 +707,12 @@ const AdminDashboard = () => {
 
   const handleDelete = async (id, name) => {
     const confirmed = window.confirm(
-      `Are you sure you want to delete ${name}'s profile?`
+      `Are you sure you want to delete ${name}'s profile?`,
     );
     if (!confirmed) return;
 
     try {
-      await axios.delete(`${API_BASE_URL}/admin/delete-kya-profile/${id}`);
+      await axios.delete(`${API_BASE_URL}/api/admin/delete-kya-profile/${id}`);
       fetchKyaProfiles();
     } catch (err) {
       console.error("Error deleting profile", err);
@@ -714,7 +741,7 @@ const AdminDashboard = () => {
 
   const fetchNewsletters = async () => {
     try {
-      const res = await axios.get(`${API_BASE_URL}/admin/get-newsletters`);
+      const res = await axios.get(`${API_BASE_URL}/api/admin/get-newsletters`);
       setNewsletters(res.data.data);
     } catch (err) {
       console.error("Error fetching newsletters:", err);
@@ -723,7 +750,7 @@ const AdminDashboard = () => {
 
   const fetchMagazines = async () => {
     try {
-      const res = await axios.get(`${API_BASE_URL}/admin/get-magazines`);
+      const res = await axios.get(`${API_BASE_URL}/api/admin/get-magazines`);
       setMagazines(res.data.data);
     } catch (err) {
       console.error("Error fetching magazines:", err);
@@ -733,7 +760,7 @@ const AdminDashboard = () => {
   // FETCH YEARBOOKS (mirror magazines)
   const fetchYearbooks = async () => {
     try {
-      const res = await axios.get(`${API_BASE_URL}/admin/get-yearbooks`);
+      const res = await axios.get(`${API_BASE_URL}/api/admin/get-yearbooks`);
       setYearbooks(res.data.data);
     } catch (err) {
       console.error("Error fetching yearbooks:", err);
@@ -750,7 +777,7 @@ const AdminDashboard = () => {
     formData.append("pdf", newsletterFile);
 
     try {
-      await axios.post(`${API_BASE_URL}/admin/add-newsletter`, formData, {
+      await axios.post(`${API_BASE_URL}/api/admin/add-newsletter`, formData, {
         headers: { "Content-Type": "multipart/form-data" },
         withCredentials: true,
       });
@@ -774,7 +801,7 @@ const AdminDashboard = () => {
       return;
 
     try {
-      await axios.delete(`${API_BASE_URL}/admin/delete-newsletter/${id}`, {
+      await axios.delete(`${API_BASE_URL}/api/admin/delete-newsletter/${id}`, {
         withCredentials: true,
       });
 
@@ -796,7 +823,7 @@ const AdminDashboard = () => {
     formData.append("pdf", magazineFile);
 
     try {
-      await axios.post(`${API_BASE_URL}/admin/add-magazine`, formData, {
+      await axios.post(`${API_BASE_URL}/api/admin/add-magazine`, formData, {
         headers: { "Content-Type": "multipart/form-data" },
         withCredentials: true,
       });
@@ -819,7 +846,7 @@ const AdminDashboard = () => {
       return;
 
     try {
-      await axios.delete(`${API_BASE_URL}/admin/delete-magazine/${id}`, {
+      await axios.delete(`${API_BASE_URL}/api/admin/delete-magazine/${id}`, {
         withCredentials: true,
       });
 
@@ -837,10 +864,14 @@ const AdminDashboard = () => {
     if (!yearbookTitle || !yearbookLink) return alert("Fill all fields");
 
     try {
-      await axios.post(`${API_BASE_URL}/admin/add-yearbook`, { title: yearbookTitle, link: yearbookLink }, {
-        headers: { "Content-Type": "application/json" },
-        withCredentials: true,
-      });
+      await axios.post(
+        `${API_BASE_URL}/api/admin/add-yearbook`,
+        { title: yearbookTitle, link: yearbookLink },
+        {
+          headers: { "Content-Type": "application/json" },
+          withCredentials: true,
+        },
+      );
       alert("Yearbook added!");
       setYearbookTitle("");
       setYearbookLink("");
@@ -857,7 +888,7 @@ const AdminDashboard = () => {
       return;
 
     try {
-      await axios.delete(`${API_BASE_URL}/admin/delete-yearbook/${id}`, {
+      await axios.delete(`${API_BASE_URL}/api/admin/delete-yearbook/${id}`, {
         withCredentials: true,
       });
 
@@ -1418,7 +1449,9 @@ const AdminDashboard = () => {
                             className="inline-flex items-center px-4 py-2 bg-slate-100 text-slate-700 text-sm font-medium rounded-lg hover:bg-slate-200 transition-colors"
                           >
                             <Upload className="w-4 h-4 mr-2" />
-                            {imageFileUpcoming ? "Change Image" : "Upload Image"}
+                            {imageFileUpcoming
+                              ? "Change Image"
+                              : "Upload Image"}
                           </button>
                           <p className="text-xs text-slate-500 mt-1">
                             PNG, JPG, GIF up to 10MB
@@ -1502,9 +1535,7 @@ const AdminDashboard = () => {
                       className="w-full h-48 object-cover rounded mb-4"
                     />
                     <h3 className="text-xl font-semibold">{event.title}</h3>
-                    <p className="text-sm text-gray-500">
-                      📅 {event.date}
-                    </p>
+                    <p className="text-sm text-gray-500">📅 {event.date}</p>
                     <p className="text-sm text-gray-500">📍 {event.venue}</p>
                     <div className="mt-2">
                       <button
@@ -2201,11 +2232,15 @@ const AdminDashboard = () => {
           {/* Alumni Contributions Section */}
           {activeTab === "alumni-contributions" && (
             <div>
-              <h2 className="text-2xl font-semibold mb-6">Manage Alumni Contributions</h2>
+              <h2 className="text-2xl font-semibold mb-6">
+                Manage Alumni Contributions
+              </h2>
 
               {/* Add Alumni Contribution Form */}
               <div className="bg-white rounded-xl p-6 shadow-sm border mb-8">
-                <h3 className="text-lg font-semibold mb-4">Add New Alumni Contribution</h3>
+                <h3 className="text-lg font-semibold mb-4">
+                  Add New Alumni Contribution
+                </h3>
 
                 <form
                   onSubmit={handleAddAlumniContribution}
@@ -2216,7 +2251,10 @@ const AdminDashboard = () => {
                     placeholder="Alumni Name"
                     value={contributionForm.name}
                     onChange={(e) =>
-                      setContributionForm({ ...contributionForm, name: e.target.value })
+                      setContributionForm({
+                        ...contributionForm,
+                        name: e.target.value,
+                      })
                     }
                     className="border rounded px-4 py-2"
                   />
@@ -2226,7 +2264,10 @@ const AdminDashboard = () => {
                     placeholder="Batch Year"
                     value={contributionForm.batch}
                     onChange={(e) =>
-                      setContributionForm({ ...contributionForm, batch: e.target.value })
+                      setContributionForm({
+                        ...contributionForm,
+                        batch: e.target.value,
+                      })
                     }
                     className="border rounded px-4 py-2"
                   />
@@ -2283,7 +2324,9 @@ const AdminDashboard = () => {
                   >
                     <div>
                       <h4 className="font-semibold">{contribution.name}</h4>
-                      <p className="text-sm text-gray-500">Batch {contribution.batch}</p>
+                      <p className="text-sm text-gray-500">
+                        Batch {contribution.batch}
+                      </p>
                       <img
                         src={contribution.photo}
                         alt={contribution.name}
@@ -2293,7 +2336,10 @@ const AdminDashboard = () => {
 
                     <button
                       onClick={() =>
-                        handleDeleteAlumniContribution(contribution._id, contribution.name)
+                        handleDeleteAlumniContribution(
+                          contribution._id,
+                          contribution.name,
+                        )
                       }
                       className="text-red-600 font-bold"
                     >

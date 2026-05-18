@@ -8,6 +8,7 @@ import { useGSAP } from '@gsap/react';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { API_BASE_URL } from "../../api/alumni";
 
 gsap.registerPlugin(useGSAP, ScrollTrigger);
 
@@ -19,7 +20,7 @@ const Program = () => {
   useEffect(() => {
     const fetchPrograms = async () => {
       try {
-        const res = await axios.get("https://alumnicell.iiti.ac.in/api/admin/get-programs");
+        const res = await axios.get(`${API_BASE_URL}/api/admin/get-programs`);
         setPrograms(res.data.data);
       } catch (err) {
         console.error("Error fetching programs:", err);

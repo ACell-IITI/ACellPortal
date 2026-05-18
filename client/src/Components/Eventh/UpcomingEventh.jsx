@@ -7,6 +7,7 @@ import { gsap } from 'gsap';
 import { useGSAP } from '@gsap/react';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import axios from "axios";
+import { API_BASE_URL } from "../../api/alumni";
 
 gsap.registerPlugin(useGSAP, ScrollTrigger);
 
@@ -16,7 +17,7 @@ const UpcomingEventh = () => {
 useEffect(() => {
     const fetchEvents = async () => {
       try {
-        const res = await axios.get("https://alumnicell.iiti.ac.in/api/admin/get-upcoming-events");
+        const res = await axios.get(`${API_BASE_URL}/api/admin/get-upcoming-events`);
         setEvents(res.data.data);
       } catch (err) {
         console.error("Error fetching events:", err);

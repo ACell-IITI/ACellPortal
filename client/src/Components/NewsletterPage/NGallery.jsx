@@ -26,7 +26,7 @@ const NGallery = () => {
 
     const fetchNewsletters = async () => {
       try {
-        const res = await axios.get(`${API_BASE_URL}/admin/get-newsletters`);
+        const res = await axios.get(`${API_BASE_URL}/api/admin/get-newsletters`);
         setNewsletters(res.data.data || []);
       } catch (err) {
         console.error("Error fetching newsletters:", err);

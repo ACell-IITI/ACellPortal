@@ -49,7 +49,7 @@ const Newsletter = () => {
     useEffect(() => {
     const fetchLatestNewsletter = async () => {
         try {
-            const res = await axios.get(`${API_BASE_URL}/admin/get-newsletters`);
+            const res = await axios.get(`${API_BASE_URL}/api/admin/get-newsletters`);
             //log 1
             // console.log("API response data : ", res.data.data);
 

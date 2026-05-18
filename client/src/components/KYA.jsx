@@ -3,6 +3,7 @@ import React, { useEffect, useRef, useState } from "react";
 import AlumniCard from "./AlumniCard";
 import axios from "axios";
 import { motion } from "framer-motion";
+import { API_BASE_URL } from "../api/alumni";
 
 const KYA = () => {
   const headingRef = useRef(null);
@@ -13,7 +14,7 @@ const KYA = () => {
 
   useEffect(() => {
     axios
-      .get("https://alumnicell.iiti.ac.in/api/admin/get-kya-profiles")
+      .get(`${API_BASE_URL}/api/admin/get-kya-profiles`)
       .then((res) => {
         console.log(res.data)
         if (res.data && Array.isArray(res.data.data)) {

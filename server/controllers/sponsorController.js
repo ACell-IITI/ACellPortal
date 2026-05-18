@@ -1,6 +1,8 @@
 import Sponsor from "../models/Sponsors.js";
-import cloudinary from '../config/cloudinary.js';
-import fs from 'fs';
+import fs from "fs";
+import { uploadToOpeninary } from "../utils/openinary.js";
+
+const openinaryUrl = process.env.OPENINARY_URL;
 
 /**
  * @desc    Add new sponsor
@@ -14,13 +16,15 @@ export const addSponsor = async (req, res) => {
       return res.status(400).json({ message: "All fields are required" });
     }
 
-    const result = await cloudinary.uploader.upload(req.file.path, {
-      folder: 'sponsors',
-    });
+    const result = await uploadToOpeninary(req.file.path, "sponsors");
 
     fs.unlinkSync(req.file.path);
 
-    const sponsor = await Sponsor.create({ name, type, icon: result.secure_url });
+    const sponsor = await Sponsor.create({
+      name,
+      type,
+      icon: openinaryUrl + result.files[0].url,
+    });
 
     res.status(201).json(sponsor);
   } catch (error) {

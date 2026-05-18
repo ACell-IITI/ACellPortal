@@ -39,7 +39,7 @@ export const hashedPassword = async (password) => {
 //       alumniPassword: hPass,
 //       isInstituteEmail,
 //     });
-    
+
 //     const appToken = jwt.sign({ id: user._id, role: user.role }, JWT_SECRET, {
 //       expiresIn: "7d",
 //     });
@@ -74,6 +74,7 @@ export const alumniLogout = async (req, res) => {
 };
 
 export const alumniLogin = async (req, res) => {
+  console.log("Hello");
   try {
     const { alumniEmail, password } = req.body;
     if (!alumniEmail || !password)
@@ -90,7 +91,7 @@ export const alumniLogin = async (req, res) => {
       });
     const isMatch = await bcrypt.compare(password, user.alumniPassword);
     if (!isMatch) return res.status(401).json({ error: "Invalid credentials" });
-    
+
     const appToken = jwt.sign({ id: user._id, role: user.role }, JWT_SECRET, {
       expiresIn: "7d",
     });
