@@ -28,33 +28,33 @@ async function migrateImages() {
 
       
 
-      // download existing image
+      //downloading existing image
       const imageResponse = await fetch(old_url);  
 
       if (!imageResponse.ok) {
         throw new Error("Failed to download image");
       }
 
-      // convert response to buffer
+      //converting response to buffer
       const buffer = Buffer.from(
         await imageResponse.arrayBuffer()
       );
 
-      // get extension from original url
+      //getting extension from original url
       const ext =
         path.extname(new URL(old_url).pathname) ||
         ".png";
 
-      // create temp file
+      //creating temp file
       tempPath = path.join(
         __dirname,
         `temp-${Date.now()}${ext}`                  //give required name of the image to store in openinary
       );
 
-      // save temp file
+      //saving temp file
       fs.writeFileSync(tempPath, buffer);
 
-      // upload to openinary
+      //uploading to openinary
       const uploadRes = await uploadToOpeninary(
         tempPath,
         "Mentors",                       //give required name of the image folder for openinary
@@ -62,10 +62,10 @@ async function migrateImages() {
         openinaryUrl
       );
 
-      // get uploaded image url
+      //getting uploaded image url
       const newUrl = uploadRes.files[0].url;
 
-      // update db
+      //updating db
       data.profilePic = openinaryUrl+ newUrl;             //change to url field to be updated
 
       await data.save();
@@ -79,7 +79,7 @@ async function migrateImages() {
       );
 
     } finally {
-      // cleanup temp file
+      //cleaning up temp file
       if (
         tempPath &&
         fs.existsSync(tempPath)
