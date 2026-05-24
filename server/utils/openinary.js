@@ -1,10 +1,9 @@
 import { readFile } from "node:fs/promises";
 import path from "node:path";
 
-const apiKey = process.env.OPENINARY_API_KEY;
-const openinaryUrl = process.env.OPENINARY_URL;
 
-export const uploadToOpeninary = async (filePath, folder) => {
+
+export const uploadToOpeninary = async (filePath, folder, apiKey, openinaryUrl) => {
   try {
     if (!filePath || !folder) {
       throw new Error("filePath or folder missing");

@@ -20,7 +20,7 @@ const app = express();
 // Middleware
 app.use(
   cors({
-    origin: 'https://alumnicell.iiti.ac.in',
+    origin: ['https://alumnicell.iiti.ac.in', 'http://localhost:5000', 'http://localhost:5173'],
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'],
     credentials: true,
   })
