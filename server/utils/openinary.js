@@ -1,5 +1,6 @@
 import { readFile } from "node:fs/promises";
 import path from "node:path";
+import mime from "mime-types";
 
 
 
@@ -17,11 +18,7 @@ export const uploadToOpeninary = async (filePath, folder, apiKey, openinaryUrl) 
     const fileName = path.basename(filePath);
     const ext = path.extname(fileName).toLowerCase();
 
-    let mimeType = "application/octet-stream";
-
-    if (ext === ".png") mimeType = "image/png";
-    else if (ext === ".jpg" || ext === ".jpeg") mimeType = "image/jpeg";
-    else if (ext === ".webp") mimeType = "image/webp";
+    const mimeType = mime.lookup(ext) || "application/octet-stream";
 
     const file = new File([bytes], fileName, {
       type: mimeType,

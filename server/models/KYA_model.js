@@ -16,7 +16,7 @@ const KYAschema = new mongoose.Schema(
     },
     Achievement: {
       type: String,
-      required: true,
+      //required: true,
     },
     ShortBio: {
       type: String,
