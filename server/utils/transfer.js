@@ -1,5 +1,9 @@
 import mongoose from "mongoose";
-import "dotenv/config";
+import dotenv from "dotenv"
+
+dotenv.config({
+  path: "./server/.env"
+});
 
 import AlumniContributors from "../models/AlumniContribution.js";
 import Gallery from "../models/Gallery.js";
@@ -8,9 +12,9 @@ import KYA from "../models/KYA_model.js";
 import Mentors from "../models/Mentorship_model.js";
 import Program from "../models/Program_model.js";
 
-//import Newsletter from "../models/Newsletter_model.js";
-//import Magazine from "../models/Magazine_model.js";
-//import Yearbook from "../models/Yearbook_model.js";
+import Newsletter from "../models/Newsletter_model.js";
+import Magazine from "../models/Magazine_model.js";
+import Yearbook from "../models/Yearbook_model.js";
 
 import { migrate } from "./migrate_to_openinary.js";
 
@@ -61,7 +65,7 @@ async function runMigrations() {
       apiKey,
       openinaryUrl
     });
-    
+
 
     //alumni Contri
     await migrate({
@@ -82,39 +86,39 @@ async function runMigrations() {
       apiKey,
       openinaryUrl
     });
-/*
-    //newsletters
-    await migrate({
-      Model: Newsletter,
-      displayField: "title",
-      imageField: "pdfUrl",
-      folderName: "Newsletters",
-      apiKey,
-      openinaryUrl
-    });
+    /*
+        //newsletters
+        await migrate({
+          Model: Newsletter,
+          displayField: "title",
+          imageField: "pdfUrl",
+          folderName: "Newsletters",
+          apiKey,
+          openinaryUrl
+        });
+        
+        //magazines
+        await migrate({
+          Model: Magazine,
+          displayField: "title",
+          imageField: "pdfUrl",
+          folderName: "Magazines",
+          apiKey,
+          openinaryUrl
+        });
     
-    //magazines
-    await migrate({
-      Model: Magazine,
-      displayField: "title",
-      imageField: "pdfUrl",
-      folderName: "Magazines",
-      apiKey,
-      openinaryUrl
-    });
-
-  
-    //yearbook
-    await migrateImages({
-      Model: Yearbook,
-      displayField: "title",
-      imageField: "pdfUrl",
-      folderName: "YearBooks",
-      apiKey,
-      openinaryUrl
-    });
-
-*/
+      
+        //yearbook
+        await migrateImages({
+          Model: Yearbook,
+          displayField: "title",
+          imageField: "pdfUrl",
+          folderName: "YearBooks",
+          apiKey,
+          openinaryUrl
+        });
+    
+    */
 
     console.log("All migrations completed");
 
@@ -127,4 +131,57 @@ async function runMigrations() {
   }
 }
 
+
+
+
+
+
+import { backupCollection } from "./backup_cloudinary.js";
+
+async function runBackup() {
+
+  try {
+    await mongoose.connect(process.env.MONGODB_LINK);
+
+
+    //gallery
+    await backupCollection(Gallery, "Gallery", (doc) => [doc.image]);
+
+    //KYA
+    await backupCollection(KYA, "KYA", (doc) => [doc.profilePic]);
+
+    //mentors
+    await backupCollection(Mentors, "Mentors", (doc) => [doc.profilePic]);
+
+    //programs
+    await backupCollection(Program, "Program", (doc) => [doc.image]);
+
+    //sponsors
+    await backupCollection(Sponsors, "Sponsors", (doc) => [doc.icon]);
+
+    //alumni Contri
+    await backupCollection(AlumniContributors, "AlumniContributors", (doc) => [doc.photo]);
+
+    //newsletters
+    await backupCollection(Newsletter, "Newsletter", (doc) => [doc.pdfUrl]);
+
+    //magazines
+    await backupCollection(Magazine, "Magazine", (doc) => [doc.pdfUrl]);
+
+    //yearbook
+    await backupCollection(Yearbook, "Yearbook", (doc) => [doc.pdfUrl]);
+
+    console.log("All backups completed");
+
+  } catch (err) {
+    console.error(err);
+
+  } finally {
+    await mongoose.connection.close();
+    console.log("MongoDB connection closed");
+  }
+}
+
+
 runMigrations();
+//runBackup()
