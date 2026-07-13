@@ -11,7 +11,7 @@ import KYA from "./components/KYA";
 import LoginPage from "./pages/LoginPage";
 import CVReviewPage from "./pages/CVReviewPage";
 // import SignUpPage from "./pages/SignUpPage";
-
+import ReportsPage from "./pages/ReportsPage";
 import NewsletterPage from "./pages/NewsletterPage";
 import MagazinePage from "./pages/MagazinePage";
 import YearbookPage from "./pages/YearbookPage";
@@ -85,6 +85,7 @@ function App() {
 
           <Route path="/Newsletter" element={<NewsletterPage />} />
           <Route path="/Magazine" element={<MagazinePage />} />
+          <Route path="/Reports" element={<ReportsPage />} />
           <Route path="/Yearbook" element={<YearbookPage />} />
           <Route path="/KYA" element={<KYA />} />
           <Route path="/team" element={<TeamSection />} />
