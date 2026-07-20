@@ -2,15 +2,14 @@ import axios from 'axios';
 import React from 'react';
 import { useEffect } from 'react';
 import { useState } from 'react';
+import { API_BASE_URL } from '../api/alumni';
 
 const KYA = () => {
   const [profiles, setProfiles] = useState([]);
 
   const fetchKyaProfiles = async () => {
     try {
-      const res = await axios.get(
-        'http://alumnicell.iiti.ac.in:8000/admin/get-kya-profiles'
-      );
+      const res = await axios.get(`${API_BASE_URL}/api/admin/get-kya-profiles`);
       setProfiles(res.data.data);
     } catch (err) {
       console.error('Error fetching profiles', err);

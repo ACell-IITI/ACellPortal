@@ -112,12 +112,16 @@ The root package currently contains only upload-related dependencies. The applic
 
 ### Environment Variables
 
-Create environment files in `client/.env` and `server/.env`. Do not commit real secrets.
+Create environment files in `client/.env` and `server/.env`. Do not commit real secrets. Use the provided example files in `client/.env.example` and `server/.env.example` as a starting point.
 
 | Variable | Location | Required For | Notes |
 | --- | --- | --- | --- |
+| `VITE_APP_ENV` | `client/.env` | Select frontend environment | Set to `development` for local development or `production` for a production build. Defaults to `development`. |
+| `VITE_API_BASE_URL` | `client/.env` | Backend API base URL | Set this to your backend URL, for example `http://localhost:3000` in development or `https://alumnicell.iiti.ac.in` in production. |
 | `VITE_GOOGLE_CLIENT_ID` | `client/.env` | Google OAuth provider initialization | Read by `client/src/main.jsx`. Google login UI is currently commented out, but the provider is still mounted. |
-| `PORT` | `server/.env` | Backend server port | Defaults to `3008` when not set. |
+| `PORT` | `server/.env` | Backend server port | Defaults to `3000` when not set. |
+| `APP_ENV` | `server/.env` | Select backend environment | Set to `development` or `production`. Controls default CORS origin selection. |
+| `CORS_ORIGINS` | `server/.env` | Allowed frontend origins | Comma-separated origins. Defaults to local development origins plus production. |
 | `MONGO_URI` | `server/.env` | MongoDB connection | Preferred by `server/index.js` when present. |
 | `MONGODB_LINK` | `server/.env` | MongoDB connection | Fallback used by `server/index.js`; present in the current server env file. |
 | `JWT_SECRET` | `server/.env` | JWT signing and validation | Used for the `appToken` cookie. |
@@ -176,7 +180,7 @@ npm start
 5. Ensure the backend can reach MongoDB and the configured upload providers.
 6. Configure CORS and reverse proxy paths for the deployed frontend domain.
 
-The backend currently allows CORS from `https://alumnicell.iiti.ac.in`. Update `server/index.js` if deploying the frontend to another origin.
+The backend supports production and development frontend origins through `server/.env` variables. Update `APP_ENV` or `CORS_ORIGINS` in `server/.env` if deploying the frontend to another origin.
 
 ## Architecture
 
@@ -208,10 +212,10 @@ Google OAuth code exists in comments on both frontend and backend. It is not act
 
 ### API Communication
 
-The frontend uses a hard-coded production API base URL:
+The frontend uses an environment-controlled API base URL so development and production backends can be switched with a single variable.
 
 ```js
-export const API_BASE_URL = "https://alumnicell.iiti.ac.in";
+export const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || (import.meta.env.VITE_APP_ENV === 'production' ? 'https://alumnicell.iiti.ac.in' : 'http://localhost:3000');
 ```
 
 The Vite dev server also defines proxies for `/api` and `/alumni-api`, but the active client code mainly calls the production base URL directly.
