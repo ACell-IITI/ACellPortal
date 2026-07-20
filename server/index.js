@@ -22,7 +22,7 @@ const appEnv = (process.env.APP_ENV || process.env.NODE_ENV || 'development').tr
 const defaultCorsOrigins =
   appEnv === 'production'
     ? ['https://alumnicell.iiti.ac.in']
-    : ['http://localhost:3000', 'http://localhost:5173', 'https://alumnicell.iiti.ac.in'];
+    : ['http://localhost:8000', 'http://localhost:5173', 'https://alumnicell.iiti.ac.in'];
 const allowedOrigins = process.env.CORS_ORIGINS
   ? process.env.CORS_ORIGINS.split(',').map((origin) => origin.trim()).filter(Boolean)
   : defaultCorsOrigins;
