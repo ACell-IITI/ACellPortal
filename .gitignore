@@ -1,13 +1,3 @@
-<<<<<<< HEAD
-server/node_modules
-server/.env
-server/.env.local
-server/.env.production
-
-
-
-client/node_modules
-=======
 **/node_modules/
 **/.env*
->>>>>>> main
+!**/.env.example

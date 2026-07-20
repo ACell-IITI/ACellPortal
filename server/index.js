@@ -18,9 +18,18 @@ import { getAlumniContributions } from './controllers/alumniContributionControll
 const app = express();
 
 // Middleware
+const appEnv = (process.env.APP_ENV || process.env.NODE_ENV || 'development').trim();
+const defaultCorsOrigins =
+  appEnv === 'production'
+    ? ['https://alumnicell.iiti.ac.in']
+    : ['http://localhost:3000', 'http://localhost:5173', 'https://alumnicell.iiti.ac.in'];
+const allowedOrigins = process.env.CORS_ORIGINS
+  ? process.env.CORS_ORIGINS.split(',').map((origin) => origin.trim()).filter(Boolean)
+  : defaultCorsOrigins;
+
 app.use(
   cors({
-    origin: 'https://alumnicell.iiti.ac.in',
+    origin: allowedOrigins,
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'],
     credentials: true,
   })
@@ -60,5 +69,5 @@ mongoose
   .catch((err) => console.error('MongoDB connection error', err));
 
 // Start server
-const PORT = process.env.PORT || 3008;
+const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.log(`Server started at PORT ${PORT}`));

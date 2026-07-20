@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+import { API_BASE_URL } from "../api/alumni";
 
 const Magazine = () => {
   const [file, setFile] = useState(null);
@@ -11,7 +12,7 @@ const Magazine = () => {
 
   const fetchMagazines = async () => {
     try {
-      const res = await axios.get("/api/alumni/get-magazines");
+      const res = await axios.get(`${API_BASE_URL}/api/alumni/get-magazines`);
       setMagazines(res.data);
     } catch (err) {
       console.error("Error fetching magazines:", err);
@@ -30,7 +31,7 @@ const Magazine = () => {
     formData.append("file", file);
 
     try {
-      await axios.post("/api/alumni/upload-magazine", formData, {
+      await axios.post(`${API_BASE_URL}/api/alumni/upload-magazine`, formData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
@@ -49,7 +50,7 @@ const Magazine = () => {
     if (!confirmed) return;
 
     try {
-      await axios.delete(`/api/alumni/delete-magazine/${id}`);
+      await axios.delete(`${API_BASE_URL}/api/alumni/delete-magazine/${id}`);
       fetchMagazines();
     } catch (err) {
       console.error("Error deleting magazine:", err);

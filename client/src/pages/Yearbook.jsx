@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+import { API_BASE_URL } from "../api/alumni";
 
 const Yearbook = () => {
   const [file, setFile] = useState(null);
@@ -11,7 +12,7 @@ const Yearbook = () => {
 
   const fetchYearbooks = async () => {
     try {
-      const res = await axios.get("/api/alumni/get-yearbooks");
+      const res = await axios.get(`${API_BASE_URL}/api/alumni/get-yearbooks`);
       setYearbooks(res.data);
     } catch (err) {
       console.error("Error fetching yearbooks:", err);
@@ -30,7 +31,7 @@ const Yearbook = () => {
     formData.append("file", file);
 
     try {
-      await axios.post("/api/alumni/upload-yearbook", formData, {
+      await axios.post(`${API_BASE_URL}/api/alumni/upload-yearbook`, formData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
