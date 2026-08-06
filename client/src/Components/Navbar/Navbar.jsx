@@ -69,6 +69,7 @@ export default function Navbar() {
       dropdown: [
         { name: "Newsletter", path: "/Newsletter" },
         { name: "Magazine", path: "/Magazine" },
+        { name: "Annual Reports", path: "/Reports" },
         { name: "Yearbook", path: "/Yearbook" },
       ],
     },
