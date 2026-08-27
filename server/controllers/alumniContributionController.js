@@ -1,8 +1,9 @@
 import AlumniContribution from "../models/AlumniContribution.js";
 import fs from "fs";
-import { uploadToOpeninary } from "../utils/openinary.js";
+// import { uploadToOpeninary } from "../utils/openinary.js";
+import { uploadToR2 } from "../utils/s3.js";
 
-const openinaryUrl = process.env.OPENINARY_URL;
+// const openinaryUrl = process.env.OPENINARY_URL;
 
 /**
  * @desc    Add new alumni contribution
@@ -16,17 +17,19 @@ export const addAlumniContribution = async (req, res) => {
       return res.status(400).json({ message: "All fields are required" });
     }
 
-    const result = await uploadToOpeninary(
-      req.file.path,
-      "alumni-contributions",
-    );
+    // const result = await uploadToOpeninary(
+    //   req.file.path,
+    //   "alumni-contributions",
+    // );
+    const result = await uploadToR2(req.file.path, "alumni-contributions", req.file.originalname);
 
     fs.unlinkSync(req.file.path);
 
     const contribution = await AlumniContribution.create({
       name,
       batch: parseInt(batch),
-      photo: openinaryUrl + result.files[0].url,
+      // photo: openinaryUrl + result.files[0].url,
+      photo: result.url,
     });
 
     res.status(201).json(contribution);

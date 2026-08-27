@@ -1,4 +1,4 @@
-import cloudinary from "../config/cloudinary.js";
+// import cloudinary from "../config/cloudinary.js";
 import KYA_db from "../models/KYA_model.js";
 import bcrypt from "bcrypt";
 import Mentorship_db from "../models/Mentorship_model.js";
@@ -12,9 +12,10 @@ import Newsletter from "../models/Newsletter_model.js";
 import Magazine from "../models/Magazine_model.js";
 import EventProgram from "../models/Program_model.js";
 import Yearbook from "../models/Yearbook_model.js";
-import { uploadToOpeninary } from "../utils/openinary.js";
+// import { uploadToOpeninary } from "../utils/openinary.js";
+import { uploadToR2, deleteFromR2 } from "../utils/s3.js";
 
-const openinaryUrl = process.env.OPENINARY_URL;
+// const openinaryUrl = process.env.OPENINARY_URL;
 
 // Add Newsletter
 export const addNewsletter = async (req, res) => {
@@ -23,17 +24,19 @@ export const addNewsletter = async (req, res) => {
     if (!req.file)
       return res.status(400).json({ message: "PDF file required" });
 
-    const result = await cloudinary.uploader.upload(req.file.path, {
-      folder: "newsletters",
-      resource_type: "raw",
-      access_mode: "public",
-    });
+    // const result = await cloudinary.uploader.upload(req.file.path, {
+    //   folder: "newsletters",
+    //   resource_type: "raw",
+    //   access_mode: "public",
+    // });
+    const result = await uploadToR2(req.file.path, "newsletters", req.file.originalname);
+    
     fs.unlinkSync(req.file.path);
 
     const newsletter = new Newsletter({
       title,
-      pdfUrl: result.secure_url,
-      publicId: result.public_id,
+      pdfUrl: result.url,
+      publicId: result.objectKey,
     }); //added publicId here
     await newsletter.save();
 
@@ -63,9 +66,10 @@ export const deleteNewsletter = async (req, res) => {
     // const publicId = `newsletters/${fileName}`;
 
     if (newsletter.publicId) {
-      await cloudinary.uploader.destroy(newsletter.publicId, {
-        resource_type: "raw",
-      });
+      // await cloudinary.uploader.destroy(newsletter.publicId, {
+      //   resource_type: "raw",
+      // });
+      await deleteFromR2(newsletter.publicId);
     }
     await Newsletter.findByIdAndDelete(id);
 
@@ -96,17 +100,18 @@ export const addMagazine = async (req, res) => {
     if (!req.file)
       return res.status(400).json({ message: "PDF file required" });
 
-    const result = await cloudinary.uploader.upload(req.file.path, {
-      folder: "magazines",
-      resource_type: "raw",
-      access_mode: "public",
-    });
+    // const result = await cloudinary.uploader.upload(req.file.path, {
+    //   folder: "magazines",
+    //   resource_type: "raw",
+    //   access_mode: "public",
+    // });
+    const result = await uploadToR2(req.file.path, "magazines", req.file.originalname);
     fs.unlinkSync(req.file.path);
 
     const magazine = new Magazine({
       title,
-      pdfUrl: result.secure_url,
-      publicId: result.public_id,
+      pdfUrl: result.url,
+      publicId: result.objectKey,
     }); // publicId added here also
     await magazine.save();
 
@@ -134,9 +139,10 @@ export const deleteMagazine = async (req, res) => {
     // const fileName = urlParts[urlParts.length - 1].split('.')[0];
     // const publicId = `magazines/${fileName}`;
     if (magazine.publicId) {
-      await cloudinary.uploader.destroy(magazine.publicId, {
-        resource_type: "raw",
-      });
+      // await cloudinary.uploader.destroy(magazine.publicId, {
+      //   resource_type: "raw",
+      // });
+      await deleteFromR2(magazine.publicId);
     }
     await Magazine.findByIdAndDelete(id);
 
@@ -189,9 +195,10 @@ export const deleteYearbook = async (req, res) => {
     }
 
     if (yearbook.publicId) {
-      await cloudinary.uploader.destroy(yearbook.publicId, {
-        resource_type: "raw",
-      });
+      // await cloudinary.uploader.destroy(yearbook.publicId, {
+      //   resource_type: "raw",
+      // });
+      await deleteFromR2(yearbook.publicId);
     }
 
     await Yearbook.findByIdAndDelete(id);
@@ -342,7 +349,8 @@ export const addKyaProfile = async (req, res) => {
     const { Name, Batch, CurrRole, Achievement, ShortBio, LinkedInPostLink } =
       req.body;
 
-    const result = await uploadToOpeninary(req.file.path, "kya-profiles");
+    // const result = await uploadToOpeninary(req.file.path, "kya-profiles");
+    const result = await uploadToR2(req.file.path, "kya-profiles", req.file.originalname);
 
     fs.unlinkSync(req.file.path);
 
@@ -353,7 +361,8 @@ export const addKyaProfile = async (req, res) => {
       Achievement,
       ShortBio,
       LinkedInPostLink,
-      profilePic: openinaryUrl + result.files[0].url,
+      // profilePic: openinaryUrl + result.files[0].url,
+      profilePic: result.url,
     });
 
     await kyaData.save();
@@ -515,7 +524,8 @@ export const addMentorProfile = async (req, res) => {
     //   return res.status(409).json({ message: 'Mentor already exists' });
     // }
 
-    const result = await uploadToOpeninary(req.file.path, "kya-profiles");
+    // const result = await uploadToOpeninary(req.file.path, "kya-profiles");
+    const result = await uploadToR2(req.file.path, "mentor-profiles", req.file.originalname);
 
     fs.unlinkSync(req.file.path);
 
@@ -528,7 +538,8 @@ export const addMentorProfile = async (req, res) => {
       linkedinId,
       skills: JSON.parse(skills),
       about,
-      profilePic: openinaryUrl + result.files[0].url,
+      // profilePic: openinaryUrl + result.files[0].url,
+      profilePic: result.url,
     });
 
     await mentorData.save();
@@ -584,12 +595,14 @@ export const addProgram = async (req, res) => {
       return res.status(400).json({ message: "Image file required" });
     }
 
-    const result = await uploadToOpeninary(req.file.path, "programs-events");
+    // const result = await uploadToOpeninary(req.file.path, "programs-events");
+    const result = await uploadToR2(req.file.path, "programs-events", req.file.originalname);
     fs.unlinkSync(req.file.path);
 
     const program = new Program({
       type,
-      image: openinaryUrl + result.files[0].url,
+      // image: openinaryUrl + result.files[0].url,
+      image: result.url,
       title,
       date,
       time,
@@ -648,11 +661,13 @@ export const addUpcomingEvent = async (req, res) => {
       return res.status(400).json({ message: "Image file required" });
     }
 
-    const result = await uploadToOpeninary(req.file.path, "upcoming-events");
+    // const result = await uploadToOpeninary(req.file.path, "upcoming-events");
+    const result = await uploadToR2(req.file.path, "upcoming-events", req.file.originalname);
     fs.unlinkSync(req.file.path);
 
     const upcomingEvent = new UpcomingEvent({
-      image: openinaryUrl + result.files[0].url,
+      // image: openinaryUrl + result.files[0].url,
+      image: result.url,
       title,
       date,
       venue,
