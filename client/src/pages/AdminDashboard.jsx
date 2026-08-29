@@ -727,10 +727,16 @@ const AdminDashboard = () => {
   const [magazineFile, setMagazineFile] = useState(null);
   const [magazines, setMagazines] = useState([]);
 
-  // YEARBOOK STATE VARIABLES (added to mirror magazine)
+  // YEARBOOK STATE VARIABLES (dynamic multi-option & cover images)
   const [yearbookTitle, setYearbookTitle] = useState("");
-  const [yearbookLink, setYearbookLink] = useState("");
+  const [yearbookOptions, setYearbookOptions] = useState([
+    { title: "", pdfUrl: "", imageFile: null }
+  ]);
   const [yearbooks, setYearbooks] = useState([]);
+  const [addingOptionForId, setAddingOptionForId] = useState(null);
+  const [newOptTitle, setNewOptTitle] = useState("");
+  const [newOptLink, setNewOptLink] = useState("");
+  const [newOptFile, setNewOptFile] = useState(null);
 
   // FETCH EXISTING pdfs
   useEffect(() => {
@@ -858,33 +864,125 @@ const AdminDashboard = () => {
     }
   };
 
-  // HANDLE YEARBOOK UPLOAD (mirrors magazine)
+  // YEARBOOK HANDLERS
+  const handleAddOptionRow = () => {
+    setYearbookOptions((prev) => [
+      ...prev,
+      { title: "", pdfUrl: "", imageFile: null }
+    ]);
+  };
+
+  const handleRemoveOptionRow = (index) => {
+    setYearbookOptions((prev) => prev.filter((_, i) => i !== index));
+  };
+
+  const handleOptionChange = (index, field, value) => {
+    setYearbookOptions((prev) => {
+      const updated = [...prev];
+      updated[index][field] = value;
+      return updated;
+    });
+  };
+
   const handleYearbookUpload = async (e) => {
     e.preventDefault();
-    if (!yearbookTitle || !yearbookLink) return alert("Fill all fields");
+    if (!yearbookTitle) return alert("Please enter Yearbook Title/Year");
+
+    const validOptions = yearbookOptions.filter(
+      (opt) => opt.title.trim() && opt.pdfUrl.trim()
+    );
+
+    if (validOptions.length === 0) {
+      return alert("Please add at least one valid option with Title and Drive Link");
+    }
+
+    const formData = new FormData();
+    formData.append("title", yearbookTitle);
+    formData.append(
+      "options",
+      JSON.stringify(
+        validOptions.map((opt) => ({
+          title: opt.title,
+          pdfUrl: opt.pdfUrl,
+        }))
+      )
+    );
+
+    validOptions.forEach((opt, idx) => {
+      if (opt.imageFile) {
+        formData.append(`option_image_${idx}`, opt.imageFile);
+      }
+    });
 
     try {
-      await axios.post(
-        `${API_BASE_URL}/api/admin/add-yearbook`,
-        { title: yearbookTitle, link: yearbookLink },
-        {
-          headers: { "Content-Type": "application/json" },
-          withCredentials: true,
-        },
-      );
-      alert("Yearbook added!");
+      await axios.post(`${API_BASE_URL}/api/admin/add-yearbook`, formData, {
+        headers: { "Content-Type": "multipart/form-data" },
+        withCredentials: true,
+      });
+      alert("Yearbook added successfully!");
       setYearbookTitle("");
-      setYearbookLink("");
+      setYearbookOptions([{ title: "", pdfUrl: "", imageFile: null }]);
       fetchYearbooks();
     } catch (err) {
       console.error("Upload error:", err);
-      alert("Upload failed!");
+      const errMsg = err.response?.data?.message || err.response?.data?.error || err.message || "Unknown error";
+      alert("Upload failed: " + errMsg);
     }
   };
 
-  // HANDLE DELETE YEARBOOK (mirrors magazine)
+  const handleAddOptionToYearbook = async (yearbookId) => {
+    if (!newOptTitle || !newOptLink) {
+      return alert("Option title and link are required");
+    }
+
+    const formData = new FormData();
+    formData.append("title", newOptTitle);
+    formData.append("pdfUrl", newOptLink);
+    if (newOptFile) {
+      formData.append("coverImage", newOptFile);
+    }
+
+    try {
+      await axios.post(
+        `${API_BASE_URL}/api/admin/add-yearbook-option/${yearbookId}`,
+        formData,
+        {
+          headers: { "Content-Type": "multipart/form-data" },
+          withCredentials: true,
+        }
+      );
+      alert("Option added to yearbook!");
+      setAddingOptionForId(null);
+      setNewOptTitle("");
+      setNewOptLink("");
+      setNewOptFile(null);
+      fetchYearbooks();
+    } catch (err) {
+      console.error("Error adding option:", err);
+      const errMsg = err.response?.data?.message || err.response?.data?.error || err.message || "Unknown error";
+      alert("Failed to add option: " + errMsg);
+    }
+  };
+
+  const handleDeleteYearbookOption = async (yearbookId, optionId) => {
+    if (!window.confirm("Are you sure you want to delete this option?")) return;
+
+    try {
+      await axios.delete(
+        `${API_BASE_URL}/api/admin/delete-yearbook-option/${yearbookId}/${optionId}`,
+        { withCredentials: true }
+      );
+      alert("Option deleted!");
+      fetchYearbooks();
+    } catch (err) {
+      console.error("Delete option error:", err);
+      alert("Failed to delete option!");
+    }
+  };
+
+  // HANDLE DELETE YEARBOOK
   const handleDeleteYearbook = async (id) => {
-    if (!window.confirm("Are you sure you want to delete this yearbook?"))
+    if (!window.confirm("Are you sure you want to delete this entire yearbook?"))
       return;
 
     try {
@@ -1665,60 +1763,220 @@ const AdminDashboard = () => {
             </div>
           )}
 
-          {/* yearbooks tab (mirror of magazines) */}
+          {/* yearbooks tab */}
           {activeTab === "yearbooks" && (
             <div>
-              <h2 className="text-2xl font-semibold mb-4">Add Yearbook Link</h2>
-              <form onSubmit={handleYearbookUpload} className="space-y-4">
-                <input
-                  type="text"
-                  placeholder="Yearbook Title"
-                  value={yearbookTitle}
-                  onChange={(e) => setYearbookTitle(e.target.value)}
-                  className="w-full px-4 py-2 border rounded"
-                  required
-                />
-                <input
-                  type="url"
-                  placeholder="Google Drive Link"
-                  value={yearbookLink}
-                  onChange={(e) => setYearbookLink(e.target.value)}
-                  className="w-full px-4 py-2 border rounded"
-                  required
-                />
+              <h2 className="text-2xl font-semibold mb-4">Add Yearbook Collection / Year</h2>
+              <form onSubmit={handleYearbookUpload} className="space-y-6 bg-white p-6 rounded-lg border shadow-sm">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Yearbook Title / Year (e.g. "Yearbook 2024" or "Batch of 2024")
+                  </label>
+                  <input
+                    type="text"
+                    placeholder="e.g. Yearbook 2024"
+                    value={yearbookTitle}
+                    onChange={(e) => setYearbookTitle(e.target.value)}
+                    className="w-full px-4 py-2 border rounded-md focus:ring-2 focus:ring-blue-500"
+                    required
+                  />
+                </div>
+
+                <div className="space-y-4">
+                  <div className="flex items-center justify-between">
+                    <h3 className="font-semibold text-lg text-gray-800">Yearbook Options (e.g. UG, PG, Full)</h3>
+                    <button
+                      type="button"
+                      onClick={handleAddOptionRow}
+                      className="bg-emerald-600 hover:bg-emerald-700 text-white text-sm px-3 py-1.5 rounded-md font-medium transition"
+                    >
+                      + Add Option
+                    </button>
+                  </div>
+
+                  {yearbookOptions.map((opt, index) => (
+                    <div key={index} className="p-4 border rounded-md bg-gray-50 space-y-3 relative">
+                      <div className="flex justify-between items-center">
+                        <span className="text-sm font-bold text-gray-600">Option #{index + 1}</span>
+                        {yearbookOptions.length > 1 && (
+                          <button
+                            type="button"
+                            onClick={() => handleRemoveOptionRow(index)}
+                            className="text-red-500 hover:text-red-700 text-xs font-semibold"
+                          >
+                            Remove
+                          </button>
+                        )}
+                      </div>
+                      <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                        <div>
+                          <label className="block text-xs text-gray-600 mb-1">Option Name (e.g. UG Yearbook)</label>
+                          <input
+                            type="text"
+                            placeholder="Option Name"
+                            value={opt.title}
+                            onChange={(e) => handleOptionChange(index, "title", e.target.value)}
+                            className="w-full px-3 py-1.5 border rounded text-sm"
+                            required
+                          />
+                        </div>
+                        <div>
+                          <label className="block text-xs text-gray-600 mb-1">Google Drive Link</label>
+                          <input
+                            type="url"
+                            placeholder="Drive Link"
+                            value={opt.pdfUrl}
+                            onChange={(e) => handleOptionChange(index, "pdfUrl", e.target.value)}
+                            className="w-full px-3 py-1.5 border rounded text-sm"
+                            required
+                          />
+                        </div>
+                        <div>
+                          <label className="block text-xs text-gray-600 mb-1">Cover Image (Optional)</label>
+                          <input
+                            type="file"
+                            accept="image/*"
+                            onChange={(e) => handleOptionChange(index, "imageFile", e.target.files[0])}
+                            className="w-full text-xs text-gray-500 file:mr-2 file:py-1 file:px-2 file:rounded file:border-0 file:text-xs file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+
                 <button
                   type="submit"
-                  className="bg-blue-600 text-white px-4 py-2 rounded"
+                  className="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-6 py-2 rounded-md transition"
                 >
-                  Add Yearbook
+                  Create Yearbook Entry
                 </button>
               </form>
 
-              <h3 className="text-xl mt-8 mb-4">All Yearbooks</h3>
-              <ul>
-                {yearbooks.map((yb) => (
-                  <li
-                    key={yb._id}
-                    className="mb-2 flex items-center justify-between bg-gray-50 p-2 rounded"
-                  >
-                    <a
-                      href={yb.pdfUrl}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-blue-600 underline"
+              <h3 className="text-xl font-bold mt-10 mb-4 text-gray-800">All Yearbooks</h3>
+              <div className="space-y-4">
+                {yearbooks && yearbooks.length > 0 ? (
+                  yearbooks.map((yb) => (
+                    <div
+                      key={yb._id}
+                      className="bg-white border rounded-xl p-5 shadow-sm space-y-3"
                     >
-                      {yb.title}
-                    </a>
+                      <div className="flex items-center justify-between border-b pb-3">
+                        <h4 className="text-xl font-bold text-[#0F2A5A]">{yb.title}</h4>
+                        <div className="flex items-center gap-2">
+                          <button
+                            type="button"
+                            onClick={() => setAddingOptionForId(addingOptionForId === yb._id ? null : yb._id)}
+                            className="bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-semibold px-3 py-1.5 rounded-md transition"
+                          >
+                            {addingOptionForId === yb._id ? "Cancel" : "+ Add Option"}
+                          </button>
+                          <button
+                            onClick={() => handleDeleteYearbook(yb._id)}
+                            className="bg-red-500 hover:bg-red-600 text-white text-xs font-semibold px-3 py-1.5 rounded-md transition"
+                          >
+                            Delete Entire Year
+                          </button>
+                        </div>
+                      </div>
 
-                    <button
-                      onClick={() => handleDeleteYearbook(yb._id)}
-                      className="ml-4 px-3 py-1 text-sm bg-red-500 text-white rounded hover:bg-red-600 transition"
-                    >
-                      Delete
-                    </button>
-                  </li>
-                ))}
-              </ul>
+                      {/* Inline Add Option Form */}
+                      {addingOptionForId === yb._id && (
+                        <div className="bg-emerald-50 border border-emerald-200 p-4 rounded-lg space-y-3">
+                          <h5 className="font-semibold text-sm text-emerald-900">Add Option to "{yb.title}"</h5>
+                          <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                            <input
+                              type="text"
+                              placeholder="Option Name (e.g. PG Yearbook)"
+                              value={newOptTitle}
+                              onChange={(e) => setNewOptTitle(e.target.value)}
+                              className="w-full px-3 py-1.5 border rounded text-sm bg-white"
+                            />
+                            <input
+                              type="url"
+                              placeholder="Google Drive Link"
+                              value={newOptLink}
+                              onChange={(e) => setNewOptLink(e.target.value)}
+                              className="w-full px-3 py-1.5 border rounded text-sm bg-white"
+                            />
+                            <input
+                              type="file"
+                              accept="image/*"
+                              onChange={(e) => setNewOptFile(e.target.files[0])}
+                              className="w-full text-xs text-gray-500 file:mr-2 file:py-1 file:px-2 file:rounded file:border-0 file:text-xs file:font-semibold file:bg-white file:text-emerald-700"
+                            />
+                          </div>
+                          <button
+                            type="button"
+                            onClick={() => handleAddOptionToYearbook(yb._id)}
+                            className="bg-emerald-700 hover:bg-emerald-800 text-white text-xs font-semibold px-4 py-2 rounded-md transition"
+                          >
+                            Save Option
+                          </button>
+                        </div>
+                      )}
+
+                      {/* List of Options */}
+                      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 pt-2">
+                        {yb.options && yb.options.length > 0 ? (
+                          yb.options.map((opt) => (
+                            <div key={opt._id} className="flex flex-col bg-gray-50 border rounded-lg p-3 justify-between">
+                              <div className="space-y-2">
+                                {opt.imageUrl ? (
+                                  <img
+                                    src={opt.imageUrl}
+                                    alt={opt.title}
+                                    className="w-full h-32 object-cover rounded-md shadow-sm"
+                                  />
+                                ) : (
+                                  <div className="w-full h-32 bg-gray-200 rounded-md flex items-center justify-center text-xs text-gray-500">
+                                    No Image
+                                  </div>
+                                )}
+                                <div className="font-semibold text-sm text-gray-800">{opt.title}</div>
+                              </div>
+                              <div className="flex items-center justify-between mt-3 pt-2 border-t text-xs">
+                                <a
+                                  href={opt.pdfUrl}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                  className="text-blue-600 font-medium hover:underline truncate max-w-[140px]"
+                                >
+                                  View Link
+                                </a>
+                                <button
+                                  type="button"
+                                  onClick={() => handleDeleteYearbookOption(yb._id, opt._id)}
+                                  className="text-red-500 hover:text-red-700 font-semibold"
+                                >
+                                  Delete Option
+                                </button>
+                              </div>
+                            </div>
+                          ))
+                        ) : yb.pdfUrl ? (
+                          /* Legacy Single Option Fallback */
+                          <div className="flex flex-col bg-gray-50 border rounded-lg p-3 justify-between">
+                            <div className="font-semibold text-sm text-gray-800">{yb.title} (Single Link)</div>
+                            <a
+                              href={yb.pdfUrl}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="text-blue-600 font-medium hover:underline text-xs mt-2"
+                            >
+                              View Link
+                            </a>
+                          </div>
+                        ) : (
+                          <div className="text-sm text-gray-500 italic">No options added yet.</div>
+                        )}
+                      </div>
+                    </div>
+                  ))
+                ) : (
+                  <p className="text-gray-500 text-sm">No yearbooks added yet.</p>
+                )}
+              </div>
             </div>
           )}
 

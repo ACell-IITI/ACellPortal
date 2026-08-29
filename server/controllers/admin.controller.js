@@ -167,19 +167,150 @@ export const getMagazines = async (req, res) => {
 // Add Yearbook
 export const addYearbook = async (req, res) => {
   try {
-    const { title, link } = req.body;
-    if (!title || !link)
-      return res.status(400).json({ message: "Title and link are required" });
+    const { title, options } = req.body;
+    if (!title) return res.status(400).json({ message: "Title is required" });
 
-    const yearbook = new Yearbook({ title, pdfUrl: link });
+    let optionsList = [];
+    let parsedOptions = [];
+    if (typeof options === "string") {
+      try {
+        parsedOptions = JSON.parse(options);
+      } catch (e) {
+        parsedOptions = [];
+      }
+    } else if (Array.isArray(options)) {
+      parsedOptions = options;
+    }
+
+    const files = req.files || [];
+
+    for (let i = 0; i < parsedOptions.length; i++) {
+      const opt = parsedOptions[i];
+      let imageUrl = "";
+      let imagePublicId = "";
+
+      const matchingFile = files.find(f => f.fieldname === `option_image_${i}`) || files[i];
+      if (matchingFile) {
+        try {
+          const result = await uploadToR2(matchingFile.path, "yearbooks", matchingFile.originalname);
+          imageUrl = result.url;
+          imagePublicId = result.objectKey;
+        } catch (uploadErr) {
+          console.error("R2 upload failed for file:", matchingFile.path, uploadErr);
+        } finally {
+          if (fs.existsSync(matchingFile.path)) {
+            try { fs.unlinkSync(matchingFile.path); } catch (e) {}
+          }
+        }
+      }
+
+      optionsList.push({
+        title: opt.title,
+        pdfUrl: opt.pdfUrl || opt.link,
+        imageUrl,
+        imagePublicId
+      });
+    }
+
+    const { link } = req.body;
+    if (optionsList.length === 0 && link) {
+      optionsList.push({
+        title: title,
+        pdfUrl: link,
+        imageUrl: "",
+        imagePublicId: ""
+      });
+    }
+
+    const yearbook = new Yearbook({
+      title,
+      pdfUrl: link || (optionsList[0] ? optionsList[0].pdfUrl : ""),
+      options: optionsList
+    });
     await yearbook.save();
 
-    res
-      .status(201)
-      .json({ success: true, message: "Yearbook added", data: yearbook });
+    res.status(201).json({ success: true, message: "Yearbook added successfully", data: yearbook });
   } catch (err) {
     console.error("Error in addYearbook:", err);
-    res.status(500).json({ success: false, message: "Internal server error" });
+    res.status(500).json({ success: false, message: err.message || "Internal server error" });
+  }
+};
+
+// Add Option to an existing Yearbook
+export const addYearbookOption = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { title, pdfUrl, link } = req.body;
+
+    const yearbook = await Yearbook.findById(id);
+    if (!yearbook) {
+      return res.status(404).json({ success: false, message: "Yearbook not found" });
+    }
+
+    const optionLink = pdfUrl || link;
+    if (!title || !optionLink) {
+      return res.status(400).json({ success: false, message: "Option title and link are required" });
+    }
+
+    let imageUrl = "";
+    let imagePublicId = "";
+
+    if (req.file) {
+      try {
+        const result = await uploadToR2(req.file.path, "yearbooks", req.file.originalname);
+        imageUrl = result.url;
+        imagePublicId = result.objectKey;
+      } catch (uploadErr) {
+        console.error("R2 upload failed:", uploadErr);
+      } finally {
+        if (fs.existsSync(req.file.path)) {
+          try { fs.unlinkSync(req.file.path); } catch (e) {}
+        }
+      }
+    }
+
+    yearbook.options.push({
+      title,
+      pdfUrl: optionLink,
+      imageUrl,
+      imagePublicId
+    });
+
+    await yearbook.save();
+
+    res.status(200).json({ success: true, message: "Yearbook option added", data: yearbook });
+  } catch (err) {
+    console.error("Error in addYearbookOption:", err);
+    res.status(500).json({ success: false, message: err.message || "Internal server error" });
+  }
+};
+
+// Delete Option from a Yearbook
+export const deleteYearbookOption = async (req, res) => {
+  try {
+    const { id, optionId } = req.params;
+
+    const yearbook = await Yearbook.findById(id);
+    if (!yearbook) {
+      return res.status(404).json({ success: false, message: "Yearbook not found" });
+    }
+
+    const option = yearbook.options.id(optionId);
+    if (!option) {
+      return res.status(404).json({ success: false, message: "Option not found" });
+    }
+
+    if (option.imagePublicId) {
+      await deleteFromR2(option.imagePublicId);
+    }
+
+    yearbook.options.pull(optionId);
+    await yearbook.save();
+
+    res.status(200).json({ success: true, message: "Option deleted successfully", data: yearbook });
+  } catch (err) {
+    console.error("Error in deleteYearbookOption:", err);
+    res.status(500).json({ success: false, message: err.message || "Internal server error" });
   }
 };
 
@@ -195,10 +326,19 @@ export const deleteYearbook = async (req, res) => {
     }
 
     if (yearbook.publicId) {
-      // await cloudinary.uploader.destroy(yearbook.publicId, {
-      //   resource_type: "raw",
-      // });
       await deleteFromR2(yearbook.publicId);
+    }
+
+    if (yearbook.coverImagePublicId) {
+      await deleteFromR2(yearbook.coverImagePublicId);
+    }
+
+    if (yearbook.options && yearbook.options.length > 0) {
+      for (const opt of yearbook.options) {
+        if (opt.imagePublicId) {
+          await deleteFromR2(opt.imagePublicId);
+        }
+      }
     }
 
     await Yearbook.findByIdAndDelete(id);

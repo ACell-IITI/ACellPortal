@@ -57,7 +57,7 @@ app.use("/api/sponsors", sponsorRoutes);
 app.get('/api/alumni-contributions', getAlumniContributions);
 
 // MongoDB connection
-const mongodbLink = process.env.MONGO_URI || process.env.MONGODB_LINK;
+const mongodbLink = process.env.MONGO_URI || process.env.MONGODB_LINK || "mongodb://127.0.0.1:27017/acellportal";
 console.log('Mongo URI:', mongodbLink);
 
 mongoose
