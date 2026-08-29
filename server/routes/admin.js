@@ -28,6 +28,8 @@ import {
   deleteMagazine,
   getMagazines,
   addYearbook,
+  addYearbookOption,
+  deleteYearbookOption,
   deleteYearbook,
   getYearbooks,
   getLatestNewsletter,
@@ -81,7 +83,9 @@ router.get('/get-magazines', getMagazines);
 router.delete('/delete-magazine/:id', deleteMagazine);
 
 // Yearbook routes
-router.post('/add-yearbook', uploadPdf.single('pdf'), addYearbook);
+router.post('/add-yearbook', upload.any(), addYearbook);
+router.post('/add-yearbook-option/:id', upload.single('coverImage'), addYearbookOption);
+router.delete('/delete-yearbook-option/:id/:optionId', deleteYearbookOption);
 router.get('/get-yearbooks', getYearbooks);
 router.delete('/delete-yearbook/:id', deleteYearbook);
 
