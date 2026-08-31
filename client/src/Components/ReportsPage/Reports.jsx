@@ -40,7 +40,7 @@ const Reports = () => {
 
     const [numPages, setNumPages] = useState(null);
     const [isFullscreen, setIsFullscreen] = useState(false)
-    const [latestNewsletter, setLatestNewsletter] = useState(null);
+    const [latestReport, setLatestReport] = useState(null);
     const [loading, setLoading] = useState(true);
 
     const flipBookRef = useRef(null);
@@ -49,15 +49,18 @@ const Reports = () => {
     useEffect(() => {
     const fetchLatestNewsletter = async () => {
         try {
-            const res = await axios.get(`${API_BASE_URL}/api/admin/get-newsletters`);
+            const res = await axios.get(`${API_BASE_URL}/api/admin/get-annual-reports`);
             //log 1
             // console.log("API response data : ", res.data.data);
 
-            const newsletters = res.data.data || res.data;
-            if (newsletters && newsletters.length > 0) {
-                const sorted = newsletters.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
-                setLatestNewsletter(sorted[0]); 
-            }
+            const reports = res.data.data || res.data;
+
+if (reports && reports.length > 0) {
+    const sorted = reports.sort(
+        (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
+    );
+    setLatestReport(sorted[0]);
+}
         } catch (err) {
             console.error("Error fetching newsletters:", err);
         } finally {
@@ -113,7 +116,7 @@ const Reports = () => {
             navigator.share(
                 {
                     title: "Alumni Magazine",
-                    url: latestNewsletter?.pdfUrl,
+                    url: latestReport?.driveLink,
                 }
             )
                 .then(() => console.log('Shared successfully'))
@@ -127,76 +130,59 @@ const Reports = () => {
         return <div className="text-center py-10 text-lg">Loading annual reports...</div>;
     }
 
-    if (!latestNewsletter) {
+    if (!latestReport) {
         return <div className="text-center py-10 text-lg text-red-600">No annual reports available!</div>;
     }
 
-    const pdfFile = latestNewsletter.pdfUrl;
+    const reportLink = latestReport.driveLink;
 
     return (
-        <>
-            <main className='mx-1 sm:mx-3 lg:mx-10 mt-16 lg:mt-10 mb-5 text-[#0F2A5A]'>
-                <div className="textSection">
-                    <h1 className='text-3xl font-bold font-inter'>Annual Reports</h1>
-                    <p className='mt-2'>Our newsletter is more than just updates—it's a celebration of the Alumni Cell community. From achievements and events to memories and milestones, each issue keeps you connected with what matters most.</p>
-                </div>
-                <div className="contentSection bg-[#B9CDC0] rounded-2xl mx-0 sm:mx-3 lg:mx-10  p-5 px-1 sm:px-1 lg:px-10 mt-7 overflow-hidden">
-                    <div className='part1 flex justify-between lg:px-0 sm:px-5 px-2'>
-                        <h1 className='font-bold text-3xl italic'> {latestNewsletter.title || "Untitled Newsletter"} </h1>
-                        <div className='flex justify-between gap-2 sm:gap-5 list-none mt-3'>
-                            <FaExpand onClick={handleFullscreen} className='text-[#173460] hover:text-[#19438b] w-5 h-5 cursor-pointer transition-all transform hover:scale-125 duration-300 ease-in-out' />
-                            <a href={pdfFile} download>
-                                <FaDownload className="w-5 h-5 text-[#173460] hover:text-[#19438b]  cursor-pointer transition-all transform hover:scale-125 duration-300 ease-in-out" />
-                            </a>
-                            <FaShareAlt onClick={handleShare} className='text-[#173460] hover:text-[#19438b] w-5 h-5 cursor-pointer transition-all transform hover:scale-125 duration-300 ease-in-out' />
-                        </div>
-                    </div>
-                    <div ref={flipbookContainerRef} className="flipbook flex justify-between items-center lg:gap-5 mt-5">
-                        <FaArrowCircleLeft className='text-[#173460] hover:text-[#19438b] rounded-full  w-10 h-10 cursor-pointer transition-all transform hover:scale-110 duration-300 ease-in-out' onClick={() => flipBookRef.current?.pageFlip().flipPrev()} />
+    <main className="mx-1 sm:mx-3 lg:mx-10 mt-16 lg:mt-10 mb-5 text-[#0F2A5A]">
+        <div className="textSection">
+            <h1 className="text-3xl font-bold font-inter">
+                Annual Reports
+            </h1>
 
-                        <HTMLFlipBook
-                            ref={flipBookRef}
-                            showCover={true}
-                            width={FLIPBOOK_WIDTH}
-                            height={FLIPBOOK_HEIGHT}
-                            size="stretch"
-                            minWidth={FLIPBOOK_WIDTH}
-                            maxWidth={FLIPBOOK_WIDTH}
-                            minHeight={FLIPBOOK_HEIGHT}
-                            maxHeight={FLIPBOOK_HEIGHT}
-                            drawShadow={true}
-                            useMouseEvents={true}
-                            className={`rounded bg-transparent transition-transform duration-300 mx-auto ${isFullscreen ? "scale-125" : (windowWidth < 500) ? (windowWidth < 400) ? "scale-50" : "scale-75" : "scale-100"
-                                }`}
-                        >
-                            {Array.from(new Array(numPages), (_, i) => (
-                                <Pages key={i} number={i + 1} width={FLIPBOOK_WIDTH} height={FLIPBOOK_HEIGHT}>
-                                    <Document
-                                        file={pdfFile}
-                                        onLoadSuccess={onDocumentLoadSuccess}
-                                        loading={<div className="text-white">Loading...</div>}
-                                    >
-                                        <Page
-                                            pageNumber={i + 1}
-                                            width={FLIPBOOK_WIDTH}
-                                            renderTextLayer={false}
-                                            renderAnnotationLayer={false}
-                                        />
-                                    </Document>
-                                </Pages>
-                            ))}
-                        </HTMLFlipBook>
+            <p className="mt-2">
+                Our annual reports provide an overview of the Alumni Cell's
+                activities, achievements and milestones.
+            </p>
+        </div>
 
-                        <FaArrowCircleRight className='text-[#173460] hover:text-[#19438b] rounded-full w-10 h-10 cursor-pointer transition-all transform hover:scale-110 duration-300 ease-in-out' onClick={() => flipBookRef.current?.pageFlip().flipNext()} />
-                    </div>
-                    <div className="flex justify-center mt-5">
-                        <button className="bg-[#173460] hover:bg-[#19438b] hover:scale-105 text-white text-lg font-bold rounded-lg py-3 px-4 transition-all duration-300 ease-in-out" onClick={() => { view_Gallery_Value.setView_Gallery(true) }}>View All Editions</button>
-                    </div>
+        <div className="contentSection bg-[#B9CDC0] rounded-2xl mx-0 sm:mx-3 lg:mx-10 p-5 mt-7">
+            <div className="flex flex-col items-center gap-5">
+                
+                {latestReport?.imageUrl && (
+                    <img
+                        src={latestReport.imageUrl}
+                        alt={latestReport.title}
+                        className="w-64 h-80 object-cover rounded-lg shadow-md"
+                    />
+                )}
 
-                </div>
-            </main>
-        </>
-    )
+                <h2 className="text-2xl font-bold text-center">
+                    {latestReport.title || "Annual Report"}
+                </h2>
+
+                <a
+                    href={latestReport.driveLink}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="bg-[#173460] hover:bg-[#19438b] text-white font-bold rounded-lg py-3 px-5 transition-all"
+                >
+                    View Annual Report
+                </a>
+
+                <button
+                    className="bg-[#173460] hover:bg-[#19438b] text-white text-lg font-bold rounded-lg py-3 px-4 transition-all"
+                    onClick={() => view_Gallery_Value.setView_Gallery(true)}
+                >
+                    View All Editions
+                </button>
+            </div>
+        </div>
+    </main>
+);
 }
 
 export default Reports

@@ -34,7 +34,10 @@ import {
   getYearbooks,
   getLatestNewsletter,
   getLatestMagazine,
-  getLatestYearbook
+  getLatestYearbook,
+  addAnnualReport,
+  deleteAnnualReport,
+  getAnnualReports
 } from '../controllers/admin.controller.js';
 import {
   addAlumniContribution,
@@ -81,6 +84,11 @@ router.delete('/delete-newsletter/:id', deleteNewsletter);
 router.post('/add-magazine', uploadPdf.single('pdf'), addMagazine);
 router.get('/get-magazines', getMagazines);
 router.delete('/delete-magazine/:id', deleteMagazine);
+
+// Annual Report routes
+router.post('/add-annual-report', upload.single('image'), addAnnualReport);
+router.get('/get-annual-reports', getAnnualReports);
+router.delete('/delete-annual-report/:id', deleteAnnualReport);
 
 // Yearbook routes
 router.post('/add-yearbook', upload.any(), addYearbook);

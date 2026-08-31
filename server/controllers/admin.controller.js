@@ -12,6 +12,7 @@ import Newsletter from "../models/Newsletter_model.js";
 import Magazine from "../models/Magazine_model.js";
 import EventProgram from "../models/Program_model.js";
 import Yearbook from "../models/Yearbook_model.js";
+import AnnualReport from "../models/AnnualReport_model.js";
 // import { uploadToOpeninary } from "../utils/openinary.js";
 import { uploadToR2, deleteFromR2 } from "../utils/s3.js";
 
@@ -90,6 +91,110 @@ export const getNewsletters = async (req, res) => {
   } catch (err) {
     console.error(err);
     res.status(500).json({ success: false, message: "Internal server error" });
+  }
+};
+
+// Add Annual Report
+export const addAnnualReport = async (req, res) => {
+  try {
+    const { title, driveLink } = req.body;
+
+    if (!title || !driveLink) {
+      return res.status(400).json({
+        success: false,
+        message: "Title and Drive Link are required"
+      });
+    }
+
+    let imageUrl = "";
+    let imagePublicId = "";
+
+    if (req.file) {
+      const result = await uploadToR2(
+        req.file.path,
+        "annual-reports",
+        req.file.originalname
+      );
+
+      imageUrl = result.url;
+      imagePublicId = result.objectKey;
+
+      if (fs.existsSync(req.file.path)) {
+        fs.unlinkSync(req.file.path);
+      }
+    }
+
+    const report = new AnnualReport({
+      title,
+      driveLink,
+      imageUrl,
+      imagePublicId
+    });
+
+    await report.save();
+
+    res.status(201).json({
+      success: true,
+      message: "Annual report added successfully",
+      data: report
+    });
+  } catch (err) {
+    console.error("Error adding annual report:", err);
+    res.status(500).json({
+      success: false,
+      message: err.message
+    });
+  }
+};
+
+// Get Annual Reports
+export const getAnnualReports = async (req, res) => {
+  try {
+    const reports = await AnnualReport.find().sort({ createdAt: -1 });
+
+    res.status(200).json({
+      success: true,
+      data: reports
+    });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({
+      success: false,
+      message: "Internal server error"
+    });
+  }
+};
+
+// Delete Annual Report
+export const deleteAnnualReport = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const report = await AnnualReport.findById(id);
+
+    if (!report) {
+      return res.status(404).json({
+        success: false,
+        message: "Annual report not found"
+      });
+    }
+
+    if (report.imagePublicId) {
+      await deleteFromR2(report.imagePublicId);
+    }
+
+    await AnnualReport.findByIdAndDelete(id);
+
+    res.status(200).json({
+      success: true,
+      message: "Annual report deleted successfully"
+    });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({
+      success: false,
+      message: "Internal server error"
+    });
   }
 };
 

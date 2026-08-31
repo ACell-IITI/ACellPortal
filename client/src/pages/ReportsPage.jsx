@@ -16,7 +16,7 @@ function ReportsPage() {
         <view_Gallery_Context.Provider value={{ view_Gallery, setView_Gallery }}>
           <view_individual_Flipbook_Context.Provider value={{ view_individual_Flipbook, setView_individual_Flipbook }}>
 
-            {view_Gallery ? (view_individual_Flipbook ? <Flipbook /> : <NGallery />) : <Newsletter />}
+            {view_Gallery ? (view_individual_Flipbook ? <Flipbook /> : <RGallery />) : <Reports />}
 
           </view_individual_Flipbook_Context.Provider>
         </view_Gallery_Context.Provider >
