@@ -726,6 +726,10 @@ const AdminDashboard = () => {
   const [magazineTitle, setMagazineTitle] = useState("");
   const [magazineFile, setMagazineFile] = useState(null);
   const [magazines, setMagazines] = useState([]);
+  const [annualReportTitle, setAnnualReportTitle] = useState("");
+ const [annualReportLink, setAnnualReportLink] = useState("");
+ const [annualReportImage, setAnnualReportImage] = useState(null);
+ const [annualReports, setAnnualReports] = useState([]);
 
   // YEARBOOK STATE VARIABLES (dynamic multi-option & cover images)
   const [yearbookTitle, setYearbookTitle] = useState("");
@@ -740,10 +744,11 @@ const AdminDashboard = () => {
 
   // FETCH EXISTING pdfs
   useEffect(() => {
-    fetchNewsletters();
-    fetchMagazines();
-    fetchYearbooks(); // fetch yearbooks as well
-  }, []);
+  fetchNewsletters();
+  fetchMagazines();
+  fetchYearbooks();
+  fetchAnnualReports();
+}, []);
 
   const fetchNewsletters = async () => {
     try {
@@ -773,6 +778,79 @@ const AdminDashboard = () => {
     }
   };
 
+  const fetchAnnualReports = async () => {
+  try {
+    const res = await axios.get(
+      `${API_BASE_URL}/api/admin/get-annual-reports`
+    );
+    setAnnualReports(res.data.data);
+  } catch (err) {
+    console.error("Error fetching annual reports:", err);
+  }
+};
+
+const handleAnnualReportUpload = async (e) => {
+  e.preventDefault();
+
+  if (!annualReportTitle || !annualReportLink || !annualReportImage) {
+    return alert("Fill all fields");
+  }
+
+  const formData = new FormData();
+  formData.append("title", annualReportTitle);
+  formData.append("driveLink", annualReportLink);
+  formData.append("image", annualReportImage);
+
+  try {
+    await axios.post(
+      `${API_BASE_URL}/api/admin/add-annual-report`,
+      formData,
+      {
+        headers: { "Content-Type": "multipart/form-data" },
+        withCredentials: true,
+      }
+    );
+
+    alert("Annual report uploaded!");
+
+    setAnnualReportTitle("");
+    setAnnualReportLink("");
+    setAnnualReportImage(null);
+
+    const fileInput = document.getElementById("annualReportImageInput");
+    if (fileInput) fileInput.value = "";
+
+    fetchAnnualReports();
+  } catch (err) {
+    console.error("Annual report upload error:", err);
+
+    const errMsg =
+      err.response?.data?.message ||
+      err.response?.data?.error ||
+      err.message ||
+      "Unknown error";
+
+    alert("Upload failed: " + errMsg);
+  }
+};
+const handleDeleteAnnualReport = async (id) => {
+  if (!window.confirm("Are you sure you want to delete this annual report?")) {
+    return;
+  }
+
+  try {
+    await axios.delete(
+      `${API_BASE_URL}/api/admin/delete-annual-report/${id}`,
+      { withCredentials: true }
+    );
+
+    alert("Annual report deleted successfully!");
+    fetchAnnualReports();
+  } catch (err) {
+    console.error("Delete annual report error:", err);
+    alert("Failed to delete annual report!");
+  }
+};
   //HANDLE UPLOAD
   const handleNewsletterUpload = async (e) => {
     e.preventDefault();
@@ -1043,6 +1121,11 @@ const AdminDashboard = () => {
     {
       id: "yearbooks",
       label: "Yearbooks",
+      icon: BookOpenText,
+    },
+    {
+      id: "annual-reports",
+      label: "Annual Reports",
       icon: BookOpenText,
     },
     {
@@ -1979,6 +2062,119 @@ const AdminDashboard = () => {
               </div>
             </div>
           )}
+          {/* Annual Reports tab */}
+{activeTab === "annual-reports" && (
+  <div>
+    <h2 className="text-2xl font-semibold mb-4">
+      Add Annual Report
+    </h2>
+
+    <form
+      onSubmit={handleAnnualReportUpload}
+      className="space-y-4 bg-white p-6 rounded-lg border shadow-sm"
+    >
+      <div>
+        <label className="block text-sm font-medium text-gray-700 mb-1">
+          Report Title / Year
+        </label>
+        <input
+          type="text"
+          placeholder="e.g. Annual Report 2025"
+          value={annualReportTitle}
+          onChange={(e) => setAnnualReportTitle(e.target.value)}
+          className="w-full px-4 py-2 border rounded-md"
+          required
+        />
+      </div>
+
+      <div>
+        <label className="block text-sm font-medium text-gray-700 mb-1">
+          Google Drive Link
+        </label>
+        <input
+          type="url"
+          placeholder="Paste Google Drive link"
+          value={annualReportLink}
+          onChange={(e) => setAnnualReportLink(e.target.value)}
+          className="w-full px-4 py-2 border rounded-md"
+          required
+        />
+      </div>
+
+      <div>
+        <label className="block text-sm font-medium text-gray-700 mb-1">
+          Cover Image
+        </label>
+        <input
+          id="annualReportImageInput"
+          type="file"
+          accept="image/*"
+          onChange={(e) => setAnnualReportImage(e.target.files[0])}
+          className="w-full text-sm"
+          required
+        />
+      </div>
+
+      <button
+        type="submit"
+        className="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-6 py-2 rounded-md"
+      >
+        Upload Annual Report
+      </button>
+    </form>
+
+    <h3 className="text-xl font-bold mt-10 mb-4">
+      All Annual Reports
+    </h3>
+
+    <div className="space-y-3">
+      {annualReports.length > 0 ? (
+        annualReports.map((report) => (
+          <div
+            key={report._id}
+            className="bg-white border rounded-lg p-4 flex items-center justify-between"
+          >
+            <div className="flex items-center gap-4">
+              {report.imageUrl && (
+                <img
+                  src={report.imageUrl}
+                  alt={report.title}
+                  className="w-20 h-24 object-cover rounded"
+                />
+              )}
+
+              <div>
+                <h4 className="font-semibold text-gray-800">
+                  {report.title}
+                </h4>
+
+                <a
+                  href={report.driveLink}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-blue-600 text-sm underline"
+                >
+                  View Report
+                </a>
+              </div>
+            </div>
+
+            <button
+              onClick={() => handleDeleteAnnualReport(report._id)}
+              className="bg-red-500 hover:bg-red-600 text-white text-sm px-3 py-1 rounded"
+            >
+              Delete
+            </button>
+          </div>
+        ))
+      ) : (
+        <p className="text-gray-500 text-sm">
+          No annual reports added yet.
+        </p>
+      )}
+    </div>
+  </div>
+)} 
 
           {/* Profiles Tab */}
           {activeTab === "profiles" && (
