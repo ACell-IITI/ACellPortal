@@ -3,10 +3,11 @@ import mongoose from 'mongoose';
 const memberSchema = new mongoose.Schema({
   userId: {
     type: String,
-    required: true,
+    default: '',
   },
   username: {
     type: String,
+    default: '',
   }
 }, { _id: false });
 
@@ -20,9 +21,12 @@ const DiscordChannelSchema = new mongoose.Schema(
     channelName: {
       type: String,
     },
+    discordChannelId: {
+      type: String,
+    },
     members: [memberSchema],
   },
-  { timestamps: true }
+  { timestamps: true, collection: 'discordchannel' }
 );
 
-export default mongoose.model('DiscordChannel', DiscordChannelSchema);
+export default mongoose.models.DiscordChannel || mongoose.model('DiscordChannel', DiscordChannelSchema);

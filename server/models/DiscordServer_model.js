@@ -15,7 +15,7 @@ const DiscordServerSchema = new mongoose.Schema(
       type: String,
     },
   },
-  { timestamps: true }
+  { timestamps: true, collection: 'discordserver' }
 );
 
-export default mongoose.model('DiscordServer', DiscordServerSchema);
+export default mongoose.models.DiscordServer || mongoose.model('DiscordServer', DiscordServerSchema);

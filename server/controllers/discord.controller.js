@@ -1,6 +1,7 @@
 import DiscordServer from '../models/DiscordServer_model.js';
 import DiscordChannel from '../models/DiscordChannel_model.js';
 import xlsx from 'xlsx';
+import { notifyBot, triggerFullSync } from '../utils/botNotifier.js';
 
 // --- Discord Server Operations ---
 
@@ -86,6 +87,10 @@ export const addChannel = async (req, res) => {
     });
 
     await newChannel.save();
+
+    // Notify bot to create the Discord channel
+    notifyBot('channel-added', { channelId: newChannel._id.toString() });
+
     res.status(201).json({ success: true, data: newChannel });
   } catch (error) {
     console.error('Error adding discord channel:', error);
@@ -97,7 +102,20 @@ export const addChannel = async (req, res) => {
 export const deleteChannel = async (req, res) => {
   try {
     const { id } = req.params;
+
+    // Fetch before deleting so we can send info to the bot
+    const channelDoc = await DiscordChannel.findById(id);
+    const deleteInfo = channelDoc
+      ? { serverMongoId: channelDoc.server.toString(), discordChannelId: channelDoc.discordChannelId, channelName: channelDoc.channelName }
+      : null;
+
     await DiscordChannel.findByIdAndDelete(id);
+
+    // Notify bot to delete the Discord channel
+    if (deleteInfo) {
+      notifyBot('channel-deleted', deleteInfo);
+    }
+
     res.status(200).json({ success: true, message: 'Channel deleted successfully.' });
   } catch (error) {
     console.error('Error deleting discord channel:', error);
@@ -114,7 +132,20 @@ export const bulkDeleteChannels = async (req, res) => {
       return res.status(400).json({ success: false, message: 'No channel IDs provided for deletion.' });
     }
 
+    // Fetch channel info before deletion for bot notifications
+    const channelDocs = await DiscordChannel.find({ _id: { $in: channelIds } }).lean();
+
     await DiscordChannel.deleteMany({ _id: { $in: channelIds } });
+
+    // Notify bot for each deleted channel
+    for (const ch of channelDocs) {
+      notifyBot('channel-deleted', {
+        serverMongoId: ch.server.toString(),
+        discordChannelId: ch.discordChannelId,
+        channelName: ch.channelName
+      });
+    }
+
     res.status(200).json({ success: true, message: `${channelIds.length} channels deleted successfully.` });
   } catch (error) {
     console.error('Error bulk deleting discord channels:', error);
@@ -142,7 +173,12 @@ export const bulkAddChannels = async (req, res) => {
     }));
 
     // Bulk insert
-    await DiscordChannel.insertMany(channelsToInsert);
+    const inserted = await DiscordChannel.insertMany(channelsToInsert);
+
+    // Notify bot for each new channel
+    for (const ch of inserted) {
+      notifyBot('channel-added', { channelId: ch._id.toString() });
+    }
 
     res.status(201).json({ 
       success: true, 
@@ -151,5 +187,123 @@ export const bulkAddChannels = async (req, res) => {
   } catch (error) {
     console.error('Error in bulkAddChannels:', error);
     res.status(500).json({ success: false, message: 'Error saving channels data.' });
+  }
+};
+
+// Add a member to a channel
+export const addMemberToChannel = async (req, res) => {
+  try {
+    const { channelId } = req.params;
+    const { userId, username } = req.body;
+
+    if (!username) {
+      return res.status(400).json({ success: false, message: 'Username is required.' });
+    }
+
+    const channel = await DiscordChannel.findById(channelId);
+    if (!channel) {
+      return res.status(404).json({ success: false, message: 'Channel not found.' });
+    }
+
+    // Check if user already exists in this channel
+    const alreadyExists = channel.members.some(
+      (m) => m.username === username
+    );
+    if (alreadyExists) {
+      return res.status(400).json({ success: false, message: 'User is already a member of this channel.' });
+    }
+
+    channel.members.push({ userId: userId || '', username });
+    await channel.save();
+
+    // Notify bot to grant access on Discord
+    notifyBot('member-added', { channelId: channelId, userId: userId || '', username });
+
+    res.status(200).json({ success: true, data: channel });
+  } catch (error) {
+    console.error('Error adding member to channel:', error);
+    res.status(500).json({ success: false, message: 'Server Error' });
+  }
+};
+
+// Remove a member from a channel
+export const removeMemberFromChannel = async (req, res) => {
+  try {
+    const { channelId, username } = req.params;
+
+    const channel = await DiscordChannel.findById(channelId);
+    if (!channel) {
+      return res.status(404).json({ success: false, message: 'Channel not found.' });
+    }
+
+    const memberIndex = channel.members.findIndex((m) => m.username === username);
+    if (memberIndex === -1) {
+      return res.status(404).json({ success: false, message: 'Member not found in channel.' });
+    }
+
+    // Capture the userId before removing
+    const removedMember = channel.members[memberIndex];
+
+    channel.members.splice(memberIndex, 1);
+    await channel.save();
+
+    // Notify bot to revoke access on Discord
+    notifyBot('member-removed', { channelId: channelId, userId: removedMember.userId, username });
+
+    res.status(200).json({ success: true, data: channel });
+  } catch (error) {
+    console.error('Error removing member from channel:', error);
+    res.status(500).json({ success: false, message: 'Server Error' });
+  }
+};
+
+// Update a member in a channel
+export const updateMemberInChannel = async (req, res) => {
+  try {
+    const { channelId, username } = req.params;
+    const { newUsername, newUserId } = req.body;
+
+    if (!newUsername) {
+      return res.status(400).json({ success: false, message: 'New username is required.' });
+    }
+
+    const channel = await DiscordChannel.findById(channelId);
+    if (!channel) {
+      return res.status(404).json({ success: false, message: 'Channel not found.' });
+    }
+
+    const memberIndex = channel.members.findIndex((m) => m.username === username);
+    if (memberIndex === -1) {
+      return res.status(404).json({ success: false, message: 'Member not found in channel.' });
+    }
+
+    // Check for duplicate if username is changing
+    if (newUsername !== username) {
+      const duplicate = channel.members.some((m) => m.username === newUsername);
+      if (duplicate) {
+        return res.status(400).json({ success: false, message: `"${newUsername}" is already a member of this channel.` });
+      }
+    }
+
+    channel.members[memberIndex].username = newUsername;
+    channel.members[memberIndex].userId = newUserId ?? channel.members[memberIndex].userId;
+    await channel.save();
+
+    res.status(200).json({ success: true, data: channel });
+  } catch (error) {
+    console.error('Error updating member in channel:', error);
+    res.status(500).json({ success: false, message: 'Server Error' });
+  }
+};
+
+// Trigger a full sync between DB and Discord
+export const fullSync = async (req, res) => {
+  try {
+    const { serverMongoId } = req.body;
+    await triggerFullSync(serverMongoId);
+    res.status(200).json({ success: true, message: 'Full sync triggered successfully.' });
+  } catch (error) {
+    console.error('Error triggering full sync:', error);
+    res.status(500).json({ success: false, message: 'Server Error' });
   }
 };

@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import axios from "axios";
-import { Plus, Trash2, Upload, ExternalLink, Download } from "lucide-react";
+import { Plus, Trash2, Upload, Download, X, UserPlus, Pencil, Check } from "lucide-react";
 import * as XLSX from "xlsx";
 import { API_BASE_URL } from "../api/alumni";
 
@@ -18,7 +18,34 @@ const DiscordPanel = () => {
   const [serverForm, setServerForm] = useState({ serverName: "", serverId: "", description: "" });
   const [channelForm, setChannelForm] = useState({ channelName: "", members: [] });
   
+  // Inline add-member state
+  const [addingMemberToChannel, setAddingMemberToChannel] = useState(null);
+  const [newMemberUsername, setNewMemberUsername] = useState("");
+  const [newMemberUserId, setNewMemberUserId] = useState("");
+
+  // Inline edit-member state: { channelId, originalUsername, username, userId }
+  const [editingMember, setEditingMember] = useState(null);
+
+  // Toast notifications
+  const [toasts, setToasts] = useState([]);
+
   const fileInputRef = useRef(null);
+  const addMemberInputRef = useRef(null);
+  const editMemberInputRef = useRef(null);
+
+  // Focus input when add-member row opens
+  useEffect(() => {
+    if (addingMemberToChannel && addMemberInputRef.current) {
+      addMemberInputRef.current.focus();
+    }
+  }, [addingMemberToChannel]);
+
+  // Focus input when edit mode opens
+  useEffect(() => {
+    if (editingMember && editMemberInputRef.current) {
+      editMemberInputRef.current.focus();
+    }
+  }, [editingMember]);
 
   // Fetch all servers on load
   useEffect(() => {
@@ -34,6 +61,14 @@ const DiscordPanel = () => {
       setSelectedChannels([]);
     }
   }, [selectedServerId]);
+
+  const showToast = (message, type = "success") => {
+    const id = Date.now();
+    setToasts((prev) => [...prev, { id, message, type }]);
+    setTimeout(() => {
+      setToasts((prev) => prev.filter((t) => t.id !== id));
+    }, 3500);
+  };
 
   const fetchServers = async () => {
     try {
@@ -61,13 +96,13 @@ const DiscordPanel = () => {
     e.preventDefault();
     try {
       await axios.post(`${API_BASE_URL}/api/admin/discord/servers`, serverForm);
-      alert("Server added successfully!");
+      showToast("Server added successfully!");
       setServerForm({ serverName: "", serverId: "", description: "" });
       setIsServerModalOpen(false);
       fetchServers();
     } catch (err) {
       console.error("Error adding server", err);
-      alert(err.response?.data?.message || "Failed to add server");
+      showToast(err.response?.data?.message || "Failed to add server", "error");
     }
   };
 
@@ -90,13 +125,13 @@ const DiscordPanel = () => {
         channelName: channelForm.channelName,
         members: channelForm.members,
       });
-      alert("Channel added successfully!");
+      showToast("Channel added successfully!");
       setChannelForm({ channelName: "", members: [] });
       setIsChannelModalOpen(false);
       fetchChannels();
     } catch (err) {
       console.error("Error adding channel", err);
-      alert("Failed to add channel");
+      showToast("Failed to add channel", "error");
     }
   };
 
@@ -121,7 +156,7 @@ const DiscordPanel = () => {
       fetchChannels();
     } catch (err) {
       console.error("Error bulk deleting channels", err);
-      alert("Failed to delete selected channels");
+      showToast("Failed to delete selected channels", "error");
     }
   };
 
@@ -139,7 +174,7 @@ const DiscordPanel = () => {
         const rows = XLSX.utils.sheet_to_json(sheet);
         
         if (rows.length === 0) {
-          alert("Excel file is empty.");
+          showToast("Excel file is empty.", "error");
           return;
         }
 
@@ -168,15 +203,97 @@ const DiscordPanel = () => {
           channels: channelsToInsert
         });
         
-        alert("Channels uploaded successfully!");
+        showToast("Channels uploaded successfully!");
         fileInputRef.current.value = "";
         fetchChannels();
       } catch (err) {
         console.error("Error parsing or uploading file", err);
-        alert("Failed to upload channels");
+        showToast("Failed to upload channels", "error");
       }
     };
     reader.readAsBinaryString(file);
+  };
+
+  // --- Member Management ---
+
+  const handleAddMemberToChannel = async (channelId) => {
+    if (!newMemberUsername.trim()) {
+      showToast("Username is required.", "error");
+      return;
+    }
+
+    try {
+      const res = await axios.post(`${API_BASE_URL}/api/admin/discord/channels/${channelId}/members`, {
+        userId: newMemberUserId.trim(),
+        username: newMemberUsername.trim(),
+      });
+      setChannels((prev) =>
+        prev.map((ch) => (ch._id === channelId ? res.data.data : ch))
+      );
+      showToast(`Added "${newMemberUsername.trim()}" to channel.`);
+      setNewMemberUsername("");
+      setNewMemberUserId("");
+      setAddingMemberToChannel(null);
+    } catch (err) {
+      console.error("Error adding member", err);
+      showToast(err.response?.data?.message || "Failed to add member", "error");
+    }
+  };
+
+  const handleRemoveMemberFromChannel = async (channelId, username) => {
+    try {
+      const res = await axios.delete(
+        `${API_BASE_URL}/api/admin/discord/channels/${channelId}/members/${encodeURIComponent(username)}`
+      );
+      setChannels((prev) =>
+        prev.map((ch) => (ch._id === channelId ? res.data.data : ch))
+      );
+      showToast(`Removed "${username}" from channel.`);
+    } catch (err) {
+      console.error("Error removing member", err);
+      showToast(err.response?.data?.message || "Failed to remove member", "error");
+    }
+  };
+
+  const startEditingMember = (channelId, member) => {
+    setEditingMember({
+      channelId,
+      originalUsername: member.username || member.userId,
+      username: member.username || "",
+      userId: member.userId || "",
+    });
+    // Close add-member row if open
+    setAddingMemberToChannel(null);
+  };
+
+  const handleSaveEditMember = async () => {
+    if (!editingMember) return;
+    if (!editingMember.username.trim()) {
+      showToast("Username is required.", "error");
+      return;
+    }
+
+    try {
+      const res = await axios.put(
+        `${API_BASE_URL}/api/admin/discord/channels/${editingMember.channelId}/members/${encodeURIComponent(editingMember.originalUsername)}`,
+        {
+          newUsername: editingMember.username.trim(),
+          newUserId: editingMember.userId.trim(),
+        }
+      );
+      setChannels((prev) =>
+        prev.map((ch) => (ch._id === editingMember.channelId ? res.data.data : ch))
+      );
+      showToast(`Updated member "${editingMember.originalUsername}" → "${editingMember.username.trim()}".`);
+      setEditingMember(null);
+    } catch (err) {
+      console.error("Error updating member", err);
+      showToast(err.response?.data?.message || "Failed to update member", "error");
+    }
+  };
+
+  const cancelEditing = () => {
+    setEditingMember(null);
   };
 
   const toggleChannelSelection = (id) => {
@@ -197,8 +314,33 @@ const DiscordPanel = () => {
     setChannelForm({ ...channelForm, members: [...channelForm.members, { userId: "", username: "" }] });
   };
 
+  // Helper: is this member currently being edited?
+  const isEditing = (channelId, member) => {
+    return (
+      editingMember &&
+      editingMember.channelId === channelId &&
+      editingMember.originalUsername === (member.username || member.userId)
+    );
+  };
+
   return (
-    <div className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+    <div className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden relative">
+      {/* Toast Notifications */}
+      <div className="fixed top-4 right-4 z-[100] flex flex-col gap-2 pointer-events-none">
+        {toasts.map((toast) => (
+          <div
+            key={toast.id}
+            className={`pointer-events-auto px-4 py-3 rounded-lg shadow-lg text-sm font-medium transition-all animate-[slideIn_0.3s_ease] ${
+              toast.type === "error"
+                ? "bg-red-600 text-white"
+                : "bg-green-600 text-white"
+            }`}
+          >
+            {toast.message}
+          </div>
+        ))}
+      </div>
+
       <div className="p-6 border-b border-slate-200 bg-slate-50 flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
           <h2 className="text-xl font-bold text-slate-800">Discord Server Management</h2>
@@ -308,7 +450,7 @@ const DiscordPanel = () => {
                 </tr>
               ) : (
                 channels.map((channel) => (
-                  <tr key={channel._id} className="border-b border-slate-100 hover:bg-slate-50 transition-colors">
+                  <tr key={channel._id} className="border-b border-slate-100 hover:bg-slate-50/50 transition-colors align-top">
                     <td className="p-4">
                       <input 
                         type="checkbox" 
@@ -320,17 +462,151 @@ const DiscordPanel = () => {
                       {channel.channelName || <span className="text-slate-400 italic">Unnamed</span>}
                     </td>
                     <td className="p-4">
-                      {channel.members.length > 0 ? (
-                        <div className="flex flex-wrap gap-2">
-                          {channel.members.map((member, i) => (
-                            <span key={i} className="inline-flex items-center gap-1 px-2 py-1 bg-slate-100 text-slate-600 text-xs rounded-md border border-slate-200">
-                              {member.username || member.userId}
-                            </span>
-                          ))}
-                        </div>
-                      ) : (
-                        <span className="text-slate-400 text-sm">No members mapped</span>
-                      )}
+                      <div className="flex flex-wrap gap-2 items-start">
+                        {channel.members.length > 0 ? (
+                          channel.members.map((member, i) => {
+                            const memberKey = member.username || member.userId;
+
+                            // --- Editing this member inline ---
+                            if (isEditing(channel._id, member)) {
+                              return (
+                                <div key={i} className="flex items-center gap-1.5 px-2 py-1 bg-blue-50 border border-blue-300 rounded-full text-xs">
+                                  <input
+                                    ref={editMemberInputRef}
+                                    type="text"
+                                    value={editingMember.username}
+                                    onChange={(e) => setEditingMember({ ...editingMember, username: e.target.value })}
+                                    onKeyDown={(e) => {
+                                      if (e.key === "Enter") handleSaveEditMember();
+                                      if (e.key === "Escape") cancelEditing();
+                                    }}
+                                    placeholder="Username"
+                                    className="w-20 px-1 py-0.5 text-xs border border-blue-200 rounded bg-white focus:outline-none focus:ring-1 focus:ring-blue-400"
+                                  />
+                                  <input
+                                    type="text"
+                                    value={editingMember.userId}
+                                    onChange={(e) => setEditingMember({ ...editingMember, userId: e.target.value })}
+                                    onKeyDown={(e) => {
+                                      if (e.key === "Enter") handleSaveEditMember();
+                                      if (e.key === "Escape") cancelEditing();
+                                    }}
+                                    placeholder="User ID"
+                                    className="w-20 px-1 py-0.5 text-xs border border-slate-200 rounded bg-white focus:outline-none focus:ring-1 focus:ring-blue-400"
+                                  />
+                                  <button
+                                    onClick={handleSaveEditMember}
+                                    className="p-0.5 rounded-full text-green-600 hover:bg-green-100 transition-colors"
+                                    title="Save"
+                                  >
+                                    <Check size={13} />
+                                  </button>
+                                  <button
+                                    onClick={cancelEditing}
+                                    className="p-0.5 rounded-full text-slate-400 hover:bg-slate-200 transition-colors"
+                                    title="Cancel"
+                                  >
+                                    <X size={13} />
+                                  </button>
+                                </div>
+                              );
+                            }
+
+                            // --- Normal member badge with edit & delete on hover ---
+                            return (
+                              <span
+                                key={i}
+                                className="group inline-flex items-center gap-1 px-2.5 py-1 bg-slate-100 text-slate-700 text-xs rounded-full border border-slate-200 hover:border-slate-300 transition-all"
+                              >
+                                {memberKey}
+                                <button
+                                  onClick={() => startEditingMember(channel._id, member)}
+                                  className="opacity-0 group-hover:opacity-100 transition-opacity p-0.5 rounded-full hover:bg-blue-100 text-blue-500"
+                                  title={`Edit ${memberKey}`}
+                                >
+                                  <Pencil size={11} />
+                                </button>
+                                <button
+                                  onClick={() => handleRemoveMemberFromChannel(channel._id, memberKey)}
+                                  className="opacity-0 group-hover:opacity-100 transition-opacity p-0.5 -mr-1 rounded-full hover:bg-red-100 text-red-500"
+                                  title={`Remove ${memberKey}`}
+                                >
+                                  <X size={12} />
+                                </button>
+                              </span>
+                            );
+                          })
+                        ) : (
+                          <span className="text-slate-400 text-sm">No members mapped</span>
+                        )}
+
+                        {/* Inline Add Member */}
+                        {addingMemberToChannel === channel._id ? (
+                          <div className="flex items-center gap-2 mt-1 w-full">
+                            <input
+                              ref={addMemberInputRef}
+                              type="text"
+                              value={newMemberUsername}
+                              onChange={(e) => setNewMemberUsername(e.target.value)}
+                              onKeyDown={(e) => {
+                                if (e.key === "Enter") handleAddMemberToChannel(channel._id);
+                                if (e.key === "Escape") {
+                                  setAddingMemberToChannel(null);
+                                  setNewMemberUsername("");
+                                  setNewMemberUserId("");
+                                }
+                              }}
+                              placeholder="Username *"
+                              className="px-2 py-1 text-xs border border-blue-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400 w-28"
+                            />
+                            <input
+                              type="text"
+                              value={newMemberUserId}
+                              onChange={(e) => setNewMemberUserId(e.target.value)}
+                              onKeyDown={(e) => {
+                                if (e.key === "Enter") handleAddMemberToChannel(channel._id);
+                                if (e.key === "Escape") {
+                                  setAddingMemberToChannel(null);
+                                  setNewMemberUsername("");
+                                  setNewMemberUserId("");
+                                }
+                              }}
+                              placeholder="User ID (opt)"
+                              className="px-2 py-1 text-xs border border-slate-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400 w-28"
+                            />
+                            <button
+                              onClick={() => handleAddMemberToChannel(channel._id)}
+                              className="px-2 py-1 text-xs bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors font-medium"
+                            >
+                              Add
+                            </button>
+                            <button
+                              onClick={() => {
+                                setAddingMemberToChannel(null);
+                                setNewMemberUsername("");
+                                setNewMemberUserId("");
+                              }}
+                              className="p-1 text-slate-400 hover:text-slate-600"
+                            >
+                              <X size={14} />
+                            </button>
+                          </div>
+                        ) : (
+                          <button
+                            onClick={() => {
+                              setAddingMemberToChannel(channel._id);
+                              setNewMemberUsername("");
+                              setNewMemberUserId("");
+                              setEditingMember(null);
+                            }}
+                            className="inline-flex items-center gap-1 px-2 py-1 text-xs text-blue-600 hover:bg-blue-50 rounded-full border border-dashed border-blue-300 transition-colors"
+                            title="Add member"
+                          >
+                            <UserPlus size={12} />
+                            Add
+                          </button>
+                        )}
+                      </div>
                     </td>
                     <td className="p-4 text-right">
                       <button 

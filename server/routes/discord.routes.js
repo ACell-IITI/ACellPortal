@@ -8,6 +8,10 @@ import {
   deleteChannel,
   bulkDeleteChannels,
   bulkAddChannels,
+  addMemberToChannel,
+  removeMemberFromChannel,
+  updateMemberInChannel,
+  fullSync,
 } from '../controllers/discord.controller.js';
 
 const router = express.Router();
@@ -24,4 +28,14 @@ router.delete('/channels/:id', deleteChannel);
 router.post('/channels/bulk-delete', bulkDeleteChannels);
 router.post('/channels/bulk-add', bulkAddChannels);
 
+// --- Channel Member Routes ---
+router.post('/channels/:channelId/members', addMemberToChannel);
+router.put('/channels/:channelId/members/:username', updateMemberInChannel);
+router.delete('/channels/:channelId/members/:username', removeMemberFromChannel);
+
+// --- Sync Routes ---
+router.post('/sync', fullSync);
+
 export default router;
+
+
