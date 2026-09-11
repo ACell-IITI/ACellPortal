@@ -32,6 +32,7 @@ import {
   FaCogs,
 } from "react-icons/fa";
 import "../Components/MentorCard/MentorCard.css";
+import DiscordPanel from "../Components/DiscordPanel";
 
 const AdminDashboard = () => {
   const navigate = useNavigate();
@@ -1139,6 +1140,11 @@ const handleDeleteAnnualReport = async (id) => {
       label: "Alumni Contributions",
       icon: Users,
       count: alumniContributions.length,
+    },
+    {
+      id: "discord",
+      label: "Discord Servers",
+      icon: Users,
     },
   ];
 
@@ -2803,6 +2809,10 @@ const handleDeleteAnnualReport = async (id) => {
                 ))}
               </div>
             </div>
+          )}
+
+          {activeTab === "discord" && (
+            <DiscordPanel />
           )}
         </div>
       </div>

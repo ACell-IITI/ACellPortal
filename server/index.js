@@ -11,6 +11,7 @@ import alumniRoute from './routes/alumni.js';
 import mentorsRoute from './routes/mentors.js';
 import galleryRoutes from "./routes/gallery.js"
 import sponsorRoutes from "./routes/sponsorRoutes.js";
+import discordRoutes from "./routes/discord.routes.js";
 // Optional: if you have other grouped routes
 import allRoutes from "./routes/index.js";
 import { getAlumniContributions } from './controllers/alumniContributionController.js';
@@ -52,6 +53,7 @@ app.use("/api", allRoutes);
 app.use("/api/gallery", galleryRoutes);
 app.use("/uploads", express.static("uploads"));
 app.use("/api/sponsors", sponsorRoutes);
+app.use("/api/admin/discord", discordRoutes);
 
 // Public routes
 app.get('/api/alumni-contributions', getAlumniContributions);
