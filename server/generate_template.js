@@ -11,12 +11,16 @@ const data = [
     ChannelName: 'Team Alpha',
     UserID1: '123456789012345678',
     UserName1: 'Alice',
+    Role1: 'Mentor',
     UserID2: '234567890123456789',
     UserName2: 'Bob',
+    Role2: 'Mentee',
     UserID3: '345678901234567890',
     UserName3: 'Charlie',
+    Role3: 'Mentee',
     UserID4: '456789012345678901',
-    UserName4: 'David'
+    UserName4: 'David',
+    Role4: 'Mentee'
   }
 ];
 

@@ -1,0 +1,18 @@
+{
+  "name": "discord_bot",
+  "version": "1.0.0",
+  "description": "Discord Bot for ACellPortal",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "node --watch index.js",
+    "sync": "node sync_job.js",
+    "prefill": "node prefill.js"
+  },
+  "dependencies": {
+    "discord.js": "^14.14.1",
+    "dotenv": "^16.4.5",
+    "mongoose": "^8.2.1"
+  }
+}

@@ -5,6 +5,7 @@ import {
   deleteServer,
   getChannelsByServer,
   addChannel,
+  updateChannel,
   deleteChannel,
   bulkDeleteChannels,
   bulkAddChannels,
@@ -20,6 +21,7 @@ router.delete('/servers/:id', deleteServer);
 // --- Channel Routes ---
 router.get('/servers/:serverId/channels', getChannelsByServer);
 router.post('/channels', addChannel);
+router.put('/channels/:id', updateChannel);
 router.delete('/channels/:id', deleteChannel);
 router.post('/channels/bulk-delete', bulkDeleteChannels);
 router.post('/channels/bulk-add', bulkAddChannels);

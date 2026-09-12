@@ -93,6 +93,29 @@ export const addChannel = async (req, res) => {
   }
 };
 
+// Update a single channel (edit name, members, roles)
+export const updateChannel = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { channelName, members } = req.body;
+    
+    const updatedChannel = await DiscordChannel.findByIdAndUpdate(
+      id,
+      { channelName, members },
+      { new: true, runValidators: true }
+    );
+    
+    if (!updatedChannel) {
+      return res.status(404).json({ success: false, message: 'Channel not found.' });
+    }
+    
+    res.status(200).json({ success: true, data: updatedChannel });
+  } catch (error) {
+    console.error('Error updating discord channel:', error);
+    res.status(500).json({ success: false, message: 'Server Error' });
+  }
+};
+
 // Delete a single channel
 export const deleteChannel = async (req, res) => {
   try {

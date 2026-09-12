@@ -7,6 +7,11 @@ const memberSchema = new mongoose.Schema({
   },
   username: {
     type: String,
+  },
+  role: {
+    type: String,
+    enum: ['mentor', 'mentee'],
+    default: 'mentee',
   }
 }, { _id: false });
 
@@ -18,6 +23,9 @@ const DiscordChannelSchema = new mongoose.Schema(
       required: true,
     },
     channelName: {
+      type: String,
+    },
+    discordChannelId: {
       type: String,
     },
     members: [memberSchema],
