@@ -177,14 +177,17 @@ const DiscordPanel = () => {
           for (let i = 1; i <= 20; i++) {
             const userId = row[`UserID${i}`] || row[`UserId${i}`] || row[`userid${i}`];
             const username = row[`UserName${i}`] || row[`Username${i}`] || row[`username${i}`];
+            const email = row[`Email${i}`] || row[`email${i}`];
             const role = row[`Role${i}`] || row[`role${i}`];
             
-            if (userId) {
+            if (username || email || userId) {
               const assignedRole = (role && role.toString().toLowerCase() === 'mentor') ? 'mentor' : 'mentee';
               members.push({
-                userId: String(userId),
+                userId: userId ? String(userId) : '',
                 username: username ? String(username) : '',
-                role: assignedRole
+                email: email ? String(email) : '',
+                role: assignedRole,
+                status: 'pending'
               });
             }
           }
@@ -223,7 +226,7 @@ const DiscordPanel = () => {
   };
 
   const addMemberField = () => {
-    setChannelForm({ ...channelForm, members: [...channelForm.members, { userId: "", username: "" }] });
+    setChannelForm({ ...channelForm, members: [...channelForm.members, { userId: "", username: "", email: "", role: "mentee", status: "pending" }] });
   };
 
   return (
@@ -361,7 +364,8 @@ const DiscordPanel = () => {
                               }`}
                               title={member.role === 'mentor' ? 'Mentor (Admin)' : 'Mentee'}
                             >
-                              {member.username || member.userId}
+                              <div className={`w-2 h-2 rounded-full ${member.status === 'joined' ? 'bg-green-500' : 'bg-orange-400'}`} title={member.status === 'joined' ? 'Joined' : 'Pending Invite'} />
+                              {member.username || member.email || member.userId}
                               {member.role === 'mentor' && ' 👑'}
                             </span>
                           ))}
@@ -457,21 +461,27 @@ const DiscordPanel = () => {
                   </div>
                   
                   {channelForm.members.map((member, i) => (
-                    <div key={i} className="flex gap-2 mb-2 items-center">
+                    <div key={i} className="flex gap-2 mb-2 items-center flex-wrap">
                       <input 
-                        type="text" 
-                        required
-                        value={member.userId} 
-                        onChange={e => handleMemberChange(i, 'userId', e.target.value)} 
-                        className="w-1/3 p-2 border border-slate-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm" 
-                        placeholder="User ID *" 
+                        type="email" 
+                        value={member.email || ''} 
+                        onChange={e => handleMemberChange(i, 'email', e.target.value)} 
+                        className="flex-1 min-w-[150px] p-2 border border-slate-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm" 
+                        placeholder="Email" 
                       />
                       <input 
                         type="text" 
-                        value={member.username} 
+                        value={member.username || ''} 
                         onChange={e => handleMemberChange(i, 'username', e.target.value)} 
-                        className="w-1/3 p-2 border border-slate-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm" 
-                        placeholder="Username (Opt)" 
+                        className="flex-1 min-w-[120px] p-2 border border-slate-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm" 
+                        placeholder="Username" 
+                      />
+                      <input 
+                        type="text" 
+                        value={member.userId || ''} 
+                        onChange={e => handleMemberChange(i, 'userId', e.target.value)} 
+                        className="flex-1 min-w-[120px] p-2 border border-slate-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm" 
+                        placeholder="User ID (Opt)" 
                       />
                       <select 
                         value={member.role || 'mentee'} 
@@ -528,35 +538,45 @@ const DiscordPanel = () => {
                 <div>
                   <div className="flex justify-between items-center mb-2">
                     <label className="block text-sm font-medium text-slate-700">Members Map</label>
-                    <button type="button" onClick={() => setEditChannelForm({...editChannelForm, members: [...editChannelForm.members, { userId: "", username: "", role: "mentee" }]})} className="text-xs text-blue-600 font-medium hover:underline flex items-center gap-1">
+                    <button type="button" onClick={() => setEditChannelForm({...editChannelForm, members: [...editChannelForm.members, { userId: "", username: "", email: "", role: "mentee", status: "pending" }]})} className="text-xs text-blue-600 font-medium hover:underline flex items-center gap-1">
                       <Plus size={14} /> Add Member
                     </button>
                   </div>
                   
                   {editChannelForm.members.map((member, i) => (
-                    <div key={i} className="flex gap-2 mb-2 items-center">
+                    <div key={i} className="flex gap-2 mb-2 items-center flex-wrap">
                       <input 
-                        type="text" 
-                        required
-                        value={member.userId} 
+                        type="email" 
+                        value={member.email || ''} 
                         onChange={e => {
                           const newMembers = [...editChannelForm.members];
-                          newMembers[i].userId = e.target.value;
+                          newMembers[i].email = e.target.value;
                           setEditChannelForm({...editChannelForm, members: newMembers});
                         }} 
-                        className="w-1/3 p-2 border border-slate-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm" 
-                        placeholder="User ID *" 
+                        className="flex-1 min-w-[150px] p-2 border border-slate-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm" 
+                        placeholder="Email" 
                       />
                       <input 
                         type="text" 
-                        value={member.username} 
+                        value={member.username || ''} 
                         onChange={e => {
                           const newMembers = [...editChannelForm.members];
                           newMembers[i].username = e.target.value;
                           setEditChannelForm({...editChannelForm, members: newMembers});
                         }} 
-                        className="w-1/3 p-2 border border-slate-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm" 
-                        placeholder="Username (Opt)" 
+                        className="flex-1 min-w-[120px] p-2 border border-slate-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm" 
+                        placeholder="Username" 
+                      />
+                      <input 
+                        type="text" 
+                        value={member.userId || ''} 
+                        onChange={e => {
+                          const newMembers = [...editChannelForm.members];
+                          newMembers[i].userId = e.target.value;
+                          setEditChannelForm({...editChannelForm, members: newMembers});
+                        }} 
+                        className="flex-1 min-w-[120px] p-2 border border-slate-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm" 
+                        placeholder="User ID (Opt)" 
                       />
                       <select 
                         value={member.role || 'mentee'} 

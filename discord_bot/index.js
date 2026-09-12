@@ -1,11 +1,17 @@
 import dotenv from 'dotenv';
+import path from 'path';
+import { fileURLToPath } from 'url';
 import { Client, GatewayIntentBits, Events, PermissionsBitField, OverwriteType } from 'discord.js';
 import DiscordServer from '../server/models/DiscordServer_model.js';
 import DiscordChannel from '../server/models/DiscordChannel_model.js';
+import EmailQueue from '../server/models/EmailQueue_model.js';
 
-dotenv.config();
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+dotenv.config({ path: path.join(__dirname, '.env') });
 if (!process.env.MONGODB_LINK) {
-    dotenv.config({ path: '../server/.env' });
+    dotenv.config({ path: path.join(__dirname, '../server/.env') });
 }
 
 const mongoose = DiscordServer.base;
@@ -15,6 +21,7 @@ const client = new Client({
         GatewayIntentBits.Guilds,
         GatewayIntentBits.GuildMessages,
         GatewayIntentBits.MessageContent,
+        GatewayIntentBits.GuildMembers,
     ],
 });
 
@@ -37,10 +44,12 @@ function buildPermissionOverwrites(guild, members) {
     const permissionOverwrites = [
         {
             id: guild.roles.everyone.id, 
+            type: OverwriteType.Role,
             deny: [PermissionsBitField.Flags.ViewChannel],
         },
         {
             id: client.user.id, 
+            type: OverwriteType.Member,
             allow: [PermissionsBitField.Flags.ViewChannel, PermissionsBitField.Flags.SendMessages, PermissionsBitField.Flags.ManageChannels, PermissionsBitField.Flags.ManageRoles],
         }
     ];
@@ -60,6 +69,7 @@ function buildPermissionOverwrites(guild, members) {
 
             permissionOverwrites.push({
                 id: member.userId,
+                type: OverwriteType.Member,
                 allow: allowFlags,
             });
         } else if (member.userId) {
@@ -70,105 +80,107 @@ function buildPermissionOverwrites(guild, members) {
 }
 
 // ==========================================
-// DATABASE -> DISCORD SYNC (CHANGE STREAMS)
+// DB -> DISCORD SYNC (WEBHOOK LISTENER)
 // ==========================================
-async function setupDatabaseListeners() {
-    console.log("🎧 Starting MongoDB Change Streams...");
-    
-    DiscordChannel.watch().on('change', async (change) => {
-        try {
-            if (change.operationType === 'insert') {
-                const dbChannel = change.fullDocument;
-                if (dbChannel.discordChannelId) return; // Already has ID, ignore
+import express from 'express';
+const app = express();
 
-                const server = await DiscordServer.findById(dbChannel.server);
-                if (!server) return;
+app.post('/api/sync', (req, res) => {
+    console.log("⚡ Received instant sync trigger from Admin Panel!");
+    syncChannels();
+    res.sendStatus(200);
+});
 
-                const guild = client.guilds.cache.get(server.serverId);
-                if (!guild) return;
-
-                const channelName = dbChannel.channelName || `team-channel-${dbChannel._id.toString().slice(-4)}`;
-                const permissionOverwrites = buildPermissionOverwrites(guild, dbChannel.members);
-
-                console.log(`[DB->Discord] Creating channel: ${channelName}`);
-                try {
-                    const newDiscordChannel = await guild.channels.create({
-                        name: channelName,
-                        type: 0,
-                        permissionOverwrites,
-                    });
-
-                    lockAction(newDiscordChannel.id); // Prevent discord event from re-triggering DB update
-                    
-                    // Save ID back to DB
-                    await DiscordChannel.findByIdAndUpdate(dbChannel._id, { discordChannelId: newDiscordChannel.id });
-                    unlockAction(newDiscordChannel.id);
-                } catch (createErr) {
-                    console.error(`❌ [DB->Discord] Failed to create channel "${channelName}". It might have invalid User IDs or the bot lacks permissions:`, createErr.message);
-                    await DiscordChannel.findByIdAndDelete(dbChannel._id);
-                    console.log(`🗑️ [DB->Discord] Auto-deleted failed channel "${channelName}" from database.`);
-                }
+app.delete('/api/channels/:id', async (req, res) => {
+    try {
+        const channelId = req.params.id;
+        for (const guild of client.guilds.cache.values()) {
+            const channel = guild.channels.cache.get(channelId);
+            if (channel) {
+                lockAction(channel.id);
+                await channel.delete();
+                unlockAction(channel.id);
+                console.log(`[Webhook] Successfully deleted channel ${channel.name} from Discord.`);
+                return res.sendStatus(200);
             }
-            else if (change.operationType === 'update') {
-                const dbChannel = await DiscordChannel.findById(change.documentKey._id).populate('server');
-                if (!dbChannel || !dbChannel.discordChannelId) return;
-
-                const server = await DiscordServer.findById(dbChannel.server);
-                if (!server) return;
-
-                const guild = client.guilds.cache.get(server.serverId);
-                if (!guild) return;
-
-                const discordChannel = guild.channels.cache.get(dbChannel.discordChannelId);
-                if (!discordChannel) return;
-
-                lockAction(discordChannel.id);
-                console.log(`[DB->Discord] Updating channel: ${discordChannel.name}`);
-                
-                if (change.updateDescription.updatedFields.channelName) {
-                    await discordChannel.setName(dbChannel.channelName);
-                }
-
-                if (change.updateDescription.updatedFields.members || Object.keys(change.updateDescription.updatedFields).some(k => k.startsWith('members'))) {
-                    const permissionOverwrites = buildPermissionOverwrites(guild, dbChannel.members);
-                    try {
-                        await discordChannel.permissionOverwrites.set(permissionOverwrites);
-                    } catch (updateErr) {
-                        console.error(`❌ [DB->Discord] Failed to update permissions for "${discordChannel.name}". It might have invalid User IDs:`, updateErr.message);
-                    }
-                }
-                unlockAction(discordChannel.id);
-            }
-            else if (change.operationType === 'delete') {
-                console.log(`[DB->Discord] Channel deleted from DB. Triggering sync to clean Discord.`);
-                syncChannels();
-            }
-        } catch (error) {
-            console.error("Error in DB Change Stream:", error);
         }
-    });
-}
+        res.sendStatus(404);
+    } catch (err) {
+        console.error("Failed to delete channel via webhook:", err);
+        res.status(500).send(err.message);
+    }
+});
+
+app.listen(3001, () => {
+    console.log('🎧 Bot Webhook Listener started on port 3001');
+});
 
 // ==========================================
 // DISCORD -> DATABASE SYNC (DISCORD EVENTS)
 // ==========================================
 
+client.on(Events.GuildMemberAdd, async (member) => {
+    try {
+        console.log(`[Auto-Onboarding] User joined server: ${member.user.username}`);
+        
+        // Find channels where this user is pending
+        const channels = await DiscordChannel.find({
+            'members.username': member.user.username,
+            'members.status': 'pending'
+        });
+
+        if (channels.length === 0) {
+            console.log(`[Auto-Onboarding] No pending channels found for ${member.user.username}`);
+            return;
+        }
+
+        console.log(`[Auto-Onboarding] Found ${channels.length} pending channels for ${member.user.username}. Auto-Resolving ID...`);
+
+        // Update DB and re-sync their permissions
+        for (const ch of channels) {
+            const memberIndex = ch.members.findIndex(m => m.username === member.user.username && m.status === 'pending');
+            if (memberIndex !== -1) {
+                ch.members[memberIndex].userId = member.user.id;
+                ch.members[memberIndex].status = 'joined';
+                await ch.save();
+                
+                // Trigger Permission Sync
+                const discordChannel = member.guild.channels.cache.get(ch.discordChannelId);
+                if (discordChannel) {
+                    lockAction(discordChannel.id);
+                    const permissionOverwrites = buildPermissionOverwrites(member.guild, ch.members);
+                    await discordChannel.permissionOverwrites.set(permissionOverwrites);
+                    unlockAction(discordChannel.id);
+                    console.log(`[Auto-Onboarding] Successfully assigned ${member.user.username} to #${discordChannel.name}`);
+                }
+            }
+        }
+    } catch (err) {
+        console.error("Error in GuildMemberAdd Auto-Onboarding:", err);
+    }
+});
+
 client.on(Events.ChannelCreate, async (channel) => {
-    if (recentBotActions.has(channel.id) || channel.type !== 0) return;
-    console.log(`[Discord->DB] Manual channel created: ${channel.name}`);
+    if (channel.type !== 0) return;
     
-    const server = await DiscordServer.findOne({ serverId: channel.guild.id });
-    if (!server) return;
+    // Delay 2000ms to allow DB save, but check BOTH id and name for locks
+    setTimeout(async () => {
+        if (recentBotActions.has(channel.id) || recentBotActions.has(channel.name)) return;
+        
+        const server = await DiscordServer.findOne({ serverId: channel.guild.id });
+        if (!server) return;
 
-    const existing = await DiscordChannel.findOne({ discordChannelId: channel.id });
-    if (existing) return;
+        const existing = await DiscordChannel.findOne({ discordChannelId: channel.id });
+        if (existing) return;
 
-    await DiscordChannel.create({
-        server: server._id,
-        channelName: channel.name,
-        discordChannelId: channel.id,
-        members: []
-    });
+        console.log(`[Discord->DB] Manual channel created: ${channel.name}`);
+        await DiscordChannel.create({
+            server: server._id,
+            channelName: channel.name,
+            discordChannelId: channel.id,
+            members: []
+        });
+    }, 2000);
 });
 
 client.on(Events.ChannelDelete, async (channel) => {
@@ -210,8 +222,18 @@ client.on(Events.ChannelUpdate, async (oldChannel, newChannel) => {
         newMembersList.push({
             userId,
             username: existingMember ? existingMember.username : '',
+            email: existingMember ? existingMember.email : '',
+            status: existingMember ? existingMember.status : 'joined',
             role
         });
+    }
+
+    // Preserve any 'pending' members that Discord doesn't know about yet
+    const pendingMembers = dbChannel.members.filter(m => m.status === 'pending');
+    for (const pm of pendingMembers) {
+        if (!newMembersList.find(m => m.username === pm.username)) {
+            newMembersList.push(pm);
+        }
     }
 
     dbChannel.members = newMembersList;
@@ -237,6 +259,90 @@ async function syncChannels() {
             if (!guild) continue;
 
             const dbChannels = await DiscordChannel.find({ server: server._id });
+
+            // Retroactive Auto-Resolve: If a pending user is *already* in the server, resolve them immediately!
+            try {
+                // Only fetch from API if there are actually pending members to avoid rate limits
+                const hasPending = dbChannels.some(ch => ch.members.some(m => m.status === 'pending'));
+                if (hasPending) {
+                    try { await guild.members.fetch(); } catch (e) { /* ignore rate limits and use local cache */ }
+                }
+                
+                for (const dbChannel of dbChannels) {
+                    let channelModified = false;
+                    
+                    // 1. Sanitize invalid usernames and user IDs provided via Excel/UI
+                    const validMembersMap = new Map();
+                    for (const member of dbChannel.members) {
+                        let isInvalid = false;
+                        
+                        if (member.userId && !/^\d{17,20}$/.test(member.userId)) {
+                            console.log(`⚠️ Removing invalid User ID from DB: "${member.userId}" for ${member.username}`);
+                            isInvalid = true;
+                        }
+
+                        if (member.username) {
+                            // Discord usernames: 2-32 chars, no spaces, no special characters (except _ and .)
+                            const isValidUsername = /^[a-zA-Z0-9_.]{2,32}$/.test(member.username);
+                            if (!isValidUsername) {
+                                console.log(`⚠️ Removing invalid Discord Username format from DB: "${member.username}"`);
+                                isInvalid = true;
+                            }
+                            // Always store as lowercase since Discord usernames are strictly lowercase now
+                            member.username = member.username.toLowerCase();
+                        } else if (!member.userId) {
+                            isInvalid = true; // No username and no ID is useless
+                        }
+
+                        if (isInvalid) {
+                            // Delete their email from queue so we don't send rubbish
+                            try {
+                                if (member.email) {
+                                    await EmailQueue.deleteMany({ recipientEmail: member.email, channelName: dbChannel.channelName, status: 'pending' });
+                                }
+                            } catch (e) {}
+                            channelModified = true;
+                            continue; // Skip adding to validMembersMap
+                        }
+                        
+                        // Deduplicate members by username, prioritizing the 'mentor' role
+                        if (validMembersMap.has(member.username)) {
+                            const existing = validMembersMap.get(member.username);
+                            if (member.role === 'mentor') {
+                                existing.role = 'mentor';
+                            }
+                            if (!existing.userId && member.userId) {
+                                existing.userId = member.userId;
+                            }
+                            channelModified = true; // Merged a duplicate, so DB changed
+                        } else {
+                            validMembersMap.set(member.username, member);
+                        }
+                    }
+                    dbChannel.members = Array.from(validMembersMap.values());
+
+                    // 2. Retroactive Auto-Resolve
+                    for (const member of dbChannel.members) {
+                        if (member.status === 'pending' && member.username) {
+                            // Find them by username in the server
+                            const foundDiscordUser = guild.members.cache.find(m => m.user.username === member.username);
+                            if (foundDiscordUser) {
+                                console.log(`[Auto-Onboarding] Retroactively resolved ${member.username} (already in server)`);
+                                member.userId = foundDiscordUser.id;
+                                member.status = 'joined';
+                                channelModified = true;
+                            }
+                        }
+                    }
+                    if (channelModified) {
+                        dbChannel.markModified('members');
+                        await dbChannel.save();
+                    }
+                }
+            } catch (err) {
+                console.error("Error retroactively resolving members:", err);
+            }
+
             const activeDiscordChannelIds = new Set(guild.channels.cache.filter(c => c.type === 0).keys());
 
             for (const [id, channel] of guild.channels.cache.filter(c => c.type === 0)) {
@@ -258,9 +364,23 @@ async function syncChannels() {
                     const permissionOverwrites = buildPermissionOverwrites(guild, dbChannel.members);
 
                     try {
+                        // Pre-lock the channel name because the WebSocket event arrives before the HTTP request returns the ID!
+                        lockAction(channelName);
+                        
+                        // Find or create a category to keep channels organized
+                        const categoryName = 'Private Channels';
+                        let category = guild.channels.cache.find(c => c.type === 4 && c.name.toLowerCase() === categoryName.toLowerCase());
+                        if (!category) {
+                            category = await guild.channels.create({
+                                name: categoryName,
+                                type: 4 // Category type
+                            });
+                        }
+                        
                         const newChannel = await guild.channels.create({
                             name: channelName,
                             type: 0,
+                            parent: category.id,
                             permissionOverwrites,
                         });
                         
@@ -272,7 +392,14 @@ async function syncChannels() {
                     } catch (createErr) {
                         console.error(`❌ [Sync] Failed to create channel "${channelName}":`, createErr.message);
                         await DiscordChannel.findByIdAndDelete(dbChannel._id);
-                        console.log(`🗑️ [Sync] Auto-deleted failed channel "${channelName}" from database.`);
+                        
+                        // Clean up any pending emails for this failed channel to prevent false notifications
+                        try {
+                            const emailsDeleted = await EmailQueue.deleteMany({ channelName: channelName, status: 'pending' });
+                            console.log(`🗑️ [Sync] Auto-deleted failed channel "${channelName}" and ${emailsDeleted.deletedCount} pending emails from database.`);
+                        } catch (e) {
+                            console.error("Failed to cleanup emails for failed channel", e);
+                        }
                     }
                 } else if (!activeDiscordChannelIds.has(dbChannel.discordChannelId)) {
                     console.log(`[Sync] Channel missing from Discord. Deleting from DB: ${dbChannel.channelName}`);
@@ -290,6 +417,7 @@ async function syncChannels() {
                         }
                         
                         if (dbChannel.channelName && discordChannel.name !== dbChannel.channelName) {
+                            lockAction(discordChannel.id);
                             await discordChannel.setName(dbChannel.channelName);
                         }
                         unlockAction(discordChannel.id);
@@ -311,7 +439,6 @@ mongoose.connect(process.env.MONGODB_LINK || process.env.MONGO_URI || "mongodb:/
     useUnifiedTopology: true,
 }).then(() => {
     console.log('Bot connected to MongoDB successfully.');
-    setupDatabaseListeners();
 }).catch((err) => console.error('MongoDB connection error', err));
 
 client.once(Events.ClientReady, (readyClient) => {

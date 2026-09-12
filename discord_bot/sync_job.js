@@ -1,12 +1,17 @@
 import dotenv from 'dotenv';
+import path from 'path';
+import { fileURLToPath } from 'url';
 import { Client, GatewayIntentBits, OverwriteType } from 'discord.js';
 import DiscordServer from '../server/models/DiscordServer_model.js';
 import DiscordChannel from '../server/models/DiscordChannel_model.js';
 
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
 // Load environment variables (.env in bot folder first, fallback to server folder)
-dotenv.config();
+dotenv.config({ path: path.join(__dirname, '.env') });
 if (!process.env.BOT_TOKEN) {
-    dotenv.config({ path: '../server/.env' });
+    dotenv.config({ path: path.join(__dirname, '../server/.env') });
 }
 
 // Ensure we use the exact same mongoose instance as the models

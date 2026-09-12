@@ -15,6 +15,7 @@ import discordRoutes from "./routes/discord.routes.js";
 // Optional: if you have other grouped routes
 import allRoutes from "./routes/index.js";
 import { getAlumniContributions } from './controllers/alumniContributionController.js';
+import { startEmailDispatcher } from './services/emailDispatcher.js';
 
 const app = express();
 
@@ -67,7 +68,10 @@ mongoose
     useNewUrlParser: true,
     useUnifiedTopology: true,
   })
-  .then(() => console.log('Connected to MongoDB successfully.'))
+  .then(() => {
+    console.log('Connected to MongoDB successfully.');
+    startEmailDispatcher();
+  })
   .catch((err) => console.error('MongoDB connection error', err));
 
 // Start server

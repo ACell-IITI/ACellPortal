@@ -3,15 +3,23 @@ import mongoose from 'mongoose';
 const memberSchema = new mongoose.Schema({
   userId: {
     type: String,
-    required: true,
+    // No longer required, as it will be auto-resolved when they join via invite
   },
   username: {
+    type: String,
+  },
+  email: {
     type: String,
   },
   role: {
     type: String,
     enum: ['mentor', 'mentee'],
     default: 'mentee',
+  },
+  status: {
+    type: String,
+    enum: ['pending', 'joined'],
+    default: 'pending'
   }
 }, { _id: false });
 
