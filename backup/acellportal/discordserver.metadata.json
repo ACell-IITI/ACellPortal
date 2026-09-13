@@ -1,1 +1,0 @@
-{"indexes":[{"v":{"$numberInt":"2"},"key":{"_id":{"$numberInt":"1"}},"name":"_id_"},{"v":{"$numberInt":"2"},"key":{"serverId":{"$numberInt":"1"}},"name":"serverId_1","unique":true}],"uuid":"9146946b36404a3b9fc2e7363f8c4569","collectionName":"discordserver","type":"collection"}
