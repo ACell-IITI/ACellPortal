@@ -43,12 +43,12 @@ const unlockAction = (id) => {
 function buildPermissionOverwrites(guild, members) {
     const permissionOverwrites = [
         {
-            id: guild.roles.everyone.id, 
+            id: guild.roles.everyone.id,
             type: OverwriteType.Role,
             deny: [PermissionsBitField.Flags.ViewChannel],
         },
         {
-            id: client.user.id, 
+            id: client.user.id,
             type: OverwriteType.Member,
             allow: [PermissionsBitField.Flags.ViewChannel, PermissionsBitField.Flags.SendMessages, PermissionsBitField.Flags.ManageChannels, PermissionsBitField.Flags.ManageRoles],
         }
@@ -57,11 +57,11 @@ function buildPermissionOverwrites(guild, members) {
     for (const member of members) {
         // Validate Discord Snowflake format (17-20 digits)
         const isValidSnowflake = /^\d{17,20}$/.test(member.userId);
-        
+
         if (member.userId && isValidSnowflake) {
             const isMentor = member.role === 'mentor';
             const allowFlags = [PermissionsBitField.Flags.ViewChannel, PermissionsBitField.Flags.SendMessages];
-            
+
             if (isMentor) {
                 allowFlags.push(PermissionsBitField.Flags.ManageChannels);
                 allowFlags.push(PermissionsBitField.Flags.ManageMessages);
@@ -91,6 +91,43 @@ app.post('/api/sync', (req, res) => {
     res.sendStatus(200);
 });
 
+app.get('/api/invite/:serverId', async (req, res) => {
+    try {
+        const serverId = req.params.serverId;
+        let guild;
+        if (serverId && serverId !== 'default' && serverId !== 'undefined') {
+            const dbServer = await DiscordServer.findById(serverId);
+            if (dbServer) {
+                guild = client.guilds.cache.get(dbServer.serverId);
+            }
+        }
+        
+        if (!guild) {
+            guild = client.guilds.cache.first();
+        }
+        
+        if (!guild) return res.status(404).json({ error: 'No guild found' });
+
+        let channel = guild.systemChannel;
+        if (!channel) channel = guild.channels.cache.find(c => c.name.toLowerCase().includes('welcome') && c.type === 0);
+        if (!channel) channel = guild.channels.cache.find(c => c.type === 0);
+
+        if (!channel) return res.status(404).json({ error: 'No suitable channel found' });
+
+        const invites = await channel.fetchInvites();
+        let invite = invites.find(i => i.inviter && i.inviter.id === client.user.id && i.maxAge === 0);
+
+        if (!invite) {
+            invite = await channel.createInvite({ maxAge: 0, maxUses: 0 });
+        }
+
+        res.json({ inviteLink: invite.url });
+    } catch (err) {
+        console.error("Failed to generate invite via webhook:", err);
+        res.status(500).json({ error: err.message });
+    }
+});
+
 app.delete('/api/channels/:id', async (req, res) => {
     try {
         const channelId = req.params.id;
@@ -114,7 +151,7 @@ app.delete('/api/channels/:id', async (req, res) => {
     }
 });
 
-app.listen(3001, () => {
+app.listen(3001, '0.0.0.0', () => {
     console.log('🎧 Bot Webhook Listener started on port 3001');
 });
 
@@ -125,7 +162,7 @@ app.listen(3001, () => {
 client.on(Events.GuildMemberAdd, async (member) => {
     try {
         console.log(`[Auto-Onboarding] User joined server: ${member.user.username}`);
-        
+
         // Find channels where this user is pending
         const channels = await DiscordChannel.find({
             'members.username': member.user.username,
@@ -146,7 +183,7 @@ client.on(Events.GuildMemberAdd, async (member) => {
                 ch.members[memberIndex].userId = member.user.id;
                 ch.members[memberIndex].status = 'joined';
                 await ch.save();
-                
+
                 // Trigger Permission Sync
                 const discordChannel = member.guild.channels.cache.get(ch.discordChannelId);
                 if (discordChannel) {
@@ -165,11 +202,11 @@ client.on(Events.GuildMemberAdd, async (member) => {
 
 client.on(Events.ChannelCreate, async (channel) => {
     if (channel.type !== 0) return;
-    
+
     // Delay 2000ms to allow DB save, but check BOTH id and name for locks
     setTimeout(async () => {
         if (recentBotActions.has(channel.id) || recentBotActions.has(channel.name)) return;
-        
+
         const server = await DiscordServer.findOne({ serverId: channel.guild.id });
         if (!server) return;
 
@@ -189,13 +226,13 @@ client.on(Events.ChannelCreate, async (channel) => {
 client.on(Events.ChannelDelete, async (channel) => {
     if (recentBotActions.has(channel.id) || channel.type !== 0) return;
     console.log(`[Discord->DB] Manual channel deleted: ${channel.name}`);
-    
+
     await DiscordChannel.findOneAndDelete({ discordChannelId: channel.id });
 });
 
 client.on(Events.ChannelUpdate, async (oldChannel, newChannel) => {
     if (recentBotActions.has(newChannel.id) || newChannel.type !== 0) return;
-    
+
     const dbChannel = await DiscordChannel.findOne({ discordChannelId: newChannel.id });
     if (!dbChannel) return;
 
@@ -208,7 +245,7 @@ client.on(Events.ChannelUpdate, async (oldChannel, newChannel) => {
     }
 
     const membersMap = new Map(); // userId -> role
-    
+
     newChannel.permissionOverwrites.cache.forEach(overwrite => {
         if (overwrite.type === OverwriteType.Member && overwrite.id !== client.user.id) {
             const hasView = overwrite.allow.has(PermissionsBitField.Flags.ViewChannel);
@@ -270,15 +307,15 @@ async function syncChannels() {
                 if (hasPending) {
                     try { await guild.members.fetch(); } catch (e) { /* ignore rate limits and use local cache */ }
                 }
-                
+
                 for (const dbChannel of dbChannels) {
                     let channelModified = false;
-                    
+
                     // 1. Sanitize invalid usernames and user IDs provided via Excel/UI
                     const validMembersMap = new Map();
                     for (const member of dbChannel.members) {
                         let isInvalid = false;
-                        
+
                         if (member.userId && !/^\d{17,20}$/.test(member.userId)) {
                             console.log(`⚠️ Removing invalid User ID from DB: "${member.userId}" for ${member.username}`);
                             isInvalid = true;
@@ -303,11 +340,11 @@ async function syncChannels() {
                                 if (member.email) {
                                     await EmailQueue.deleteMany({ recipientEmail: member.email, channelName: dbChannel.channelName, status: 'pending' });
                                 }
-                            } catch (e) {}
+                            } catch (e) { }
                             channelModified = true;
                             continue; // Skip adding to validMembersMap
                         }
-                        
+
                         // Deduplicate members by username, prioritizing the 'mentor' role
                         if (validMembersMap.has(member.username)) {
                             const existing = validMembersMap.get(member.username);
@@ -346,12 +383,24 @@ async function syncChannels() {
                 console.error("Error retroactively resolving members:", err);
             }
 
-            const activeDiscordChannelIds = new Set(guild.channels.cache.filter(c => c.type === 0).keys());
+            // Find or create the Private Channels category first so we can restrict syncing to it
+            const categoryName = 'Private Channels';
+            let category = guild.channels.cache.find(c => c.type === 4 && c.name.toLowerCase() === categoryName.toLowerCase());
+            if (!category) {
+                category = await guild.channels.create({
+                    name: categoryName,
+                    type: 4 // Category type
+                });
+            }
 
-            for (const [id, channel] of guild.channels.cache.filter(c => c.type === 0)) {
+            const activeDiscordChannelIds = new Set(
+                guild.channels.cache.filter(c => c.type === 0 && c.parentId === category.id).keys()
+            );
+
+            for (const [id, channel] of guild.channels.cache.filter(c => c.type === 0 && c.parentId === category.id)) {
                 const inDb = dbChannels.find(dbC => dbC.discordChannelId === id);
                 if (!inDb) {
-                    console.log(`[Sync] Found orphaned Discord channel ${channel.name}, adding to DB.`);
+                    console.log(`[Sync] Found orphaned Private channel ${channel.name}, adding to DB.`);
                     await DiscordChannel.create({
                         server: server._id,
                         channelName: channel.name,
@@ -369,24 +418,17 @@ async function syncChannels() {
                     try {
                         // Pre-lock the channel name because the WebSocket event arrives before the HTTP request returns the ID!
                         lockAction(channelName);
-                        
+
                         // Find or create a category to keep channels organized
-                        const categoryName = 'Private Channels';
-                        let category = guild.channels.cache.find(c => c.type === 4 && c.name.toLowerCase() === categoryName.toLowerCase());
-                        if (!category) {
-                            category = await guild.channels.create({
-                                name: categoryName,
-                                type: 4 // Category type
-                            });
-                        }
-                        
+                        // (Category is already guaranteed to exist from the sync initialization)
+
                         const newChannel = await guild.channels.create({
                             name: channelName,
                             type: 0,
                             parent: category.id,
                             permissionOverwrites,
                         });
-                        
+
                         lockAction(newChannel.id);
                         dbChannel.discordChannelId = newChannel.id;
                         await dbChannel.save();
@@ -395,7 +437,7 @@ async function syncChannels() {
                     } catch (createErr) {
                         console.error(`❌ [Sync] Failed to create channel "${channelName}":`, createErr.message);
                         await DiscordChannel.findByIdAndDelete(dbChannel._id);
-                        
+
                         // Clean up any pending emails for this failed channel to prevent false notifications
                         try {
                             const emailsDeleted = await EmailQueue.deleteMany({ channelName: channelName, status: 'pending' });
@@ -412,13 +454,13 @@ async function syncChannels() {
                     if (discordChannel) {
                         lockAction(discordChannel.id);
                         const permissionOverwrites = buildPermissionOverwrites(guild, dbChannel.members);
-                        
+
                         try {
                             await discordChannel.permissionOverwrites.set(permissionOverwrites);
                         } catch (updateErr) {
                             console.error(`❌ [Sync] Failed to update permissions for "${discordChannel.name}":`, updateErr.message);
                         }
-                        
+
                         if (dbChannel.channelName && discordChannel.name !== dbChannel.channelName) {
                             lockAction(discordChannel.id);
                             await discordChannel.setName(dbChannel.channelName);
@@ -446,7 +488,7 @@ mongoose.connect(process.env.MONGODB_LINK || process.env.MONGO_URI || "mongodb:/
 
 client.once(Events.ClientReady, (readyClient) => {
     console.log(`Ready! Logged in as ${readyClient.user.tag}`);
-    syncChannels(); 
+    syncChannels();
 });
 
 const token = process.env.BOT_TOKEN;

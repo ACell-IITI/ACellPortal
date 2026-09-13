@@ -122,8 +122,18 @@ export async function runManualSync() {
             // Fetch all channels in the guild
             const guildChannels = await guild.channels.fetch();
             
-            // Only care about Text Channels (type 0)
-            const textChannels = guildChannels.filter(c => c && c.type === 0);
+            // Find or create the Private Channels category first so we can restrict syncing to it
+            const categoryName = 'Private Channels';
+            let category = guild.channels.cache.find(c => c.type === 4 && c.name.toLowerCase() === categoryName.toLowerCase());
+            if (!category) {
+                category = await guild.channels.create({
+                    name: categoryName,
+                    type: 4 // Category type
+                });
+            }
+
+            // Only care about Text Channels (type 0) inside the Private Channels category
+            const textChannels = guildChannels.filter(c => c && c.type === 0 && c.parentId === category.id);
             
             // Track which discord channel IDs we've seen on Discord
             const activeDiscordChannelIds = new Set();

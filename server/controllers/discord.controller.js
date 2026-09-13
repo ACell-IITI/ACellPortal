@@ -7,6 +7,18 @@ import axios from 'axios';
 const triggerBotSync = () => {
     axios.post('http://127.0.0.1:3001/api/sync').catch(err => console.log('Bot sync webhook unreachable (Bot might be offline)'));
 };
+
+const fetchInviteLink = async (serverId) => {
+    try {
+        const response = await axios.get(`http://127.0.0.1:3001/api/invite/${serverId || 'default'}`);
+        if (response.data && response.data.inviteLink) {
+            return response.data.inviteLink;
+        }
+    } catch (err) {
+        console.log("Failed to fetch invite link from bot:", err.message);
+    }
+    return process.env.DISCORD_INVITE_LINK || "https://discord.gg/your-invite-link";
+};
 // --- Discord Server Operations ---
 
 // Get all servers
@@ -95,7 +107,7 @@ export const addChannel = async (req, res) => {
     // Queue emails for pending members
     try {
       const emailTasks = [];
-      const inviteLink = process.env.DISCORD_INVITE_LINK || "https://discord.gg/your-invite-link";
+      const inviteLink = await fetchInviteLink(serverId);
       for (const member of members || []) {
         if (member.email && member.username && member.status !== 'joined') {
           const existingTask = await EmailQueue.findOne({ recipientEmail: member.email, status: 'pending' });
@@ -144,7 +156,7 @@ export const updateChannel = async (req, res) => {
     // Queue emails for pending members
     try {
       const emailTasks = [];
-      const inviteLink = process.env.DISCORD_INVITE_LINK || "https://discord.gg/your-invite-link";
+      const inviteLink = await fetchInviteLink(updatedChannel.server);
       for (const member of members || []) {
         if (member.email && member.username && member.status !== 'joined') {
           const existingTask = await EmailQueue.findOne({ recipientEmail: member.email, status: 'pending' });
@@ -263,7 +275,7 @@ export const bulkAddChannels = async (req, res) => {
     // Queue emails for pending members
     const emailTasks = [];
     try {
-      const inviteLink = process.env.DISCORD_INVITE_LINK || "https://discord.gg/your-invite-link";
+      const inviteLink = await fetchInviteLink(serverId);
       
       for (const ch of uniqueChannels) {
         for (const member of ch.members) {
