@@ -98,8 +98,11 @@ app.delete('/api/channels/:id', async (req, res) => {
             const channel = guild.channels.cache.get(channelId);
             if (channel) {
                 lockAction(channel.id);
-                await channel.delete();
-                unlockAction(channel.id);
+                try {
+                    await channel.delete();
+                } finally {
+                    unlockAction(channel.id);
+                }
                 console.log(`[Webhook] Successfully deleted channel ${channel.name} from Discord.`);
                 return res.sendStatus(200);
             }
