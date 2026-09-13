@@ -63,9 +63,12 @@ const sendInviteEmail = async (task) => {
 
 export const startEmailDispatcher = () => {
     console.log("📨 Starting Email Dispatcher Queue...");
+    let isDispatching = false;
     
     // Poll every 15 seconds
     setInterval(async () => {
+        if (isDispatching) return;
+        isDispatching = true;
         try {
             // Check if SMTP is configured, else skip to avoid crashing
             if (!process.env.MAIL_USERNAME || !process.env.MAIL_PASSWORD) {
@@ -102,6 +105,8 @@ export const startEmailDispatcher = () => {
             }
         } catch (error) {
             console.error("Error in Email Dispatcher:", error);
+        } finally {
+            isDispatching = false;
         }
     }, 15000); // 15 seconds
 };

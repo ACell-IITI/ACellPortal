@@ -289,7 +289,16 @@ client.on(Events.ChannelUpdate, async (oldChannel, newChannel) => {
 // ==========================================
 // FALLBACK SYNC (Runs on Startup)
 // ==========================================
+let isSyncing = false;
+let syncQueued = false;
+
 async function syncChannels() {
+    if (isSyncing) {
+        syncQueued = true;
+        console.log('--- Sync already in progress, queuing another sync for later ---');
+        return;
+    }
+    isSyncing = true;
     try {
         console.log('--- Starting Full Channel Sync ---');
         const servers = await DiscordServer.find();
@@ -473,6 +482,12 @@ async function syncChannels() {
         console.log('--- Finished Full Channel Sync ---');
     } catch (error) {
         console.error('Error during syncChannels:', error);
+    } finally {
+        isSyncing = false;
+        if (syncQueued) {
+            syncQueued = false;
+            setTimeout(syncChannels, 1000);
+        }
     }
 }
 
