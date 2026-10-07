@@ -40,7 +40,7 @@ const sendInviteEmail = async (task) => {
         subject: `You're invited to ACellPortal Discord as a ${task.role === 'mentor' ? 'Mentor (Admin)' : 'Mentee'}!`,
         html: `
             <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #e2e8f0; border-radius: 10px;">
-                <h2 style="color: #4f46e5;">Welcome to ACellPortal! 🚀</h2>
+                <h2 style="color: #4f46e5;">Welcome to ACellPortal!</h2>
                 <p>Hello <b>${task.username}</b>,</p>
                 <p>You have been assigned to the channel <b>#${task.channelName}</b> as a <b>${task.role}</b>.</p>
                 <p>To join your team and unlock your private channels, please click the invite link below. </p>

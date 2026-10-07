@@ -64,10 +64,7 @@ const mongodbLink = process.env.MONGO_URI || process.env.MONGODB_LINK || "mongod
 console.log('Mongo URI:', mongodbLink);
 
 mongoose
-  .connect(mongodbLink, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-  })
+  .connect(mongodbLink)
   .then(() => {
     console.log('Connected to MongoDB successfully.');
     startEmailDispatcher();

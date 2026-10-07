@@ -3,21 +3,24 @@ import DiscordChannel from '../models/DiscordChannel_model.js';
 import EmailQueue from '../models/EmailQueue_model.js';
 import xlsx from 'xlsx';
 import axios from 'axios';
+import { DISCORD_BOT_URL } from '../config/discord.config.js';
+
 
 const triggerBotSync = () => {
-    axios.post('http://127.0.0.1:3001/api/sync').catch(err => console.log('Bot sync webhook unreachable (Bot might be offline)'));
+  console.log(`[DEBUG] Attempting to trigger Bot Sync at: ${DISCORD_BOT_URL}/api/sync`);
+  axios.post(`${DISCORD_BOT_URL}/api/sync`).catch(err => console.log('Bot sync webhook error:', err.message, err.response?.status));
 };
 
 const fetchInviteLink = async (serverId) => {
-    try {
-        const response = await axios.get(`http://127.0.0.1:3001/api/invite/${serverId || 'default'}`);
-        if (response.data && response.data.inviteLink) {
-            return response.data.inviteLink;
-        }
-    } catch (err) {
-        console.log("Failed to fetch invite link from bot:", err.message);
+  try {
+    const response = await axios.get(`${DISCORD_BOT_URL}/api/invite/${serverId || 'default'}`);
+    if (response.data && response.data.inviteLink) {
+      return response.data.inviteLink;
     }
-    return process.env.DISCORD_INVITE_LINK || "https://discord.gg/your-invite-link";
+  } catch (err) {
+    console.log("Failed to fetch invite link from bot:", err.message);
+  }
+  return process.env.DISCORD_INVITE_LINK || "https://discord.gg/bZYzgB3xK";
 };
 // --- Discord Server Operations ---
 
@@ -36,7 +39,7 @@ export const getServers = async (req, res) => {
 export const addServer = async (req, res) => {
   try {
     const { serverName, serverId, description } = req.body;
-    
+
     if (!serverName || !serverId) {
       return res.status(400).json({ success: false, message: 'Server Name and Server ID are required.' });
     }
@@ -91,7 +94,7 @@ export const getChannelsByServer = async (req, res) => {
 export const addChannel = async (req, res) => {
   try {
     const { serverId, channelName, members } = req.body;
-    
+
     if (!serverId) {
       return res.status(400).json({ success: false, message: 'Server ID is required.' });
     }
@@ -142,17 +145,17 @@ export const updateChannel = async (req, res) => {
   try {
     const { id } = req.params;
     const { channelName, members } = req.body;
-    
+
     const updatedChannel = await DiscordChannel.findByIdAndUpdate(
       id,
       { channelName, members },
       { new: true, runValidators: true }
     );
-    
+
     if (!updatedChannel) {
       return res.status(404).json({ success: false, message: 'Channel not found.' });
     }
-    
+
     // Queue emails for pending members
     try {
       const emailTasks = [];
@@ -190,17 +193,18 @@ export const updateChannel = async (req, res) => {
 export const deleteChannel = async (req, res) => {
   try {
     const { id } = req.params;
-    
+
     // Tell bot to explicitly delete from Discord
     const channelToDelete = await DiscordChannel.findById(id);
     if (channelToDelete && channelToDelete.discordChannelId) {
       try {
-        await axios.delete(`http://127.0.0.1:3001/api/channels/${channelToDelete.discordChannelId}`);
+        console.log(`[DEBUG] Attempting to delete channel on Bot at: ${DISCORD_BOT_URL}/api/channels/${channelToDelete.discordChannelId}`);
+        await axios.delete(`${DISCORD_BOT_URL}/api/channels/${channelToDelete.discordChannelId}`);
       } catch (e) {
-        console.log("Failed to delete from Discord (Bot unreachable)");
+        console.log("Failed to delete from Discord (Bot unreachable):", e.message, e.response?.status);
       }
     }
-    
+
     await DiscordChannel.findByIdAndDelete(id);
     triggerBotSync();
     res.status(200).json({ success: true, message: 'Channel deleted successfully.' });
@@ -214,7 +218,7 @@ export const deleteChannel = async (req, res) => {
 export const bulkDeleteChannels = async (req, res) => {
   try {
     const { channelIds } = req.body;
-    
+
     if (!channelIds || !Array.isArray(channelIds) || channelIds.length === 0) {
       return res.status(400).json({ success: false, message: 'No channel IDs provided for deletion.' });
     }
@@ -224,7 +228,7 @@ export const bulkDeleteChannels = async (req, res) => {
     for (const ch of channelsToDelete) {
       if (ch.discordChannelId) {
         try {
-          await axios.delete(`http://127.0.0.1:3001/api/channels/${ch.discordChannelId}`);
+          await axios.delete(`${DISCORD_BOT_URL}/api/channels/${ch.discordChannelId}`);
         } catch (e) {
           console.log(`Failed to delete channel ${ch.discordChannelId} from Discord`);
         }
@@ -244,7 +248,7 @@ export const bulkDeleteChannels = async (req, res) => {
 export const bulkAddChannels = async (req, res) => {
   try {
     const { serverId, channels } = req.body;
-    
+
     if (!serverId) {
       return res.status(400).json({ success: false, message: 'Server ID is required.' });
     }
@@ -276,7 +280,7 @@ export const bulkAddChannels = async (req, res) => {
     const emailTasks = [];
     try {
       const inviteLink = await fetchInviteLink(serverId);
-      
+
       for (const ch of uniqueChannels) {
         for (const member of ch.members) {
           if (member.email && member.username) {
@@ -294,7 +298,7 @@ export const bulkAddChannels = async (req, res) => {
           }
         }
       }
-      
+
       if (emailTasks.length > 0) {
         await EmailQueue.insertMany(emailTasks);
       }
@@ -304,9 +308,9 @@ export const bulkAddChannels = async (req, res) => {
 
     triggerBotSync();
 
-    res.status(201).json({ 
-      success: true, 
-      message: `${channelsToInsert.length} channels added successfully. ${channels.length - uniqueChannels.length} duplicates skipped. ${emailTasks.length} emails queued.` 
+    res.status(201).json({
+      success: true,
+      message: `${channelsToInsert.length} channels added successfully. ${channels.length - uniqueChannels.length} duplicates skipped. ${emailTasks.length} emails queued.`
     });
   } catch (error) {
     console.error('Error in bulkAddChannels:', error);
