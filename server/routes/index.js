@@ -4,6 +4,7 @@ import alumniRoute from './alumni.js'
 import mentorsRoute from './mentors.js'
 import cv_reviewRoute from './cv_review.js'
 import { getAlumniContributions } from '../controllers/alumniContributionController.js'
+import teamRoutes from "./team.routes.js";
 import { Router } from "express";
 
 const router = Router();
@@ -12,6 +13,7 @@ router.use("/admin",adminRoute);
 router.use("/alumni",alumniRoute);
 router.use('/mentors',mentorsRoute);
 router.use("/cv",cv_reviewRoute);
+router.use("/team", teamRoutes);
 
 // Public route for alumni contributions
 router.get("/alumni-contributions", getAlumniContributions);

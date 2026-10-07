@@ -16,6 +16,7 @@ import NewsletterPage from "./pages/NewsletterPage";
 import MagazinePage from "./pages/MagazinePage";
 import YearbookPage from "./pages/YearbookPage";
 import TeamSection from "./components/TeamPage";
+import TeamMemberProfile from "./pages/TeamMemberProfile";
 import SaathiRegistrationPage from "./pages/SaathiRegistrationPage";
 import AdminDashboard from "./pages/AdminDashboard";
 import VerifiedMentorsPage from "./pages/VerifiedMentorsPage";
@@ -89,6 +90,7 @@ function App() {
           <Route path="/Yearbook" element={<YearbookPage />} />
           <Route path="/KYA" element={<KYA />} />
           <Route path="/team" element={<TeamSection />} />
+          <Route path="/team/:rollNo" element={<TeamMemberProfile />} />
           {/* Two New pages  */}
           <Route path="/alumni-contribution" element={<AlumniContribution />} />
           <Route path="/sponsors" element={<Sponsors />} />

@@ -23,6 +23,7 @@ import {
 } from "lucide-react";
 import { API_BASE_URL } from "../api/alumni";
 import RegistrationForm from "../Components/RegistrationForm/RegistrationForm";
+import AdminTeamPanel from "../Components/AdminTeamPanel";
 import {
   FaEnvelope,
   FaLinkedin,
@@ -1056,6 +1057,11 @@ const AdminDashboard = () => {
       label: "Alumni Contributions",
       icon: Users,
       count: alumniContributions.length,
+    },
+    {
+      id: "team",
+      label: "Team",
+      icon: Users,
     },
   ];
 
@@ -2608,6 +2614,8 @@ const AdminDashboard = () => {
               </div>
             </div>
           )}
+
+          {activeTab === "team" && <AdminTeamPanel />}
         </div>
       </div>
     </div>
