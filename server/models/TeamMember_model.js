@@ -4,7 +4,7 @@ const teamMemberSchema = new mongoose.Schema(
   {
     name: { type: String, required: true, trim: true },
     rollNo: { type: String, required: true, trim: true, index: true },
-    year: { type: Number, required: true, index: true },
+    year: { type: mongoose.Schema.Types.Mixed, required: true, index: true },
     team: { type: String, required: true, trim: true },
     role: { type: String, required: true, trim: true },
     group: {

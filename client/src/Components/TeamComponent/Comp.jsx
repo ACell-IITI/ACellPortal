@@ -5,6 +5,7 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
 import "swiper/css/navigation";
 import { Navigation, Autoplay } from "swiper/modules";
+import { FaLinkedinIn, FaInstagram } from "react-icons/fa";
 import "./Comp.css";
 
 const formatImageUrl = (url) => {
@@ -79,32 +80,34 @@ export default function TeamComponent({ title, members = [] }) {
                     </p>
                   )}
 
-                  <div className="team-socials">
-                    {member.linkedin && (
-                      <a
-                        href={member.linkedin}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        onClick={(e) => e.stopPropagation()}
-                        className="team-social-link team-social-linkedin"
-                        aria-label="LinkedIn"
-                      >
-                        <i className="fab fa-linkedin-in"></i>
-                      </a>
-                    )}
-                    {member.insta && (
-                      <a
-                        href={member.insta}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        onClick={(e) => e.stopPropagation()}
-                        className="team-social-link team-social-instagram"
-                        aria-label="Instagram"
-                      >
-                        <i className="fab fa-instagram"></i>
-                      </a>
-                    )}
-                  </div>
+                  {(member.linkedin || member.insta) && (
+                    <div className="team-socials">
+                      {member.linkedin && (
+                        <a
+                          href={member.linkedin}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          onClick={(e) => e.stopPropagation()}
+                          className="team-social-link team-social-linkedin"
+                          aria-label="LinkedIn"
+                        >
+                          <FaLinkedinIn size={16} />
+                        </a>
+                      )}
+                      {member.insta && (
+                        <a
+                          href={member.insta}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          onClick={(e) => e.stopPropagation()}
+                          className="team-social-link team-social-instagram"
+                          aria-label="Instagram"
+                        >
+                          <FaInstagram size={16} />
+                        </a>
+                      )}
+                    </div>
+                  )}
                 </div>
               </div>
             ))}
@@ -175,6 +178,35 @@ export default function TeamComponent({ title, members = [] }) {
                       <p className="text-xs text-slate-500 mt-1 truncate">
                         {member.branch}
                       </p>
+                    )}
+
+                    {(member.linkedin || member.insta) && (
+                      <div className="team-socials">
+                        {member.linkedin && (
+                          <a
+                            href={member.linkedin}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            onClick={(e) => e.stopPropagation()}
+                            className="team-social-link team-social-linkedin"
+                            aria-label="LinkedIn"
+                          >
+                            <FaLinkedinIn size={14} />
+                          </a>
+                        )}
+                        {member.insta && (
+                          <a
+                            href={member.insta}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            onClick={(e) => e.stopPropagation()}
+                            className="team-social-link team-social-instagram"
+                            aria-label="Instagram"
+                          >
+                            <FaInstagram size={14} />
+                          </a>
+                        )}
+                      </div>
                     )}
                   </div>
                 </div>

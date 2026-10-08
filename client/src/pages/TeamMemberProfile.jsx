@@ -1,21 +1,8 @@
 import React, { useState, useEffect } from "react";
-import { useParams, Link } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
-import {
-  ArrowLeft,
-  Mail,
-  Phone,
-  Linkedin,
-  Instagram,
-  Award,
-  BookOpen,
-  Heart,
-  Calendar,
-  Briefcase,
-  GraduationCap,
-  ExternalLink,
-  UserCheck,
-} from "lucide-react";
+import { ArrowLeft } from "lucide-react";
+import { FaLinkedinIn, FaInstagram, FaPhone } from "react-icons/fa";
 import { API_BASE_URL } from "../api/alumni";
 import { teamMembers as fallbackTeamMembers } from "../lib/teamdata";
 
@@ -29,6 +16,7 @@ const formatImageUrl = (url) => {
 
 export default function TeamMemberProfile() {
   const { rollNo } = useParams();
+  const navigate = useNavigate();
   const [member, setMember] = useState(null);
   const [allTenures, setAllTenures] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -56,7 +44,6 @@ export default function TeamMemberProfile() {
     }
 
     function tryFallback() {
-      // Find in fallback hardcoded data by rollNo or by id
       const found = fallbackTeamMembers.find(
         (m) =>
           String(m.rollNo) === String(rollNo) ||
@@ -69,9 +56,9 @@ export default function TeamMemberProfile() {
           branch: found.branch || "Indian Institute of Technology Indore",
           whyJoin:
             found.whyJoin ||
-            "Passionate about fostering long-term bonds between our esteemed alumni and current student body.",
-          por: found.por || `${found.role} - Alumni Cell`,
-          hobbies: found.hobbies || "Technology, Networking, Reading",
+            "I wanted to contribute to strengthening the connection between students and the alumni network, learning from industry leaders and giving back to the IIT Indore community.",
+          por: found.por || "",
+          hobbies: found.hobbies || "Reading, Technology, Networking",
         });
         setAllTenures([found]);
       } else {
@@ -81,6 +68,19 @@ export default function TeamMemberProfile() {
 
     fetchProfile();
   }, [rollNo]);
+
+  // Formatter for POR display
+  const getFormattedPOR = (m) => {
+    if (m.por && m.por.trim() !== "") {
+      return m.por;
+    }
+    const team = m.team || "Web Dev";
+    let role = m.role || "Member";
+    if (role.toLowerCase() === "member") {
+      role = "Team Member";
+    }
+    return `${team} ${role} - Alumni Cell`;
+  };
 
   if (loading) {
     return (
@@ -95,7 +95,7 @@ export default function TeamMemberProfile() {
 
   if (error || !member) {
     return (
-      <div className="min-h-screen bg-slate-50 flex flex-col items-center justify-center px-4 pt-24 text-center">
+      <div className="min-h-screen bg-[#F8FAFC] flex flex-col items-center justify-center px-4 pt-24 text-center">
         <div className="w-16 h-16 rounded-full bg-red-100 text-red-600 flex items-center justify-center mb-4 text-2xl font-bold">
           !
         </div>
@@ -103,39 +103,41 @@ export default function TeamMemberProfile() {
         <p className="text-slate-500 max-w-md mb-6">
           We couldn't find a team member profile matching roll number "{rollNo}".
         </p>
-        <Link
-          to="/team"
-          className="inline-flex items-center gap-2 px-5 py-2.5 bg-[#153462] text-white rounded-xl font-semibold shadow hover:bg-blue-900 transition-colors"
+        <button
+          type="button"
+          onClick={() => navigate("/team")}
+          className="inline-flex items-center gap-2 px-5 py-2.5 bg-[#153462] text-white rounded-xl font-bold shadow hover:bg-blue-900 transition-colors cursor-pointer"
         >
-          <ArrowLeft size={18} /> Back to Team Page
-        </Link>
+          <ArrowLeft size={18} /> Back to Team
+        </button>
       </div>
     );
   }
 
   return (
     <div className="min-h-screen bg-[#F8FAFC] pb-24">
-      {/* Top Banner & Back Link */}
-      <div className="bg-[#153462] text-white pt-10 pb-28 px-6">
+      {/* Top Banner with Website Navy Style */}
+      <div className="bg-[#153462] text-white pt-10 pb-28 px-6 shadow-sm">
         <div className="max-w-6xl mx-auto">
-          <Link
-            to="/team"
-            className="inline-flex items-center gap-2 text-blue-200 hover:text-white transition-colors text-sm font-semibold mb-6"
+          {/* Bold Back to Team Button */}
+          <button
+            type="button"
+            onClick={() => navigate("/team")}
+            className="inline-flex items-center gap-2 text-white hover:text-blue-200 transition-colors text-base font-bold mb-6 cursor-pointer group"
           >
-            <ArrowLeft size={16} /> Back to Team
-          </Link>
+            <ArrowLeft size={18} className="group-hover:-translate-x-1 transition-transform" />
+            <span>Back to Team</span>
+          </button>
+
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
             <div>
-              <span className="inline-block px-3 py-1 bg-white/10 rounded-full text-xs font-semibold uppercase tracking-wider text-blue-200 mb-2">
-                Team Member Profile
-              </span>
               <h1 className="text-3xl md:text-5xl font-extrabold tracking-tight">
                 {member.name}
               </h1>
             </div>
             {member.year && (
-              <div className="inline-flex items-center gap-2 px-4 py-2 bg-white/15 backdrop-blur-sm rounded-xl border border-white/20 text-sm font-bold">
-                <Calendar size={16} /> Tenure {member.year}
+              <div className="inline-flex items-center px-4 py-2 bg-white/10 backdrop-blur-sm rounded-xl border border-white/20 text-sm font-bold tracking-wide">
+                Tenure {member.year}
               </div>
             )}
           </div>
@@ -147,28 +149,26 @@ export default function TeamMemberProfile() {
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
           {/* Left Column: Avatar & Contact Card */}
           <div className="lg:col-span-4 space-y-6">
-            <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 text-center overflow-hidden">
-              <div className="relative inline-block mx-auto mb-4">
+            <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 text-center">
+              {/* Photo Container with Proper Fit to Prevent Cropping */}
+              <div className="w-full max-w-[260px] h-64 sm:h-72 mx-auto rounded-2xl overflow-hidden bg-slate-50 border border-slate-200 shadow-sm flex items-center justify-center p-2 mb-4">
                 <img
                   src={formatImageUrl(member.image)}
                   alt={member.name}
-                  className="w-40 h-40 rounded-2xl object-cover mx-auto shadow-md border-4 border-white"
+                  className="w-full h-full object-contain rounded-xl"
                   onError={(e) => {
                     e.target.onerror = null;
                     e.target.src = "https://via.placeholder.com/200";
                   }}
                 />
-                <span className="absolute bottom-2 right-2 p-1.5 bg-[#153462] text-white rounded-lg shadow">
-                  <UserCheck size={16} />
-                </span>
               </div>
 
-              <h2 className="text-xl font-bold text-slate-800">{member.name}</h2>
-              <p className="text-sm font-semibold text-blue-600 mt-1">
+              <h2 className="text-xl font-bold text-slate-900">{member.name}</h2>
+              <p className="text-sm font-semibold text-[#153462] mt-1">
                 {member.role} &bull; {member.team}
               </p>
 
-              <div className="mt-4 pt-4 border-t border-slate-100 space-y-2.5 text-left text-xs text-slate-600">
+              <div className="mt-5 pt-4 border-t border-slate-100 space-y-2.5 text-left text-xs text-slate-600">
                 <div className="flex items-center gap-2.5">
                   <span className="font-semibold text-slate-400 w-20">Roll No:</span>
                   <span className="font-mono font-bold text-slate-800">{member.rollNo || rollNo}</span>
@@ -202,7 +202,7 @@ export default function TeamMemberProfile() {
                     className="p-2.5 bg-blue-50 text-blue-600 hover:bg-blue-600 hover:text-white rounded-xl transition-all shadow-sm"
                     aria-label="LinkedIn"
                   >
-                    <Linkedin size={18} />
+                    <FaLinkedinIn size={18} />
                   </a>
                 )}
                 {member.insta && (
@@ -213,7 +213,7 @@ export default function TeamMemberProfile() {
                     className="p-2.5 bg-pink-50 text-pink-600 hover:bg-pink-600 hover:text-white rounded-xl transition-all shadow-sm"
                     aria-label="Instagram"
                   >
-                    <Instagram size={18} />
+                    <FaInstagram size={18} />
                   </a>
                 )}
                 {(member.contact || member.Contact) && (
@@ -222,17 +222,17 @@ export default function TeamMemberProfile() {
                     className="p-2.5 bg-emerald-50 text-emerald-600 hover:bg-emerald-600 hover:text-white rounded-xl transition-all shadow-sm"
                     aria-label="Call"
                   >
-                    <Phone size={18} />
+                    <FaPhone size={16} />
                   </a>
                 )}
               </div>
             </div>
 
-            {/* Past Tenures History (if part of cell in multiple years) */}
+            {/* Past Tenures History (if part of cell across multiple years) */}
             {allTenures.length > 1 && (
               <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-5">
-                <h3 className="text-xs font-bold uppercase tracking-wider text-slate-400 mb-3 flex items-center gap-2">
-                  <Calendar size={14} /> Tenure History
+                <h3 className="text-xs font-bold uppercase tracking-wider text-slate-500 mb-3">
+                  Tenure History
                 </h3>
                 <div className="space-y-2">
                   {allTenures.map((t) => (
@@ -244,7 +244,7 @@ export default function TeamMemberProfile() {
                         <p className="font-bold text-slate-800">{t.role}</p>
                         <p className="text-slate-500">{t.team}</p>
                       </div>
-                      <span className="font-mono font-bold text-blue-600 bg-blue-50 px-2 py-0.5 rounded">
+                      <span className="font-mono font-bold text-[#153462] bg-blue-50 px-2 py-0.5 rounded">
                         {t.year}
                       </span>
                     </div>
@@ -254,56 +254,47 @@ export default function TeamMemberProfile() {
             )}
           </div>
 
-          {/* Right Column: Detailed Sections */}
-          <div className="lg:col-span-8 space-y-6">
-            {/* Why Join Alumni Cell */}
-            <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 md:p-8">
-              <h3 className="text-lg font-bold text-slate-800 flex items-center gap-2 mb-3">
-                <Heart className="text-rose-500" size={20} /> Why I Joined Alumni Cell
-              </h3>
-              <p className="text-slate-600 text-sm md:text-base leading-relaxed bg-slate-50 p-5 rounded-xl border border-slate-100 italic">
-                "{member.whyJoin ||
-                  "I wanted to contribute to strengthening the connection between students and the alumni network, learning from industry leaders and giving back to the IIT Indore community."}"
-              </p>
-            </div>
-
-            {/* Position of Responsibility (POR) */}
-            <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 md:p-8">
-              <h3 className="text-lg font-bold text-slate-800 flex items-center gap-2 mb-4">
-                <Award className="text-amber-500" size={20} /> Positions of Responsibility (POR)
-              </h3>
-              {member.por ? (
-                <div className="text-slate-700 text-sm leading-relaxed whitespace-pre-line bg-amber-50/50 p-4 rounded-xl border border-amber-100">
-                  {member.por}
+          {/* Right Column: ALL 3 SECTIONS MERGED IN ONE SINGLE CARD */}
+          <div className="lg:col-span-8">
+            <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 sm:p-8 space-y-8">
+              {/* Section 1: Why I Joined Alumni Cell with Big Designer Quotation Marks */}
+              <div>
+                <h3 className="text-lg font-bold text-slate-900 tracking-tight mb-3">
+                  Why I Joined Alumni Cell
+                </h3>
+                <div className="relative pl-6 sm:pl-10 pr-4 py-2">
+                  <span className="absolute -left-1 -top-4 text-6xl sm:text-7xl font-serif text-blue-300 select-none pointer-events-none leading-none">
+                    &ldquo;
+                  </span>
+                  <p className="text-slate-700 text-base sm:text-lg italic leading-relaxed pt-2">
+                    {member.whyJoin ||
+                      "I wanted to contribute to strengthening the connection between students and the alumni network, learning from industry leaders and giving back to the IIT Indore community."}
+                  </p>
+                  <span className="text-5xl sm:text-6xl font-serif text-blue-300 select-none pointer-events-none leading-none inline-block align-bottom -mb-3 ml-1">
+                    &rdquo;
+                  </span>
                 </div>
-              ) : (
-                <p className="text-sm text-slate-500">
-                  {member.role} &bull; {member.team} (Tenure {member.year || 2026})
+              </div>
+
+              {/* Section 2: Position of Responsibility */}
+              <div className="pt-6 border-t border-slate-100">
+                <h3 className="text-lg font-bold text-slate-900 tracking-tight mb-2">
+                  Positions of Responsibility (POR)
+                </h3>
+                <p className="text-slate-800 text-base font-semibold leading-relaxed">
+                  {getFormattedPOR(member)}
                 </p>
-              )}
-            </div>
+              </div>
 
-            {/* Hobbies & Interests */}
-            <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 md:p-8">
-              <h3 className="text-lg font-bold text-slate-800 flex items-center gap-2 mb-4">
-                <BookOpen className="text-blue-500" size={20} /> Hobbies & Interests
-              </h3>
-              {member.hobbies ? (
-                <div className="flex flex-wrap gap-2">
-                  {member.hobbies
-                    .split(",")
-                    .map((hobby, idx) => (
-                      <span
-                        key={idx}
-                        className="px-3 py-1.5 rounded-lg bg-blue-50 text-blue-700 text-xs font-semibold border border-blue-200"
-                      >
-                        {hobby.trim()}
-                      </span>
-                    ))}
-                </div>
-              ) : (
-                <p className="text-sm text-slate-500 italic">No hobbies listed.</p>
-              )}
+              {/* Section 3: Hobbies & Interests as Normal Text */}
+              <div className="pt-6 border-t border-slate-100">
+                <h3 className="text-lg font-bold text-slate-900 tracking-tight mb-2">
+                  Hobbies & Interests
+                </h3>
+                <p className="text-slate-700 text-base leading-relaxed">
+                  {member.hobbies || "Not specified"}
+                </p>
+              </div>
             </div>
           </div>
         </div>

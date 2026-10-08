@@ -15,9 +15,153 @@ import {
   ExternalLink,
   X,
   FileSpreadsheet,
+  Calendar,
 } from "lucide-react";
 import * as XLSX from "xlsx";
 import { API_BASE_URL } from "../api/alumni";
+
+// ─── Client-side Priority Auto-Assignment & Fuzzy Field Matcher ──────────────
+
+const STANDARD_TEAM_PRIORITIES_CLIENT = [
+  { keys: ["alumni cell head", "overall head", "head", "heads", "council", "overall"], priority: 0 },
+  { keys: ["web dev", "web development", "software", "tech", "technology"], priority: 1 },
+  { keys: ["design", "graphic design", "ui/ux", "graphics"], priority: 2 },
+  { keys: ["aram", "alumni relations", "annual alumni meet"], priority: 3 },
+  { keys: ["logistics", "operations"], priority: 4 },
+  { keys: ["newsletter", "editorial", "publications"], priority: 5 },
+  { keys: ["content", "content writing"], priority: 6 },
+  { keys: ["events", "event management"], priority: 7 },
+  { keys: ["media", "photography", "videography"], priority: 8 },
+  { keys: ["sponsorship", "finance"], priority: 9 },
+  { keys: ["pr", "public relations"], priority: 10 },
+];
+
+const deriveSubPriorityClient = (role = "") => {
+  const r = role.toLowerCase().trim();
+  if (r.includes("advisor")) return 0;
+  if ((r.includes("co") && r.includes("head")) || r === "co-head" || r === "cohead") return 1;
+  if (r === "head" || r.endsWith(" head") || r.startsWith("head ") || r.includes(" head")) return 0;
+  if (r.includes("lead")) return 2;
+  if (r.includes("core")) return 3;
+  return 4; // Member
+};
+
+const deriveGroupClient = (role = "", team = "") => {
+  const r = role.toLowerCase().trim();
+  const t = (team || "").toLowerCase().trim();
+  if (r.includes("advisor") || t.includes("advisor")) return "Advisor";
+  if ((r.includes("co") && r.includes("head")) || r === "co-head" || r === "cohead") return "Co-Head";
+  if (
+    r === "head" ||
+    r.endsWith(" head") ||
+    r.startsWith("head ") ||
+    r.includes(" head") ||
+    t === "alumni cell head" ||
+    t === "overall head"
+  ) {
+    return "Head";
+  }
+  return "Member";
+};
+
+// Fuzzy match column names from raw Google Form response headers
+const findFieldValue = (row, candidates) => {
+  // 1. Direct key match
+  for (const c of candidates) {
+    if (row[c] !== undefined && row[c] !== null && String(row[c]).trim() !== "") {
+      return String(row[c]).trim();
+    }
+  }
+
+  const entries = Object.entries(row);
+  // 2. Exact match on normalized alphanumeric string
+  for (const c of candidates) {
+    const cleanC = c.toLowerCase().replace(/[^a-z0-9]/g, "");
+    for (const [key, val] of entries) {
+      if (val === undefined || val === null || String(val).trim() === "") continue;
+      const cleanKey = key.toLowerCase().replace(/[^a-z0-9]/g, "");
+      if (cleanKey === cleanC) {
+        return String(val).trim();
+      }
+    }
+  }
+
+  // 3. Substring match for keywords with at least 4 characters
+  for (const [key, val] of entries) {
+    if (val === undefined || val === null || String(val).trim() === "") continue;
+    const cleanKey = key.toLowerCase().replace(/[^a-z0-9]/g, "");
+    for (const c of candidates) {
+      const cleanC = c.toLowerCase().replace(/[^a-z0-9]/g, "");
+      if (cleanC.length >= 4 && (cleanKey.includes(cleanC) || cleanC.includes(cleanKey))) {
+        return String(val).trim();
+      }
+    }
+  }
+  return "";
+};
+
+/**
+ * Builds a team priority map from the uploaded rows and applies auto priorities
+ * to any row where Priority_ID or Sub_Priority was not explicitly provided.
+ */
+const applyAutoPriorities = (rows) => {
+  const teamMap = new Map();
+
+  // Pre-seed standard priorities
+  for (const st of STANDARD_TEAM_PRIORITIES_CLIENT) {
+    for (const k of st.keys) {
+      if (!teamMap.has(k)) {
+        teamMap.set(k, st.priority);
+      }
+    }
+  }
+
+  let maxPriority = 10;
+  for (const r of rows) {
+    const teamKey = (r.team || "").toLowerCase().trim();
+    if (!teamKey || teamMap.has(teamKey)) continue;
+
+    // Check partial standard match
+    let matchedStandard = null;
+    for (const st of STANDARD_TEAM_PRIORITIES_CLIENT) {
+      if (st.keys.some((k) => teamKey.includes(k) || k.includes(teamKey))) {
+        matchedStandard = st.priority;
+        break;
+      }
+    }
+
+    if (matchedStandard !== null) {
+      teamMap.set(teamKey, matchedStandard);
+    } else {
+      maxPriority++;
+      teamMap.set(teamKey, maxPriority);
+    }
+  }
+
+  return rows.map((r) => {
+    const teamKey = (r.team || "").toLowerCase().trim();
+    const roleKey = (r.role || "").toLowerCase().trim();
+
+    const autoP = teamMap.get(teamKey) ?? 1;
+    const autoS = deriveSubPriorityClient(roleKey);
+    const autoG = deriveGroupClient(r.role, r.team);
+
+    const priorityExplicit = r._priorityExplicit;
+    const subExplicit = r._subExplicit;
+    const groupExplicit = r._groupExplicit;
+
+    return {
+      ...r,
+      priority_id: priorityExplicit ? r.priority_id : autoP,
+      sub_priority: subExplicit ? r.sub_priority : autoS,
+      group: groupExplicit ? r.group : autoG,
+      _autoP: !priorityExplicit,
+      _autoS: !subExplicit,
+      _autoG: !groupExplicit,
+    };
+  });
+};
+
 
 const formatImageUrl = (url) => {
   if (!url) return "";
@@ -39,7 +183,7 @@ const DEFAULT_TEAMS = [
 
 export default function AdminTeamPanel() {
   const [years, setYears] = useState([]);
-  const [selectedYear, setSelectedYear] = useState(new Date().getFullYear());
+  const [selectedYear, setSelectedYear] = useState(String(new Date().getFullYear()));
   const [members, setMembers] = useState([]);
   const [loading, setLoading] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
@@ -60,6 +204,10 @@ export default function AdminTeamPanel() {
   const [isUploadingBulk, setIsUploadingBulk] = useState(false);
   const bulkFileInputRef = useRef(null);
 
+  // Edition / Tenure Management
+  const [isAddEditionOpen, setIsAddEditionOpen] = useState(false);
+  const [newEditionName, setNewEditionName] = useState("");
+
   // Helper Guide Toggle
   const [showGuide, setShowGuide] = useState(false);
 
@@ -75,7 +223,7 @@ export default function AdminTeamPanel() {
     return {
       name: "",
       rollNo: "",
-      year: year || new Date().getFullYear(),
+      year: year || String(new Date().getFullYear()),
       team: "Web Dev",
       role: "",
       group: "Member",
@@ -92,36 +240,40 @@ export default function AdminTeamPanel() {
     };
   }
 
-  // Fetch distinct years
+  // Fetch distinct years and custom editions
   const fetchYears = async () => {
     try {
       const res = await axios.get(`${API_BASE_URL}/api/team/years`);
       if (res.data?.success && res.data.years.length > 0) {
-        setYears(res.data.years);
+        setYears((prev) => {
+          const merged = Array.from(new Set([...res.data.years, ...(prev || [])]));
+          return merged;
+        });
         if (!selectedYear || !res.data.years.includes(selectedYear)) {
           setSelectedYear(res.data.years[0]);
         }
       } else {
-        const curYear = new Date().getFullYear();
-        setYears([curYear]);
-        setSelectedYear(curYear);
+        const curYear = String(new Date().getFullYear());
+        setYears((prev) => (prev.length > 0 ? prev : [curYear]));
+        if (!selectedYear) setSelectedYear(curYear);
       }
     } catch (err) {
       console.error("Error fetching years:", err);
     }
   };
 
-  // Fetch members for selected year
+  // Fetch members for selected tenure / year
   const fetchMembers = async (yearToFetch) => {
     const yr = yearToFetch || selectedYear;
     if (!yr) return;
     setLoading(true);
     try {
-      const res = await axios.get(`${API_BASE_URL}/api/team?year=${yr}`);
+      const res = await axios.get(`${API_BASE_URL}/api/team?year=${encodeURIComponent(yr)}`);
       if (res.data?.success) {
         setMembers(res.data.members || []);
+        // Preserve any newly created edition in years state
         if (res.data.availableYears?.length > 0) {
-          setYears(res.data.availableYears);
+          setYears((prev) => Array.from(new Set([...res.data.availableYears, ...(prev || [])])));
         }
       }
     } catch (err) {
@@ -129,6 +281,62 @@ export default function AdminTeamPanel() {
       showToastMessage("Failed to fetch team members", "error");
     } finally {
       setLoading(false);
+    }
+  };
+
+  // Create a new tenure / edition (e.g. 2027, Magnum Opus)
+  const handleCreateEdition = async (e) => {
+    e?.preventDefault();
+    const name = newEditionName.trim();
+    if (!name) return;
+    try {
+      await axios.post(`${API_BASE_URL}/api/team/admin/editions`, { name });
+      showToastMessage(`Edition '${name}' created successfully!`);
+      setYears((prev) => Array.from(new Set([name, ...(prev || [])])));
+      setSelectedYear(name);
+      setIsAddEditionOpen(false);
+      setNewEditionName("");
+      fetchYears();
+    } catch (err) {
+      console.error("Error creating edition:", err);
+      showToastMessage(err.response?.data?.message || "Failed to create edition", "error");
+    }
+  };
+
+  // Delete a tenure / edition TAB ONLY (no members)
+  const handleDeleteEdition = async (editionName) => {
+    if (!window.confirm(`Remove the '${editionName}' tab? (Members in this year will NOT be deleted)`)) return;
+    try {
+      await axios.delete(`${API_BASE_URL}/api/team/admin/editions/${encodeURIComponent(editionName)}`);
+      showToastMessage(`Edition '${editionName}' tab removed`);
+      setYears((prev) => prev.filter((y) => y !== editionName));
+      const remaining = years.filter((y) => y !== editionName);
+      if (remaining.length > 0) setSelectedYear(remaining[0]);
+    } catch (err) {
+      console.error("Error deleting edition:", err);
+      showToastMessage("Failed to delete edition", "error");
+    }
+  };
+
+  // Delete ALL members for a year AND remove the edition tab
+  const handleDeleteYear = async (yearName) => {
+    const memberCount = members.length; // already loaded for the active year
+    if (!window.confirm(
+      `⚠️ DELETE ENTIRE YEAR '${yearName}'?\n\n` +
+      `This will permanently delete ALL ${memberCount} member(s) for this year AND remove the year tab.\n\n` +
+      `This action CANNOT be undone. Continue?`
+    )) return;
+    try {
+      await axios.delete(`${API_BASE_URL}/api/team/admin/year/${encodeURIComponent(yearName)}`);
+      showToastMessage(`All members for '${yearName}' deleted successfully`);
+      setMembers([]);
+      setYears((prev) => prev.filter((y) => y !== yearName));
+      const remaining = years.filter((y) => y !== yearName);
+      if (remaining.length > 0) setSelectedYear(remaining[0]);
+      else setSelectedYear(String(new Date().getFullYear()));
+    } catch (err) {
+      console.error("Error deleting year:", err);
+      showToastMessage(err.response?.data?.message || "Failed to delete year", "error");
     }
   };
 
@@ -274,49 +482,86 @@ export default function AdminTeamPanel() {
 
         json.forEach((row, idx) => {
           const rowNum = idx + 2; // header is row 1
-          const name = row.Name || row.name;
-          const rollNo = row.RollNo || row.rollNo || row.roll_no;
-          const year = row.Year || row.year || selectedYear;
-          const team = row.Team || row.team;
-          const role = row.Role || row.role;
+          const name = findFieldValue(row, [
+            "Name", "Full Name", "Student Name", "Your Name", "fullname", "Member Name"
+          ]);
+          const rollNo = findFieldValue(row, [
+            "RollNo", "Roll Number", "Roll No", "Roll no.", "Roll", "roll_no", "RollNo."
+          ]);
+          // Always use the currently selected year tab — ignore whatever is in the Excel
+          // (admin explicitly chose which year to upload to by selecting the tab)
+          const year = String(selectedYear);
+          const team = findFieldValue(row, [
+            "Team", "Domain", "Team Name", "Team / Domain", "Department", "Which team are you part of?"
+          ]);
+          const role = findFieldValue(row, [
+            "Role", "Designation", "Position", "Role in Team", "Role / Position", "Your role in Alumni Cell"
+          ]);
+          const branch = findFieldValue(row, [
+            "Branch", "Department", "Branch / Department", "Discipline", "Branch / Major"
+          ]);
+          const image = findFieldValue(row, [
+            "Image_URL", "Upload your photo", "Photo", "Image", "Profile Photo", "Upload photo", "Photograph", "Drive Link", "Drive URL", "Photo URL", "Picture"
+          ]);
+          const linkedin = findFieldValue(row, [
+            "LinkedIn", "LinkedIn Profile", "LinkedIn URL", "LinkedIn Link", "Linkedin Profile URL"
+          ]);
+          const insta = findFieldValue(row, [
+            "Instagram", "Instagram Profile", "Instagram URL", "Instagram Handle", "Insta", "Instagram Link"
+          ]);
+          const contact = findFieldValue(row, [
+            "Contact", "Contact Number", "Phone Number", "Mobile Number", "Phone", "WhatsApp Number", "Mobile"
+          ]);
+          const whyJoin = findFieldValue(row, [
+            "Why_Join", "Why did you want to join Alumni Cell?", "Why did you join Alumni Cell?", "Why Join", "Why Join Alumni Cell", "Why ACell", "Why Alumni Cell"
+          ]);
+          const por = findFieldValue(row, [
+            "POR", "Your role / POR in Alumni Cell", "Position of Responsibility", "POR in Alumni Cell", "Past POR", "PORs", "Role / POR"
+          ]);
+          const hobbies = findFieldValue(row, [
+            "Hobbies", "Hobbies & Interests", "Hobbies and Interests", "Interests", "Hobbies / Interests"
+          ]);
+
+          const rawPriority = findFieldValue(row, ["Priority_ID", "priority_id", "Priority", "Priority ID"]);
+          const rawSub = findFieldValue(row, ["Sub_Priority", "sub_priority", "Sub Priority", "SubPriority"]);
+          const rawGroup = findFieldValue(row, ["Group", "group"]);
 
           const isMissing = !name || !rollNo || !team || !role;
           if (isMissing) {
-            errors.push(`Row ${rowNum}: Missing mandatory fields`);
+            errors.push(`Row ${rowNum}: Missing mandatory fields (name, rollNo, team, or role)`);
           }
 
+          const hasExplicitPriority = rawPriority !== "" && !isNaN(Number(rawPriority));
+          const hasExplicitSub = rawSub !== "" && !isNaN(Number(rawSub));
+          const hasExplicitGroup = rawGroup !== "";
+
           parsedRows.push({
-            rollNo: rollNo ? String(rollNo).trim() : "",
-            name: name ? String(name).trim() : "",
-            year: Number(year) || selectedYear,
-            team: team ? String(team).trim() : "",
-            role: role ? String(role).trim() : "",
-            group: row.Group || row.group || "Member",
-            priority_id:
-              row.Priority_ID !== undefined
-                ? Number(row.Priority_ID)
-                : row.priority_id !== undefined
-                ? Number(row.priority_id)
-                : 1,
-            sub_priority:
-              row.Sub_Priority !== undefined
-                ? Number(row.Sub_Priority)
-                : row.sub_priority !== undefined
-                ? Number(row.sub_priority)
-                : 2,
-            branch: row.Branch || row.branch || "",
-            image: row.Image_URL || row.image || row.Image || "",
-            linkedin: row.LinkedIn || row.linkedin || "",
-            insta: row.Instagram || row.insta || "",
-            contact: row.Contact || row.contact ? String(row.Contact || row.contact) : "",
-            whyJoin: row.Why_Join || row.whyJoin || "",
-            por: row.POR || row.por || "",
-            hobbies: row.Hobbies || row.hobbies || "",
+            rollNo,
+            name,
+            year,
+            team,
+            role,
+            group: hasExplicitGroup ? rawGroup : "",
+            priority_id: hasExplicitPriority ? Number(rawPriority) : 1,
+            sub_priority: hasExplicitSub ? Number(rawSub) : 2,
+            branch,
+            image,
+            linkedin,
+            insta,
+            contact,
+            whyJoin,
+            por,
+            hobbies,
             isValid: !isMissing,
+            _priorityExplicit: hasExplicitPriority,
+            _subExplicit: hasExplicitSub,
+            _groupExplicit: hasExplicitGroup,
           });
         });
 
-        setBulkRows(parsedRows);
+        // Apply auto priorities for team and sub_priorities
+        const rowsWithAutoPriorities = applyAutoPriorities(parsedRows);
+        setBulkRows(rowsWithAutoPriorities);
         setBulkErrors(errors);
         setIsBulkModalOpen(true);
         if (bulkFileInputRef.current) bulkFileInputRef.current.value = "";
@@ -328,31 +573,88 @@ export default function AdminTeamPanel() {
     reader.readAsBinaryString(file);
   };
 
+  // Export processed/standardized Excel file with auto-assigned priorities
+  const handleDownloadConvertedExcel = () => {
+    if (!bulkRows || bulkRows.length === 0) return;
+    const exportData = bulkRows.map((r) => ({
+      RollNo: r.rollNo,
+      Name: r.name,
+      Year: r.year,
+      Team: r.team,
+      Role: r.role,
+      Group: r.group,
+      Priority_ID: r.priority_id,
+      Sub_Priority: r.sub_priority,
+      Branch: r.branch,
+      Image_URL: r.image,
+      LinkedIn: r.linkedin,
+      Instagram: r.insta,
+      Contact: r.contact,
+      Why_Join: r.whyJoin,
+      POR: r.por,
+      Hobbies: r.hobbies,
+    }));
+    const ws = XLSX.utils.json_to_sheet(exportData);
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, "Team_Members");
+    XLSX.writeFile(wb, `Team_Members_${selectedYear}_Processed.xlsx`);
+    showToastMessage("Downloaded standardized Excel file with auto-assigned priorities!");
+  };
+
   // Submit Bulk Upload
   const handleConfirmBulkUpload = async () => {
     const validRows = bulkRows.filter((r) => r.isValid);
-    if (validRows.length === 0) {
-      alert("No valid rows to upload.");
+    const invalidRows = bulkRows.filter((r) => !r.isValid);
+
+    if (bulkRows.length === 0) {
+      alert("No rows found. Please upload an Excel file first.");
       return;
+    }
+
+    if (validRows.length === 0) {
+      const sample = bulkRows[0];
+      const keys = Object.keys(sample).join(", ");
+      alert(
+        `No valid rows to upload.\n\n` +
+        `All ${bulkRows.length} rows are missing required fields (Name, Roll No, Team, or Role).\n\n` +
+        `Detected columns in your file:\n${keys}\n\n` +
+        `Make sure your Excel has columns: Name, RollNo, Team, Role`
+      );
+      return;
+    }
+
+    if (invalidRows.length > 0) {
+      const proceed = window.confirm(
+        `${validRows.length} valid rows will be uploaded.\n` +
+        `${invalidRows.length} rows are invalid (missing Name/RollNo/Team/Role) and will be skipped.\n\n` +
+        `Proceed with uploading ${validRows.length} members?`
+      );
+      if (!proceed) return;
     }
 
     setIsUploadingBulk(true);
     try {
       const res = await axios.post(`${API_BASE_URL}/api/team/admin/bulk-add`, {
         members: validRows,
-      });
+      }, { timeout: 5 * 60 * 1000 }); // 5 min — Drive image downloads can be slow
 
       if (res.data?.success) {
         showToastMessage(`Successfully uploaded ${res.data.count} members!`);
         setIsBulkModalOpen(false);
         setBulkRows([]);
         setBulkErrors([]);
-        fetchYears();
-        fetchMembers();
+        // Figure out which year was uploaded (use the most common year in valid rows)
+        const uploadedYear = String(validRows[0]?.year || selectedYear);
+        setSelectedYear(uploadedYear);
+        await fetchYears();
+        await fetchMembers(uploadedYear);
+      } else {
+        showToastMessage(res.data?.message || "Upload failed", "error");
       }
     } catch (err) {
       console.error("Bulk upload error:", err);
-      showToastMessage(err.response?.data?.message || "Failed to upload members", "error");
+      const msg = err.response?.data?.message || err.message || "Failed to upload members";
+      showToastMessage(`Upload error: ${msg}`, "error");
     } finally {
       setIsUploadingBulk(false);
     }
@@ -469,41 +771,57 @@ export default function AdminTeamPanel() {
           </div>
         )}
 
-        {/* Year Filter & Search Bar */}
+        {/* Tenure / Edition Filter & Search Bar */}
         <div className="mt-6 pt-5 border-t border-slate-200 flex flex-col md:flex-row items-center justify-between gap-4">
           <div className="flex items-center gap-3 w-full md:w-auto">
-            <label className="text-xs font-bold text-slate-700 uppercase tracking-wider">
-              Year:
+            <label className="text-xs font-bold text-slate-700 uppercase tracking-wider shrink-0">
+              Tenure / Edition:
             </label>
             <div className="flex items-center gap-1.5 flex-wrap">
-              {years.map((yr) => (
-                <button
-                  key={yr}
-                  onClick={() => setSelectedYear(yr)}
-                  className={`px-3 py-1.5 text-xs font-bold rounded-lg transition-all ${
-                    selectedYear === yr
-                      ? "bg-blue-600 text-white shadow-sm"
-                      : "bg-slate-100 text-slate-700 hover:bg-slate-200"
-                  }`}
-                >
-                  {yr}
-                </button>
-              ))}
+              {years.map((yr) => {
+                const isActive = String(selectedYear) === String(yr);
+                return (
+                  <div key={yr} className="inline-flex items-center group relative">
+                    <button
+                      onClick={() => setSelectedYear(String(yr))}
+                      className={`px-3 py-1.5 text-xs font-bold rounded-lg transition-all ${
+                        isActive
+                          ? "bg-blue-600 text-white shadow-sm"
+                          : "bg-slate-100 text-slate-700 hover:bg-slate-200"
+                      }`}
+                    >
+                      {yr}
+                    </button>
+                    {isActive && years.length > 1 && (
+                      members.length > 0 ? (
+                        // Has members — show red trash to delete entire year
+                        <button
+                          onClick={() => handleDeleteYear(String(yr))}
+                          title={`Delete ALL members for '${yr}' and this tab`}
+                          className="ml-1 text-red-400 hover:text-red-700 transition-colors"
+                        >
+                          <Trash2 size={12} />
+                        </button>
+                      ) : (
+                        // Empty — show X to remove the tab
+                        <button
+                          onClick={() => handleDeleteEdition(String(yr))}
+                          title={`Remove empty tab '${yr}'`}
+                          className="ml-1 text-slate-400 hover:text-red-600 transition-colors"
+                        >
+                          <X size={13} />
+                        </button>
+                      )
+                    )}
+                  </div>
+                );
+              })}
               <button
-                onClick={() => {
-                  const newYr = prompt("Enter new tenure year (e.g., 2027):");
-                  if (newYr && !isNaN(newYr)) {
-                    const parsed = Number(newYr);
-                    if (!years.includes(parsed)) {
-                      setYears((prev) => [parsed, ...prev].sort((a, b) => b - a));
-                    }
-                    setSelectedYear(parsed);
-                  }
-                }}
-                className="px-2 py-1.5 text-xs font-bold text-blue-600 bg-blue-50 hover:bg-blue-100 rounded-lg border border-dashed border-blue-300"
-                title="Add a new year"
+                onClick={() => setIsAddEditionOpen(true)}
+                className="px-2.5 py-1.5 text-xs font-bold text-blue-600 bg-blue-50 hover:bg-blue-100 rounded-lg border border-dashed border-blue-300 flex items-center gap-1 transition-colors"
+                title="Add a new tenure year or custom edition (e.g. 2027, Magnum Opus)"
               >
-                + Year
+                <Plus size={13} /> Add Edition
               </button>
             </div>
           </div>
@@ -791,16 +1109,31 @@ export default function AdminTeamPanel() {
                 </div>
                 <div>
                   <label className="block text-xs font-semibold text-slate-700 mb-1">
-                    Tenure Year *
+                    Tenure / Edition *
                   </label>
-                  <input
-                    type="number"
-                    name="year"
-                    required
-                    value={formData.year}
-                    onChange={handleChange}
-                    className="w-full text-xs p-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 font-mono"
-                  />
+                  <div className="flex gap-1.5">
+                    <input
+                      type="text"
+                      name="year"
+                      required
+                      value={formData.year}
+                      onChange={handleChange}
+                      placeholder="e.g. 2026, Magnum Opus"
+                      className="w-full text-xs p-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 font-semibold"
+                    />
+                    {years.length > 0 && (
+                      <select
+                        value={formData.year}
+                        onChange={(e) => setFormData((prev) => ({ ...prev, year: e.target.value }))}
+                        className="text-xs p-2 border border-slate-300 rounded-lg bg-slate-50 text-slate-700 focus:ring-2 focus:ring-blue-500 shrink-0"
+                      >
+                        <option value="">Select</option>
+                        {years.map((y) => (
+                          <option key={y} value={y}>{y}</option>
+                        ))}
+                      </select>
+                    )}
+                  </div>
                 </div>
               </div>
 
@@ -1039,6 +1372,13 @@ export default function AdminTeamPanel() {
               </div>
             )}
 
+            <div className="p-3 bg-blue-50/70 border-b border-blue-200 text-blue-800 text-xs shrink-0 flex items-center gap-2">
+              <HelpCircle size={16} className="text-blue-600 shrink-0" />
+              <span>
+                <strong>Auto-Assigned Priorities:</strong> Priority (P) and ranking (S) have been automatically assigned based on Team and Role. Google Drive links will be downloaded and hosted on the Cloud CDN upon confirmation.
+              </span>
+            </div>
+
             <div className="p-6 overflow-y-auto grow">
               <table className="w-full text-left text-xs border-collapse">
                 <thead>
@@ -1049,48 +1389,93 @@ export default function AdminTeamPanel() {
                     <th className="p-2">Year</th>
                     <th className="p-2">Team</th>
                     <th className="p-2">Role</th>
-                    <th className="p-2">Priority</th>
-                    <th className="p-2">Sub</th>
+                    <th className="p-2">Group</th>
+                    <th className="p-2">Priority (P)</th>
+                    <th className="p-2">Sub (S)</th>
+                    <th className="p-2">Photo</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-slate-100">
-                  {bulkRows.map((r, i) => (
-                    <tr
-                      key={i}
-                      className={r.isValid ? "hover:bg-slate-50" : "bg-red-50 text-red-700"}
-                    >
-                      <td className="p-2 font-semibold">
-                        {r.isValid ? (
-                          <span className="text-emerald-600 flex items-center gap-1">
-                            <CheckCircle size={14} /> Valid
+                  {bulkRows.map((r, i) => {
+                    const isDrive =
+                      r.image &&
+                      (r.image.includes("drive.google.com") ||
+                        r.image.includes("drive.usercontent") ||
+                        r.image.includes("lh3.googleusercontent"));
+
+                    return (
+                      <tr
+                        key={i}
+                        className={r.isValid ? "hover:bg-slate-50" : "bg-red-50 text-red-700"}
+                      >
+                        <td className="p-2 font-semibold">
+                          {r.isValid ? (
+                            <span className="text-emerald-600 flex items-center gap-1">
+                              <CheckCircle size={14} /> Valid
+                            </span>
+                          ) : (
+                            <span className="text-red-600 flex items-center gap-1">
+                              <AlertCircle size={14} /> Incomplete
+                            </span>
+                          )}
+                        </td>
+                        <td className="p-2 font-mono">{r.rollNo || "-"}</td>
+                        <td className="p-2 font-bold">{r.name || "-"}</td>
+                        <td className="p-2">{r.year}</td>
+                        <td className="p-2 font-semibold text-slate-800">{r.team}</td>
+                        <td className="p-2">{r.role}</td>
+                        <td className="p-2 text-slate-600">{r.group}</td>
+                        <td className="p-2">
+                          <span className="font-mono font-semibold bg-slate-100 px-1.5 py-0.5 rounded text-slate-700">
+                            P:{r.priority_id}
                           </span>
-                        ) : (
-                          <span className="text-red-600 flex items-center gap-1">
-                            <AlertCircle size={14} /> Incomplete
+                          {r._autoP && (
+                            <span className="ml-1 text-[10px] text-blue-600 font-medium">auto</span>
+                          )}
+                        </td>
+                        <td className="p-2">
+                          <span className="font-mono font-semibold bg-slate-100 px-1.5 py-0.5 rounded text-slate-700">
+                            S:{r.sub_priority}
                           </span>
-                        )}
-                      </td>
-                      <td className="p-2 font-mono">{r.rollNo || "-"}</td>
-                      <td className="p-2 font-bold">{r.name || "-"}</td>
-                      <td className="p-2">{r.year}</td>
-                      <td className="p-2">{r.team}</td>
-                      <td className="p-2">{r.role}</td>
-                      <td className="p-2 font-mono">P:{r.priority_id}</td>
-                      <td className="p-2 font-mono">S:{r.sub_priority}</td>
-                    </tr>
-                  ))}
+                          {r._autoS && (
+                            <span className="ml-1 text-[10px] text-blue-600 font-medium">auto</span>
+                          )}
+                        </td>
+                        <td className="p-2">
+                          {isDrive ? (
+                            <span className="inline-flex items-center gap-1 px-1.5 py-0.5 bg-blue-50 text-blue-700 rounded text-[11px] font-medium" title={r.image}>
+                              Drive ☁️
+                            </span>
+                          ) : r.image ? (
+                            <span className="inline-flex items-center gap-1 px-1.5 py-0.5 bg-slate-100 text-slate-600 rounded text-[11px]" title={r.image}>
+                              URL 🔗
+                            </span>
+                          ) : (
+                            <span className="text-slate-400">-</span>
+                          )}
+                        </td>
+                      </tr>
+                    );
+                  })}
                 </tbody>
               </table>
             </div>
 
             <div className="px-6 py-4 border-t border-slate-200 bg-slate-50 flex justify-between items-center shrink-0">
-              <p className="text-xs text-slate-500">
-                Ready to insert{" "}
-                <span className="font-bold text-slate-800">
-                  {bulkRows.filter((r) => r.isValid).length}
-                </span>{" "}
-                valid members.
-              </p>
+              <div>
+                <p className="text-xs text-slate-500">
+                  Ready to insert{" "}
+                  <span className="font-bold text-slate-800">
+                    {bulkRows.filter((r) => r.isValid).length}
+                  </span>{" "}
+                  valid members.
+                </p>
+                {isUploadingBulk && (
+                  <p className="text-xs text-amber-600 mt-1">
+                    ⏳ Downloading &amp; uploading images from Google Drive… This may take a moment.
+                  </p>
+                )}
+              </div>
               <div className="flex gap-2">
                 <button
                   type="button"
@@ -1101,14 +1486,87 @@ export default function AdminTeamPanel() {
                 </button>
                 <button
                   type="button"
+                  onClick={handleDownloadConvertedExcel}
+                  className="px-4 py-2 text-xs font-semibold text-emerald-700 bg-emerald-50 hover:bg-emerald-100 border border-emerald-300 rounded-lg flex items-center gap-1.5 transition-colors"
+                  title="Download an Excel file with all columns and auto-assigned priorities"
+                >
+                  <Download size={14} />
+                  Download Converted Excel
+                </button>
+                <button
+                  type="button"
                   onClick={handleConfirmBulkUpload}
                   disabled={isUploadingBulk || bulkRows.filter((r) => r.isValid).length === 0}
-                  className="px-5 py-2 text-xs font-semibold text-white bg-emerald-600 hover:bg-emerald-700 rounded-lg shadow-sm disabled:opacity-50"
+                  className="px-5 py-2 text-xs font-semibold text-white bg-emerald-600 hover:bg-emerald-700 rounded-lg shadow-sm disabled:opacity-50 flex items-center gap-1.5"
                 >
-                  {isUploadingBulk ? "Uploading..." : "Confirm & Upload"}
+                  <Upload size={14} />
+                  {isUploadingBulk ? "Processing images & uploading…" : "Confirm & Upload"}
                 </button>
               </div>
             </div>
+          </div>
+        </div>
+      )}
+
+      {/* Add New Tenure / Edition Modal */}
+      {isAddEditionOpen && (
+        <div className="fixed inset-0 z-50 bg-black/50 flex items-center justify-center p-4">
+          <div className="bg-white rounded-2xl shadow-xl max-w-sm w-full p-6 space-y-4">
+            <div className="flex justify-between items-center">
+              <h3 className="text-base font-bold text-slate-800 flex items-center gap-2">
+                <Calendar size={18} className="text-blue-600" />
+                Add Tenure / Edition
+              </h3>
+              <button
+                onClick={() => {
+                  setIsAddEditionOpen(false);
+                  setNewEditionName("");
+                }}
+                className="text-slate-400 hover:text-slate-600"
+              >
+                <X size={18} />
+              </button>
+            </div>
+
+            <p className="text-xs text-slate-500">
+              Enter a year (e.g. <strong>2027</strong>) or a custom team edition name (e.g. <strong>Magnum Opus</strong>, <strong>Core Team 2026</strong>).
+            </p>
+
+            <form onSubmit={handleCreateEdition} className="space-y-4">
+              <div>
+                <label className="block text-xs font-semibold text-slate-700 mb-1">
+                  Edition Name *
+                </label>
+                <input
+                  type="text"
+                  autoFocus
+                  required
+                  value={newEditionName}
+                  onChange={(e) => setNewEditionName(e.target.value)}
+                  placeholder="e.g. 2027 or Magnum Opus"
+                  className="w-full text-xs p-2.5 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 font-semibold"
+                />
+              </div>
+
+              <div className="flex justify-end gap-2 pt-2">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setIsAddEditionOpen(false);
+                    setNewEditionName("");
+                  }}
+                  className="px-3.5 py-1.5 text-xs font-semibold text-slate-600 bg-slate-100 hover:bg-slate-200 rounded-lg"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  className="px-4 py-1.5 text-xs font-semibold text-white bg-blue-600 hover:bg-blue-700 rounded-lg shadow-sm"
+                >
+                  Create Edition
+                </button>
+              </div>
+            </form>
           </div>
         </div>
       )}

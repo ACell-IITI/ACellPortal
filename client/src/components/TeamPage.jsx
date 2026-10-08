@@ -3,7 +3,6 @@ import { useEffect, useRef, useState } from "react";
 import axios from "axios";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { teamMembers as fallbackTeamMembers } from "../lib/teamdata";
 import Comp from "../Components/TeamComponent/Comp";
 import { API_BASE_URL } from "../api/alumni";
 import { ChevronDown, Calendar } from "lucide-react";
@@ -49,16 +48,17 @@ export default function TeamPage() {
       if (!selectedYear) return;
       setLoading(true);
       try {
-        const res = await axios.get(`${API_BASE_URL}/api/team?year=${selectedYear}`);
-        if (res.data?.success && res.data.members?.length > 0) {
-          setMembers(res.data.members);
+        const res = await axios.get(
+          `${API_BASE_URL}/api/team?year=${encodeURIComponent(selectedYear)}`
+        );
+        if (res.data?.success) {
+          setMembers(res.data.members || []);
         } else {
-          // If no data in DB for this year, fallback to hardcoded data
-          setMembers(fallbackTeamMembers);
+          setMembers([]);
         }
       } catch (err) {
-        console.error("Error fetching team data from API, using fallback data:", err);
-        setMembers(fallbackTeamMembers);
+        console.error("Error fetching team data from API:", err);
+        setMembers([]);
       } finally {
         setLoading(false);
       }
@@ -152,7 +152,8 @@ export default function TeamPage() {
           <div className="mt-12 flex items-center justify-center flex-wrap gap-3">
             <div className="inline-flex items-center p-1.5 bg-white/80 backdrop-blur-md rounded-2xl shadow-sm border border-slate-200">
               {availableYears.slice(0, 4).map((yr) => {
-                const isActive = selectedYear === yr;
+                const isActive = String(selectedYear) === String(yr);
+                const label = String(yr).match(/^\d{4}$/) ? `TEAM ${yr}` : String(yr);
                 return (
                   <button
                     key={yr}
@@ -163,7 +164,7 @@ export default function TeamPage() {
                         : "text-slate-600 hover:text-slate-900 hover:bg-slate-100"
                     }`}
                   >
-                    TEAM {yr}
+                    {label}
                   </button>
                 );
               })}
@@ -173,13 +174,13 @@ export default function TeamPage() {
                 <div className="relative inline-block ml-1">
                   <select
                     value={selectedYear}
-                    onChange={(e) => setSelectedYear(Number(e.target.value))}
+                    onChange={(e) => setSelectedYear(e.target.value)}
                     className="appearance-none pl-3 pr-8 py-2 rounded-xl text-sm font-bold bg-slate-100 text-slate-700 hover:bg-slate-200 cursor-pointer focus:outline-none"
                   >
-                    <option disabled value="">More Years</option>
+                    <option disabled value="">More Editions</option>
                     {availableYears.map((yr) => (
                       <option key={yr} value={yr}>
-                        Team {yr}
+                        {String(yr).match(/^\d{4}$/) ? `Team ${yr}` : yr}
                       </option>
                     ))}
                   </select>
