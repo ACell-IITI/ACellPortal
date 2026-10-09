@@ -230,17 +230,13 @@ export default function TeamMemberProfile() {
                 <h3 className="text-lg font-bold text-slate-900 tracking-tight mb-3">
                   Why I Joined Alumni Cell
                 </h3>
-                <div className="relative pl-6 sm:pl-10 pr-4 py-2">
-                  <span className="absolute -left-1 -top-4 text-6xl sm:text-7xl font-serif text-black select-none pointer-events-none leading-none">
-                    &ldquo;
-                  </span>
-                  <p className="text-slate-700 text-base sm:text-lg italic leading-relaxed pt-2">
+                <div className="py-2">
+                  <p className="text-slate-700 text-base sm:text-lg italic leading-relaxed">
+                    <span className="text-5xl sm:text-6xl font-serif text-black select-none leading-none relative top-3 mr-1">&ldquo;</span>
                     {member.whyJoin ||
                       "I wanted to contribute to strengthening the connection between students and the alumni network, learning from industry leaders and giving back to the IIT Indore community."}
+                    <span className="text-5xl sm:text-6xl font-serif text-black select-none leading-none relative top-3 ml-1">&rdquo;</span>
                   </p>
-                  <span className="text-5xl sm:text-6xl font-serif text-black select-none pointer-events-none leading-none inline-block align-bottom -mb-3 ml-1">
-                    &rdquo;
-                  </span>
                 </div>
               </div>
 

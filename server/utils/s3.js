@@ -29,8 +29,10 @@ export const uploadToR2 = async (filePath, folder, originalName) => {
       throw new Error("filePath or folder missing");
     }
 
+    const { randomUUID } = await import("crypto");
     const fileStream = fs.createReadStream(filePath);
-    const fileName = `${Date.now()}-${path.basename(originalName).replace(/\s+/g, "_")}`;
+    const ext = path.extname(originalName) || "";
+    const fileName = `${Date.now()}-${randomUUID().slice(0, 8)}${ext}`;
     const objectKey = `${folder}/${fileName}`;
 
     // Determine mime type
