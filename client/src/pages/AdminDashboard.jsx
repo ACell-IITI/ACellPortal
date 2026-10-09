@@ -23,6 +23,7 @@ import {
 } from "lucide-react";
 import { API_BASE_URL } from "../api/alumni";
 import RegistrationForm from "../Components/RegistrationForm/RegistrationForm";
+import AdminTeamPanel from "../Components/AdminTeamPanel";
 import {
   FaEnvelope,
   FaLinkedin,
@@ -1144,6 +1145,11 @@ const handleDeleteAnnualReport = async (id) => {
     {
       id: "discord",
       label: "Discord Servers",
+      icon: Users,
+    },
+    {
+      id: "team",
+      label: "Team",
       icon: Users,
     },
   ];
@@ -2814,6 +2820,7 @@ const handleDeleteAnnualReport = async (id) => {
           {activeTab === "discord" && (
             <DiscordPanel />
           )}
+          {activeTab === "team" && <AdminTeamPanel />}
         </div>
       </div>
     </div>
