@@ -9,7 +9,7 @@ const teamMemberSchema = new mongoose.Schema(
     role: { type: String, required: true, trim: true },
     group: {
       type: String,
-      enum: ["Head", "Co-Head", "Member", "Advisor"],
+      enum: ["Head", "Co-Head", "Team Lead", "Member", "Volunteer", "Advisor"],
       default: "Member",
     },
     priority_id: { type: Number, default: 1, index: true },

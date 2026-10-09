@@ -1,6 +1,6 @@
 import TeamMember from "../models/TeamMember_model.js";
 import TeamEdition from "../models/TeamEdition_model.js";
-import { uploadToR2, processAndUploadImageUrl } from "../utils/s3.js";
+import { uploadToR2, processAndUploadImageUrl, deleteFromR2 } from "../utils/s3.js";
 import fs from "fs";
 
 // ─── Tenure & Year Sorting / Query Helpers ────────────────────────────────────
@@ -50,15 +50,17 @@ const STANDARD_TEAM_PRIORITIES = [
   { keys: ["pr", "public relations"], priority: 10 },
 ];
 
-/** Derives sub_priority from role string (0: Head, 1: Co-Head, 2: Lead, 3: Core, 4: Member) */
+export const ALLOWED_ROLES = ["Head", "Co-Head", "Team Lead", "Member", "Volunteer"];
+
+/** Derives sub_priority from role string (0: Head, 1: Co-Head, 2: Team Lead, 3: Member, 4: Volunteer) */
 export const deriveSubPriority = (role = "") => {
   const r = role.toLowerCase().trim();
   if (r.includes("advisor")) return 0;
   if ((r.includes("co") && r.includes("head")) || r === "co-head" || r === "cohead") return 1;
   if (r === "head" || r.endsWith(" head") || r.startsWith("head ") || r.includes(" head")) return 0;
   if (r.includes("lead")) return 2;
-  if (r.includes("core")) return 3;
-  return 4; // Member
+  if (r.includes("volunteer")) return 4;
+  return 3; // Member
 };
 
 /** Derives Group enum value from role and team */
@@ -77,6 +79,8 @@ export const deriveGroup = (role = "", team = "") => {
   ) {
     return "Head";
   }
+  if (r.includes("lead")) return "Team Lead";
+  if (r.includes("volunteer")) return "Volunteer";
   return "Member";
 };
 
@@ -397,6 +401,7 @@ export const updateTeamMember = async (req, res) => {
     }
 
     let finalImageUrl = existing.image;
+    let oldImageToDelete = null;
     if (req.file) {
       try {
         const uploadResult = await uploadToR2(
@@ -405,6 +410,9 @@ export const updateTeamMember = async (req, res) => {
           req.file.originalname
         );
         finalImageUrl = uploadResult.url;
+        if (existing.image && existing.image !== finalImageUrl) {
+          oldImageToDelete = existing.image;
+        }
       } catch (uploadErr) {
         console.error("R2 upload error:", uploadErr);
       } finally {
@@ -414,6 +422,9 @@ export const updateTeamMember = async (req, res) => {
       }
     } else if (req.body.image !== undefined) {
       finalImageUrl = req.body.image;
+      if (existing.image && existing.image !== finalImageUrl) {
+        oldImageToDelete = existing.image;
+      }
     }
 
     let updatedYear = undefined;
@@ -455,6 +466,21 @@ export const updateTeamMember = async (req, res) => {
       runValidators: true,
     });
 
+    // If photo was changed, delete previous photo from cloud storage
+    if (oldImageToDelete) {
+      try {
+        const duplicateImage = await TeamMember.findOne({
+          _id: { $ne: existing._id },
+          image: oldImageToDelete,
+        });
+        if (!duplicateImage) {
+          await deleteFromR2(oldImageToDelete);
+        }
+      } catch (cloudErr) {
+        console.warn("[updateTeamMember] Failed to delete old image from cloud:", cloudErr.message);
+      }
+    }
+
     res.status(200).json({
       success: true,
       message: "Team member updated successfully",
@@ -477,10 +503,30 @@ export const updateTeamMember = async (req, res) => {
 export const deleteTeamMember = async (req, res) => {
   try {
     const { id } = req.params;
-    const deleted = await TeamMember.findByIdAndDelete(id);
-    if (!deleted) {
+    const existing = await TeamMember.findById(id);
+    if (!existing) {
       return res.status(404).json({ success: false, message: "Team member not found" });
     }
+
+    // Delete photo from cloud storage (Cloudflare R2) if present
+    if (existing.image) {
+      try {
+        const duplicateImage = await TeamMember.findOne({
+          _id: { $ne: existing._id },
+          image: existing.image,
+        });
+
+        if (!duplicateImage) {
+          await deleteFromR2(existing.image);
+        } else {
+          console.log(`[deleteTeamMember] Image is still referenced by another member, skipping cloud delete.`);
+        }
+      } catch (cloudErr) {
+        console.error(`[deleteTeamMember] Failed to delete image from cloud storage for member ${id}:`, cloudErr);
+      }
+    }
+
+    await TeamMember.findByIdAndDelete(id);
     res.status(200).json({ success: true, message: "Team member deleted successfully" });
   } catch (error) {
     console.error("Error deleting team member:", error);
@@ -501,6 +547,28 @@ export const deleteTeamYear = async (req, res) => {
     }
     const trimmed = decodeURIComponent(year).trim();
     const yearQuery = buildYearQuery(trimmed);
+
+    // Fetch members to delete to clean up their images from cloud storage
+    const membersToDelete = await TeamMember.find({ year: yearQuery }, { _id: 1, image: 1 });
+    const memberIds = membersToDelete.map((m) => m._id);
+    const uniqueImages = [...new Set(membersToDelete.map((m) => m.image).filter(Boolean))];
+
+    // Delete photos from cloud storage (Cloudflare R2) in parallel if not used by any other members
+    await Promise.allSettled(
+      uniqueImages.map(async (imageUrl) => {
+        try {
+          const stillInUse = await TeamMember.findOne({
+            _id: { $nin: memberIds },
+            image: imageUrl,
+          });
+          if (!stillInUse) {
+            await deleteFromR2(imageUrl);
+          }
+        } catch (cloudErr) {
+          console.error(`[deleteTeamYear] Failed to delete image from cloud storage (${imageUrl}):`, cloudErr);
+        }
+      })
+    );
 
     const result = await TeamMember.deleteMany({ year: yearQuery });
     // Also remove the edition record

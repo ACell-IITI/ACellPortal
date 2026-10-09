@@ -56,8 +56,8 @@ const deriveSubPriority = (role = "") => {
   if ((r.includes("co") && r.includes("head")) || r === "co-head" || r === "cohead") return 1;
   if (r === "head" || r.endsWith(" head") || r.startsWith("head ") || r.includes(" head")) return 0;
   if (r.includes("lead")) return 2;
-  if (r.includes("core")) return 3;
-  return 4; // Member
+  if (r.includes("volunteer")) return 4;
+  return 3; // Member
 };
 
 const deriveGroup = (role = "", team = "") => {
@@ -75,6 +75,8 @@ const deriveGroup = (role = "", team = "") => {
   ) {
     return "Head";
   }
+  if (r.includes("lead")) return "Team Lead";
+  if (r.includes("volunteer")) return "Volunteer";
   return "Member";
 };
 

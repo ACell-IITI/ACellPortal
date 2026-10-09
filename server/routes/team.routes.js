@@ -10,6 +10,7 @@ import {
   bulkAddTeamMembers,
   addTeamEdition,
   deleteTeamEdition,
+  ALLOWED_ROLES,
 } from "../controllers/team.controller.js";
 import upload from "../middleware/multer.js";
 
@@ -18,6 +19,7 @@ const router = express.Router();
 // Public routes
 router.get("/", getTeamMembers);
 router.get("/years", getAvailableYears);
+router.get("/roles", (req, res) => res.status(200).json({ success: true, roles: ALLOWED_ROLES }));
 router.get("/member/:rollNo", getTeamMemberByRollNo);
 
 // Admin / Management routes

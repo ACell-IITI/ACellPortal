@@ -129,17 +129,10 @@ export default function TeamMemberProfile() {
             <span>Back to Team</span>
           </button>
 
-          <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-            <div>
-              <h1 className="text-3xl md:text-5xl font-extrabold tracking-tight">
-                {member.name}
-              </h1>
-            </div>
-            {member.year && (
-              <div className="inline-flex items-center px-4 py-2 bg-white/10 backdrop-blur-sm rounded-xl border border-white/20 text-sm font-bold tracking-wide">
-                Tenure {member.year}
-              </div>
-            )}
+          <div>
+            <h1 className="text-3xl md:text-5xl font-extrabold tracking-tight">
+              {member.name}
+            </h1>
           </div>
         </div>
       </div>
@@ -151,11 +144,11 @@ export default function TeamMemberProfile() {
           <div className="lg:col-span-4 space-y-6">
             <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 text-center">
               {/* Photo Container with Proper Fit to Prevent Cropping */}
-              <div className="w-full max-w-[260px] h-64 sm:h-72 mx-auto rounded-2xl overflow-hidden bg-slate-50 border border-slate-200 shadow-sm flex items-center justify-center p-2 mb-4">
+              <div className="w-full max-w-[260px] h-64 sm:h-72 mx-auto rounded-2xl overflow-hidden flex items-center justify-center mb-4">
                 <img
                   src={formatImageUrl(member.image)}
                   alt={member.name}
-                  className="w-full h-full object-contain rounded-xl"
+                  className="w-full h-full object-contain rounded-2xl"
                   onError={(e) => {
                     e.target.onerror = null;
                     e.target.src = "https://via.placeholder.com/200";
@@ -168,23 +161,23 @@ export default function TeamMemberProfile() {
                 {member.role} &bull; {member.team}
               </p>
 
-              <div className="mt-5 pt-4 border-t border-slate-100 space-y-2.5 text-left text-xs text-slate-600">
+              <div className="mt-5 pt-4 border-t border-slate-100 space-y-3 text-left text-sm text-slate-700">
                 <div className="flex items-center gap-2.5">
-                  <span className="font-semibold text-slate-400 w-20">Roll No:</span>
-                  <span className="font-mono font-bold text-slate-800">{member.rollNo || rollNo}</span>
+                  <span className="font-semibold text-slate-500 w-20 shrink-0">Roll No:</span>
+                  <span className="font-mono font-bold text-black">{member.rollNo || rollNo}</span>
                 </div>
                 {member.branch && (
                   <div className="flex items-start gap-2.5">
-                    <span className="font-semibold text-slate-400 w-20 shrink-0">Branch:</span>
-                    <span className="text-slate-700 font-medium">{member.branch}</span>
+                    <span className="font-semibold text-slate-500 w-20 shrink-0">Branch:</span>
+                    <span className="text-black font-medium">{member.branch}</span>
                   </div>
                 )}
                 {(member.contact || member.Contact) && (
                   <div className="flex items-center gap-2.5">
-                    <span className="font-semibold text-slate-400 w-20">Contact:</span>
+                    <span className="font-semibold text-slate-500 w-20 shrink-0">Contact:</span>
                     <a
                       href={`tel:${member.contact || member.Contact}`}
-                      className="text-blue-600 hover:underline font-medium"
+                      className="text-black hover:underline font-medium"
                     >
                       {member.contact || member.Contact}
                     </a>
@@ -227,31 +220,6 @@ export default function TeamMemberProfile() {
                 )}
               </div>
             </div>
-
-            {/* Past Tenures History (if part of cell across multiple years) */}
-            {allTenures.length > 1 && (
-              <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-5">
-                <h3 className="text-xs font-bold uppercase tracking-wider text-slate-500 mb-3">
-                  Tenure History
-                </h3>
-                <div className="space-y-2">
-                  {allTenures.map((t) => (
-                    <div
-                      key={t._id || t.year}
-                      className="p-2.5 rounded-lg bg-slate-50 border border-slate-100 text-xs flex justify-between items-center"
-                    >
-                      <div>
-                        <p className="font-bold text-slate-800">{t.role}</p>
-                        <p className="text-slate-500">{t.team}</p>
-                      </div>
-                      <span className="font-mono font-bold text-[#153462] bg-blue-50 px-2 py-0.5 rounded">
-                        {t.year}
-                      </span>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
           </div>
 
           {/* Right Column: ALL 3 SECTIONS MERGED IN ONE SINGLE CARD */}
@@ -263,14 +231,14 @@ export default function TeamMemberProfile() {
                   Why I Joined Alumni Cell
                 </h3>
                 <div className="relative pl-6 sm:pl-10 pr-4 py-2">
-                  <span className="absolute -left-1 -top-4 text-6xl sm:text-7xl font-serif text-blue-300 select-none pointer-events-none leading-none">
+                  <span className="absolute -left-1 -top-4 text-6xl sm:text-7xl font-serif text-black select-none pointer-events-none leading-none">
                     &ldquo;
                   </span>
                   <p className="text-slate-700 text-base sm:text-lg italic leading-relaxed pt-2">
                     {member.whyJoin ||
                       "I wanted to contribute to strengthening the connection between students and the alumni network, learning from industry leaders and giving back to the IIT Indore community."}
                   </p>
-                  <span className="text-5xl sm:text-6xl font-serif text-blue-300 select-none pointer-events-none leading-none inline-block align-bottom -mb-3 ml-1">
+                  <span className="text-5xl sm:text-6xl font-serif text-black select-none pointer-events-none leading-none inline-block align-bottom -mb-3 ml-1">
                     &rdquo;
                   </span>
                 </div>

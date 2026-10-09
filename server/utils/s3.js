@@ -56,23 +56,102 @@ export const uploadToR2 = async (filePath, folder, originalName) => {
 };
 
 /**
- * Deletes a file from Cloudflare R2.
- * @param {string} objectKey - The R2 object key (e.g., 'newsletters/123-file.pdf').
+ * Extracts the R2 object key from an object key or public URL.
+ * Supports:
+ * - Direct object keys: 'team/12345-photo.jpg'
+ * - CDN URLs: 'https://acellcdn.alumnicellst.workers.dev/team/12345-photo.jpg'
+ * - Direct R2 bucket URLs: 'https://...r2.cloudflarestorage.com/acellmedia/team/12345-photo.jpg'
+ * Returns null if the URL is not hosted on R2, is a local relative asset, or is empty.
+ *
+ * @param {string} keyOrUrl - The object key or URL
+ * @returns {string|null}
  */
-export const deleteFromR2 = async (objectKey) => {
+export const extractR2Key = (keyOrUrl) => {
+  if (!keyOrUrl || typeof keyOrUrl !== "string") return null;
+  const trimmed = keyOrUrl.trim();
+  if (!trimmed) return null;
+
+  const bucketName = process.env.R2_BUCKET || "acellmedia";
+
+  // If local relative frontend path (e.g., /Team/... or ../Team/...), it's not in R2
+  if (trimmed.startsWith(".") || trimmed.startsWith("/")) {
+    return null;
+  }
+
+  // If it does not start with http:// or https://, treat as direct key if valid
+  if (!trimmed.startsWith("http://") && !trimmed.startsWith("https://")) {
+    return trimmed;
+  }
+
   try {
+    const parsed = new URL(trimmed);
+    const host = parsed.hostname.toLowerCase();
+
+    // Check if hostname belongs to CDN or R2 endpoint
+    let cdnHostname = "";
+    try {
+      if (process.env.R2_CDN_URL) {
+        cdnHostname = new URL(process.env.R2_CDN_URL).hostname.toLowerCase();
+      }
+    } catch (e) {}
+
+    const isR2Host =
+      (cdnHostname && host === cdnHostname) ||
+      host === "acellcdn.alumnicellst.workers.dev" ||
+      host.endsWith("r2.cloudflarestorage.com") ||
+      host.endsWith("r2.dev") ||
+      host.endsWith("workers.dev");
+
+    let pathname = decodeURIComponent(parsed.pathname).replace(/^\/+/, "");
+
+    // If bucket name is prefixed in the pathname
+    if (pathname.startsWith(`${bucketName}/`)) {
+      pathname = pathname.substring(bucketName.length + 1);
+    }
+
+    if (
+      isR2Host ||
+      pathname.startsWith("team/") ||
+      pathname.startsWith("newsletters/") ||
+      pathname.startsWith("magazines/") ||
+      pathname.startsWith("yearbooks/") ||
+      pathname.startsWith("alumni-contributions/")
+    ) {
+      return pathname;
+    }
+
+    return null;
+  } catch (err) {
+    return null;
+  }
+};
+
+/**
+ * Deletes a file from Cloudflare R2.
+ * Accepts either an R2 object key (e.g., 'newsletters/123-file.pdf') or a public CDN/R2 URL.
+ * @param {string} objectKeyOrUrl - The R2 object key or public URL.
+ */
+export const deleteFromR2 = async (objectKeyOrUrl) => {
+  try {
+    if (!objectKeyOrUrl) {
+      return;
+    }
+
+    const objectKey = extractR2Key(objectKeyOrUrl);
     if (!objectKey) {
       return;
     }
 
+    const bucketName = process.env.R2_BUCKET || "acellmedia";
     const deleteParams = {
-      Bucket: "acellmedia",
+      Bucket: bucketName,
       Key: objectKey,
     };
 
     await s3Client.send(new DeleteObjectCommand(deleteParams));
+    console.log(`[R2 Delete] Successfully deleted object: ${objectKey}`);
   } catch (err) {
-    console.error("R2 Delete error:", err);
+    console.error(`[R2 Delete] Error deleting ${objectKeyOrUrl}:`, err);
     throw err;
   }
 };

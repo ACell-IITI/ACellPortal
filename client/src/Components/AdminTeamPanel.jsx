@@ -42,8 +42,8 @@ const deriveSubPriorityClient = (role = "") => {
   if ((r.includes("co") && r.includes("head")) || r === "co-head" || r === "cohead") return 1;
   if (r === "head" || r.endsWith(" head") || r.startsWith("head ") || r.includes(" head")) return 0;
   if (r.includes("lead")) return 2;
-  if (r.includes("core")) return 3;
-  return 4; // Member
+  if (r.includes("volunteer")) return 4;
+  return 3; // Member
 };
 
 const deriveGroupClient = (role = "", team = "") => {
@@ -61,6 +61,8 @@ const deriveGroupClient = (role = "", team = "") => {
   ) {
     return "Head";
   }
+  if (r.includes("lead")) return "Team Lead";
+  if (r.includes("volunteer")) return "Volunteer";
   return "Member";
 };
 
@@ -179,6 +181,14 @@ const DEFAULT_TEAMS = [
   "Logistics",
   "Newsletter",
   "Content",
+];
+
+const DEFAULT_ROLES = [
+  "Head",
+  "Co-Head",
+  "Team Lead",
+  "Member",
+  "Volunteer",
 ];
 
 export default function AdminTeamPanel() {
@@ -1167,11 +1177,17 @@ export default function AdminTeamPanel() {
                     type="text"
                     name="role"
                     required
+                    list="role-options"
                     value={formData.role}
                     onChange={handleChange}
-                    placeholder="e.g. Head, Team Lead"
+                    placeholder="e.g. Head, Team Lead, Volunteer"
                     className="w-full text-xs p-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500"
                   />
+                  <datalist id="role-options">
+                    {DEFAULT_ROLES.map((r) => (
+                      <option key={r} value={r} />
+                    ))}
+                  </datalist>
                 </div>
                 <div>
                   <label className="block text-xs font-semibold text-slate-700 mb-1">
@@ -1185,7 +1201,9 @@ export default function AdminTeamPanel() {
                   >
                     <option value="Head">Head</option>
                     <option value="Co-Head">Co-Head</option>
+                    <option value="Team Lead">Team Lead</option>
                     <option value="Member">Member</option>
+                    <option value="Volunteer">Volunteer</option>
                     <option value="Advisor">Advisor</option>
                   </select>
                 </div>
