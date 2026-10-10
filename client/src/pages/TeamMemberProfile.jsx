@@ -8,7 +8,12 @@ import { teamMembers as fallbackTeamMembers } from "../lib/teamdata";
 
 const formatImageUrl = (url) => {
   if (!url) return "https://via.placeholder.com/200";
-  if (url.startsWith("http://") || url.startsWith("https://") || url.startsWith("data:")) return url;
+  if (
+    url.startsWith("http://") ||
+    url.startsWith("https://") ||
+    url.startsWith("data:")
+  )
+    return url;
   if (url.startsWith("../")) return url.replace(/^\.\.\//, "/");
   if (!url.startsWith("/")) return `/${url}`;
   return url;
@@ -23,12 +28,18 @@ export default function TeamMemberProfile() {
   const [error, setError] = useState(null);
 
   useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [rollNo]);
+
+  useEffect(() => {
     async function fetchProfile() {
       if (!rollNo) return;
       setLoading(true);
       setError(null);
       try {
-        const res = await axios.get(`${API_BASE_URL}/api/team/member/${rollNo}`);
+        const res = await axios.get(
+          `${API_BASE_URL}/api/team/member/${rollNo}`,
+        );
         if (res.data?.success && res.data.member) {
           setMember(res.data.member);
           setAllTenures(res.data.allTenures || [res.data.member]);
@@ -47,7 +58,7 @@ export default function TeamMemberProfile() {
       const found = fallbackTeamMembers.find(
         (m) =>
           String(m.rollNo) === String(rollNo) ||
-          String(m.id) === String(rollNo)
+          String(m.id) === String(rollNo),
       );
       if (found) {
         setMember({
@@ -99,9 +110,12 @@ export default function TeamMemberProfile() {
         <div className="w-16 h-16 rounded-full bg-red-100 text-red-600 flex items-center justify-center mb-4 text-2xl font-bold">
           !
         </div>
-        <h2 className="text-2xl font-bold text-slate-800 mb-2">Profile Not Found</h2>
+        <h2 className="text-2xl font-bold text-slate-800 mb-2">
+          Profile Not Found
+        </h2>
         <p className="text-slate-500 max-w-md mb-6">
-          We couldn't find a team member profile matching roll number "{rollNo}".
+          We couldn't find a team member profile matching roll number "{rollNo}
+          ".
         </p>
         <button
           type="button"
@@ -125,7 +139,10 @@ export default function TeamMemberProfile() {
             onClick={() => navigate("/team")}
             className="inline-flex items-center gap-2 text-white hover:text-blue-200 transition-colors text-base font-bold mb-6 cursor-pointer group"
           >
-            <ArrowLeft size={18} className="group-hover:-translate-x-1 transition-transform" />
+            <ArrowLeft
+              size={18}
+              className="group-hover:-translate-x-1 transition-transform"
+            />
             <span>Back to Team</span>
           </button>
 
@@ -156,25 +173,37 @@ export default function TeamMemberProfile() {
                 />
               </div>
 
-              <h2 className="text-xl font-bold text-slate-900">{member.name}</h2>
+              <h2 className="text-xl font-bold text-slate-900">
+                {member.name}
+              </h2>
               <p className="text-sm font-semibold text-[#153462] mt-1">
                 {member.role} &bull; {member.team}
               </p>
 
               <div className="mt-5 pt-4 border-t border-slate-100 space-y-3 text-left text-sm text-slate-700">
                 <div className="flex items-center gap-2.5">
-                  <span className="font-semibold text-slate-500 w-20 shrink-0">Roll No:</span>
-                  <span className="font-mono font-bold text-black">{member.rollNo || rollNo}</span>
+                  <span className="font-semibold text-slate-500 w-20 shrink-0">
+                    Roll No:
+                  </span>
+                  <span className="font-mono font-bold text-black">
+                    {member.rollNo || rollNo}
+                  </span>
                 </div>
                 {member.branch && (
                   <div className="flex items-start gap-2.5">
-                    <span className="font-semibold text-slate-500 w-20 shrink-0">Branch:</span>
-                    <span className="text-black font-medium">{member.branch}</span>
+                    <span className="font-semibold text-slate-500 w-20 shrink-0">
+                      Branch:
+                    </span>
+                    <span className="text-black font-medium">
+                      {member.branch}
+                    </span>
                   </div>
                 )}
                 {(member.contact || member.Contact) && (
                   <div className="flex items-center gap-2.5">
-                    <span className="font-semibold text-slate-500 w-20 shrink-0">Contact:</span>
+                    <span className="font-semibold text-slate-500 w-20 shrink-0">
+                      Contact:
+                    </span>
                     <a
                       href={`tel:${member.contact || member.Contact}`}
                       className="text-black hover:underline font-medium"
@@ -232,10 +261,14 @@ export default function TeamMemberProfile() {
                 </h3>
                 <div className="py-2">
                   <p className="text-slate-700 text-base sm:text-lg italic leading-relaxed">
-                    <span className="text-5xl sm:text-6xl font-serif text-black select-none leading-none relative top-3 mr-1">&ldquo;</span>
+                    <span className="text-5xl sm:text-6xl font-serif text-black select-none leading-none relative top-3 mr-1">
+                      &ldquo;
+                    </span>
                     {member.whyJoin ||
                       "I wanted to contribute to strengthening the connection between students and the alumni network, learning from industry leaders and giving back to the IIT Indore community."}
-                    <span className="text-5xl sm:text-6xl font-serif text-black select-none leading-none relative top-3 ml-1">&rdquo;</span>
+                    <span className="text-5xl sm:text-6xl font-serif text-black select-none leading-none relative top-3 ml-1">
+                      &rdquo;
+                    </span>
                   </p>
                 </div>
               </div>

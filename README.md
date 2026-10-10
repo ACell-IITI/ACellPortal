@@ -12,7 +12,7 @@ The project also includes an admin dashboard for managing most public content, i
 ## Features
 
 - Public home page for Alumni Cell content, recent gallery photos, upcoming events, programs, and Saathi banner content.
-- KYA profile listing with backend-managed alumni profile data.
+- KYA profile listing with backend-managed alumni profile.
 - Newsletter, magazine, and yearbook sections with PDF/flipbook-style viewing.
 - Mentor registration form and verified mentors directory.
 - CV review submission form for IIT Indore institute email addresses.
