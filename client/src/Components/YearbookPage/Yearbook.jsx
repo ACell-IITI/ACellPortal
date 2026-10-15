@@ -1,19 +1,40 @@
+
+// export default Yearbook;
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { API_BASE_URL } from "../../api/alumni";
+
+import yearbook2023 from "../../yearbook/yearbook 2023 cover.png";
+import yearbook2024 from "../../yearbook/yearbook 2024 cover.png";
+import yearbook2025 from "../../yearbook/yearbook 2025 cover.png";
+import yearbook2026 from "../../yearbook/yearbook 2026 cover.png";
+import yearbook2026PG from "../../yearbook/yearbook 2026 PG cover.png";
 
 const Yearbook = () => {
     const [yearbooks, setYearbooks] = useState([]);
     const [loading, setLoading] = useState(true);
     const [selectedYearbook, setSelectedYearbook] = useState(null);
 
+    const yearbookImages = {
+        "2023": yearbook2023,
+        "2024": yearbook2024,
+        "2025": yearbook2025,
+        "2026": yearbook2026,
+    };
+
+    // Fetch yearbook data from MongoDB through backend
     useEffect(() => {
         const fetchYearbooks = async () => {
             try {
-                const res = await axios.get(`${API_BASE_URL}/api/admin/get-yearbooks`);
-                const YearbooksData = res.data.data || res.data;
-                if (YearbooksData && YearbooksData.length > 0) {
-                    const sorted = YearbooksData.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+                const res = await axios.get(
+                    `${API_BASE_URL}/api/admin/get-yearbooks`
+                );
+                const yearbooksData = res.data.data || res.data;
+                if (yearbooksData && yearbooksData.length > 0) {
+                    const sorted = [...yearbooksData].sort(
+                        (a, b) =>
+                            new Date(b.createdAt) - new Date(a.createdAt)
+                    );
                     setYearbooks(sorted);
                 }
             } catch (err) {
@@ -25,7 +46,7 @@ const Yearbook = () => {
         fetchYearbooks();
     }, []);
 
-    // Listen to ESC key to close modal
+    // Close modal using Escape key
     useEffect(() => {
         const handleKeyDown = (e) => {
             if (e.key === "Escape") {
@@ -35,145 +56,454 @@ const Yearbook = () => {
         if (selectedYearbook) {
             window.addEventListener("keydown", handleKeyDown);
         }
-        return () => window.removeEventListener("keydown", handleKeyDown);
+        return () => {
+            window.removeEventListener("keydown", handleKeyDown);
+        };
     }, [selectedYearbook]);
 
+    // Loading state
     if (loading) {
-        return <div className="text-center py-10 text-lg font-semibold text-[#0F2A5A]">Loading Yearbooks...</div>;
-    }
-    if (!yearbooks || yearbooks.length === 0) {
-        return <div className="text-center py-10 text-lg text-red-600 font-semibold">No Yearbooks available!</div>;
+        return (
+            <div className="text-center py-10 text-lg font-semibold text-[#0F2A5A]">
+                Loading Yearbooks...
+            </div>
+        );
     }
 
+    // Empty state
+    if (!yearbooks || yearbooks.length === 0) {
+        return (
+            <div className="text-center py-10 text-lg text-red-600 font-semibold">
+                No Yearbooks available!
+            </div>
+        );
+    }
+
+    // Options for selected yearbook
+    // Only PDF/title data comes from MongoDB
     const effectiveOptions = selectedYearbook
-        ? (selectedYearbook.options && selectedYearbook.options.length > 0
+        ? selectedYearbook.options &&
+          selectedYearbook.options.length > 0
             ? selectedYearbook.options
-            : (selectedYearbook.pdfUrl ? [{ _id: 'legacy', title: selectedYearbook.title, pdfUrl: selectedYearbook.pdfUrl, imageUrl: selectedYearbook.coverImage }] : []))
+            : selectedYearbook.pdfUrl
+            ? [
+                  {
+                      _id: "legacy",
+                      title: selectedYearbook.title,
+                      pdfUrl: selectedYearbook.pdfUrl,
+                      imageUrl: selectedYearbook.coverImage,
+                  },
+              ]
+            : []
         : [];
+
+    const selectedYear =
+        selectedYearbook?.title?.match(/\d{4}/)?.[0];
+    const selectedCoverImage =
+        selectedYear === "2026" ? null : yearbookImages[selectedYear];
 
     return (
         <>
-            <main className='mx-1 sm:mx-3 lg:mx-10 mt-16 lg:mt-10 mb-5 text-[#0F2A5A]'>
-                <div className="textSection text-center mb-8">
-                    <h1 className='text-4xl font-bold font-inter text-[#0F2A5A]'>Discover Stories Inside Our Yearbooks</h1>
-                    <p className='mt-4 text-lg text-gray-600 max-w-2xl mx-auto'>
-                        Our annual alumni Yearbooks capture the spirit of our vibrant community—featuring inspiring journeys, professional milestones, campus nostalgia, and memorable moments. Each edition is a curated collection of voices and stories that celebrate the legacy we all share.
+            {/* ================= MAIN PAGE ================= */}
+            <main className="px-3 sm:px-5 lg:px-8 mt-14 sm:mt-16 lg:mt-8 mb-8 text-[#0F2A5A]">
+                {/* Heading */}
+                <div className="text-center mb-6 sm:mb-7">
+                    <h1
+                        className="
+                            text-2xl
+                            sm:text-3xl
+                            lg:text-[2.5rem]
+                            font-bold
+                            leading-tight
+                            font-inter
+                            text-[#0F2A5A]
+                        "
+                    >
+                        Discover Stories Inside Our Yearbooks
+                    </h1>
+                    <p
+                        className="
+                            mt-3
+                            sm:mt-4
+                            text-[13px]
+                            sm:text-sm
+                            lg:text-base
+                            text-gray-600
+                            max-w-2xl
+                            mx-auto
+                            leading-relaxed
+                        "
+                    >
+                        Our annual alumni Yearbooks capture the spirit of our
+                        vibrant community—featuring inspiring journeys,
+                        professional milestones, campus nostalgia, and
+                        memorable moments.
                     </p>
                 </div>
-
-                <div className="contentSection mx-0 sm:mx-3 lg:mx-10 mt-7">
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                        {yearbooks.map((yearbook, index) => (
-                            <div 
-                                key={yearbook._id} 
-                                className="yearbook-card bg-[#B9CDC0] rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 flex flex-col h-full cursor-pointer"
-                                onClick={() => setSelectedYearbook(yearbook)}
-                            >
-                                <div className="flex flex-col items-center text-center flex-grow">
-                                    <div className="inline-block p-4 bg-white rounded-full mb-4 shadow-sm">
-                                        <svg className="w-8 h-8 text-[#0F2A5A]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
-                                        </svg>
-                                    </div>
-                                    
-                                    {index === 0 && (
-                                        <span className="inline-block bg-[#173460] text-white text-xs font-bold px-3 py-1 rounded-full mb-3">
-                                            Latest Edition
-                                        </span>
+                {/* ================= YEARBOOK GRID ================= */}
+                <div className="mt-5 sm:mt-7">
+                    <div
+                        className="
+                            grid
+                            grid-cols-1
+                            sm:grid-cols-2
+                            lg:grid-cols-3
+                            gap-4
+                            sm:gap-5
+                            max-w-5xl
+                            mx-auto
+                        "
+                    >
+                        {yearbooks.map((yearbook, index) => {
+                            const year =
+                                yearbook.title?.match(/\d{4}/)?.[0];
+                            const coverImage = yearbookImages[year];
+                            return (
+                                <div
+                                    key={yearbook._id}
+                                    onClick={() =>
+                                        setSelectedYearbook(yearbook)
+                                    }
+                                    className="
+                                        group
+                                        relative
+                                        w-full
+                                        max-w-[290px]
+                                        lg:max-w-[310px]
+                                        mx-auto
+                                        h-[180px]
+                                        sm:h-[205px]
+                                        lg:h-[220px]
+                                        overflow-hidden
+                                        rounded-2xl
+                                        cursor-pointer
+                                        shadow-md
+                                        hover:shadow-xl
+                                        active:scale-[0.98]
+                                        transition-all
+                                        duration-300
+                                        hover:-translate-y-1
+                                        bg-[#173460]
+                                    "
+                                >
+                                    {/* Local Cover Image */}
+                                    {coverImage && (
+                                        <img
+                                            src={coverImage}
+                                            alt={
+                                                yearbook.title ||
+                                                "Yearbook cover"
+                                            }
+                                            className="
+                                                absolute
+                                                inset-0
+                                                w-full
+                                                h-full
+                                                object-cover
+                                                object-center
+                                                transition-transform
+                                                duration-500
+                                                group-hover:scale-105
+                                            "
+                                        />
                                     )}
-                                    
-                                    <h3 className='font-bold text-xl text-[#0F2A5A] mb-2 line-clamp-2 min-h-[3.5rem] flex items-center justify-center'>
-                                        {yearbook.title || "Untitled Yearbook"}
-                                    </h3>
-                                    
-                                    <div className="flex gap-3 justify-center items-center mt-auto pt-4">
-                                        <button 
+                                    {/* Overlay */}
+                                    <div
+                                        className="
+                                            absolute
+                                            inset-0
+                                            bg-gradient-to-t
+                                            from-[#071a38]/90
+                                            via-[#071a38]/35
+                                            to-transparent
+                                        "
+                                    />
+                                    {/* Card Content */}
+                                    <div
+                                        className="
+                                            relative
+                                            z-10
+                                            h-full
+                                            flex
+                                            flex-col
+                                            justify-end
+                                            p-4
+                                            sm:p-5
+                                        "
+                                    >
+                                        {/* Latest Edition */}
+                                        {year === "2026" && (
+                                            <span
+                                                className="
+                                                    self-start
+                                                    bg-[#173460]/90
+                                                    border
+                                                    border-white/20
+                                                    text-white
+                                                    text-[10px]
+                                                    sm:text-xs
+                                                    font-semibold
+                                                    px-2.5
+                                                    py-1
+                                                    rounded-full
+                                                    mb-2
+                                                    backdrop-blur-sm
+                                                "
+                                            >
+                                                ☆ Latest Edition
+                                            </span>
+                                        )}
+                                        {/* Title */}
+                                        <h3
+                                            className="
+                                                text-white
+                                                font-bold
+                                                text-lg
+                                                sm:text-xl
+                                                leading-tight
+                                                drop-shadow-md
+                                            "
+                                        >
+                                            {yearbook.title ||
+                                                "Untitled Yearbook"}
+                                        </h3>
+                                        {/* View Button */}
+                                        <button
                                             onClick={(e) => {
                                                 e.stopPropagation();
-                                                setSelectedYearbook(yearbook);
-                                            }} 
-                                            className="bg-[#173460] hover:bg-[#19438b] text-white text-sm font-semibold rounded-lg py-2 px-6 transition-all duration-300 hover:scale-105"
+                                                setSelectedYearbook(
+                                                    yearbook
+                                                );
+                                            }}
+                                            className="
+                                                mt-3
+                                                self-start
+                                                bg-blue-50
+                                                text-[#173460]
+                                                text-xs
+                                                sm:text-sm
+                                                font-semibold
+                                                px-4
+                                                py-2
+                                                rounded-lg
+                                                min-h-[40px]
+                                                transition-all
+                                                duration-200
+                                                hover:bg-gray-100
+                                                active:scale-95
+                                            "
                                         >
                                             📖 View
                                         </button>
                                     </div>
                                 </div>
-                            </div>
-                        ))}
+                            );
+                        })}
                     </div>
                 </div>
             </main>
 
-            {/* Responsive Popup Modal */}
+            {/* ================= MODAL ================= */}
             {selectedYearbook && (
-                <div 
-                    className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 transition-opacity duration-300"
+                <div
+                    className="
+                        fixed
+                        inset-0
+                        bg-black/60
+                        backdrop-blur-sm
+                        z-50
+                        flex
+                        items-center
+                        justify-center
+                        p-2
+                        sm:p-4
+                    "
                     onClick={() => setSelectedYearbook(null)}
                 >
-                    <div 
-                        className="bg-white text-[#0F2A5A] rounded-2xl w-[95%] max-w-2xl max-h-[85vh] overflow-y-auto p-5 sm:p-6 shadow-2xl relative border border-gray-100 transform transition-all duration-300 scale-100"
+                    <div
+                        className="
+                            bg-white
+                            text-[#0F2A5A]
+                            rounded-2xl
+                            w-full
+                            max-w-lg
+                            max-h-[90dvh]
+                            overflow-y-auto
+                            p-3
+                            sm:p-5
+                            shadow-2xl
+                            relative
+                            border
+                            border-gray-100
+                        "
                         onClick={(e) => e.stopPropagation()}
                     >
                         {/* Close Button */}
-                        <button 
+                        <button
                             onClick={() => setSelectedYearbook(null)}
-                            className="absolute top-4 right-4 text-gray-400 hover:text-gray-700 text-2xl font-bold w-8 h-8 flex items-center justify-center rounded-full hover:bg-gray-100 transition"
+                            className="
+                                absolute
+                                top-3
+                                right-3
+                                sm:top-4
+                                sm:right-4
+                                text-gray-400
+                                hover:text-gray-700
+                                text-xl
+                                sm:text-2xl
+                                font-bold
+                                w-9
+                                h-9
+                                flex
+                                items-center
+                                justify-center
+                                rounded-full
+                                hover:bg-gray-100
+                                transition
+                            "
                             aria-label="Close"
                         >
                             ✕
                         </button>
-
-                        <div className="text-center mb-6">
-                            <h2 className="text-2xl sm:text-3xl font-bold text-[#0F2A5A]">
+                        {/* Modal Heading */}
+                        <div className="text-center mb-4 sm:mb-5 pr-8">
+                            <h2
+                                className="
+                                    text-lg
+                                    sm:text-2xl
+                                    font-bold
+                                    text-[#0F2A5A]
+                                "
+                            >
                                 {selectedYearbook.title || "Yearbook"}
                             </h2>
-                            <p className="text-sm text-gray-500 mt-1">
-                                Select an edition below to view in a new tab
+                            <p className="text-xs sm:text-sm text-gray-500 mt-1">
+                                Select an edition below to view
                             </p>
                         </div>
-
-                        {/* Dynamic Options Grid */}
+                        {/* Local Cover Image */}
+                        {selectedCoverImage && (
+                            <div className="flex justify-center mb-5">
+                                <img
+                                    src={selectedCoverImage}
+                                    alt={selectedYearbook.title}
+                                    className="
+                                        w-full
+                                        max-w-[200px]
+                                        h-[240px]
+                                        sm:max-w-[220px]
+                                        sm:h-[280px]
+                                        object-cover
+                                        object-center
+                                        rounded-xl
+                                        shadow-md
+                                    "
+                                />
+                            </div>
+                        )}
+                        {/* PDF Options */}
                         {effectiveOptions.length > 0 ? (
-                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                                {effectiveOptions.map((opt, i) => (
-                                    <div 
-                                        key={opt._id || i}
-                                        className="bg-gray-50 border border-gray-200 rounded-xl p-4 flex flex-col justify-between hover:shadow-md transition duration-200"
-                                    >
-                                        <div>
-                                            {opt.imageUrl ? (
-                                                <img 
-                                                    src={opt.imageUrl} 
-                                                    alt={opt.title} 
-                                                    className="w-full h-44 object-cover rounded-lg mb-3 shadow-sm"
-                                                />
-                                            ) : (
-                                                <div className="w-full h-44 bg-gradient-to-br from-[#173460] to-[#0F2A5A] rounded-lg flex flex-col items-center justify-center text-white p-4 shadow-sm mb-3">
-                                                    <svg className="w-12 h-12 mb-2 opacity-80" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
-                                                    </svg>
-                                                    <span className="text-xs font-medium tracking-wide uppercase opacity-90">{selectedYearbook.title}</span>
-                                                </div>
-                                            )}
+                            <div
+                                className="
+                                    grid
+                                    grid-cols-1
+                                    sm:grid-cols-2
+                                    gap-3
+                                    sm:gap-4
+                                "
+                            >
+                                {effectiveOptions.map((opt, i) => {
+                                    const optionGroup =
+                                        opt.title?.toLowerCase().includes("pg")
+                                            ? "PG"
+                                            : opt.title?.toLowerCase().includes("ug")
+                                              ? "UG"
+                                              : i === 0
+                                                ? "PG"
+                                                : "UG";
+                                    const optionTitle =
+                                        selectedYear === "2026"
+                                            ? `${optionGroup} Yearbook 2026`
+                                            : opt.title;
+                                    const optionCoverImage =
+                                        selectedYear === "2026"
+                                            ? optionGroup === "PG"
+                                                ? yearbook2026PG
+                                                : yearbook2026
+                                            : null;
 
-                                            <h3 className="font-bold text-lg text-center text-[#0F2A5A] mb-3">
-                                                {opt.title}
-                                            </h3>
-                                        </div>
-
-                                        <a 
-                                            href={opt.pdfUrl} 
-                                            target="_blank" 
-                                            rel="noopener noreferrer"
-                                            className="w-full bg-[#173460] hover:bg-[#19438b] text-white text-center font-semibold py-2.5 px-4 rounded-lg transition-all duration-200 block shadow-sm hover:scale-[1.02] text-sm"
+                                    return (
+                                        <div
+                                            key={opt._id || i}
+                                            className="
+                                                bg-gray-50
+                                                border
+                                                border-gray-200
+                                                rounded-xl
+                                                p-3
+                                                sm:p-4
+                                            "
                                         >
-                                            📖 Open {opt.title}
-                                        </a>
-                                    </div>
-                                ))}
+                                            {optionCoverImage && (
+                                                <img
+                                                    src={optionCoverImage}
+                                                    alt={optionTitle}
+                                                    className="
+                                                        w-full
+                                                        h-40
+                                                        sm:h-48
+                                                        lg:h-52
+                                                        object-contain
+                                                        bg-white
+                                                        object-center
+                                                        rounded-lg
+                                                        shadow-sm
+                                                        mb-3
+                                                    "
+                                                />
+                                            )}
+                                            <h3
+                                                className="
+                                                    font-bold
+                                                    text-base
+                                                    sm:text-lg
+                                                    text-center
+                                                    text-[#0F2A5A]
+                                                    mb-3
+                                                "
+                                            >
+                                                {optionTitle}
+                                            </h3>
+                                            <a
+                                                href={opt.pdfUrl}
+                                                target="_blank"
+                                                rel="noopener noreferrer"
+                                                className="
+                                                    w-full
+                                                    bg-[#173460]
+                                                    hover:bg-[#19438b]
+                                                    text-white
+                                                    text-center
+                                                    font-semibold
+                                                    py-2.5
+                                                    px-4
+                                                    rounded-lg
+                                                    transition-all
+                                                    duration-200
+                                                    block
+                                                    text-sm
+                                                "
+                                            >
+                                                📖 Open {optionTitle}
+                                            </a>
+                                        </div>
+                                    );
+                                })}
                             </div>
                         ) : (
-                            <p className="text-center text-gray-500 py-6">No links available for this yearbook.</p>
+                            <p className="text-center text-gray-500 py-6">
+                                No links available for this yearbook.
+                            </p>
                         )}
                     </div>
                 </div>
@@ -181,5 +511,4 @@ const Yearbook = () => {
         </>
     );
 };
-
 export default Yearbook;
