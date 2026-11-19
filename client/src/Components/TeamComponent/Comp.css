@@ -348,13 +348,20 @@
 }
 
 .team-swiper {
-  padding: 0.5rem 1rem;
+  padding: 0.5rem 4.5rem;
   width: 100%;
+  position: relative;
 }
 
-@media (min-width: 640px) {
+@media (max-width: 1024px) {
   .team-swiper {
-    padding: 0.5rem 1rem;
+    padding: 0.5rem 3.5rem;
+  }
+}
+
+@media (max-width: 640px) {
+  .team-swiper {
+    padding: 0.5rem 2.5rem;
   }
 }
 
@@ -372,27 +379,57 @@
   margin: 1rem auto 1.5rem;
 }
 
-.swiper-button-next,
-.swiper-button-prev {
+.team-swiper .swiper-button-next,
+.team-swiper .swiper-button-prev {
   color: #0ea5e9;
   background: white;
   width: 3rem;
   height: 3rem;
   border-radius: 9999px;
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
   transition: all 0.3s ease;
+  top: 50%;
+  margin-top: 0;
+  transform: translateY(-50%);
+  z-index: 20;
 }
 
-.swiper-button-next:after,
-.swiper-button-prev:after {
+.team-swiper .swiper-button-prev {
+  left: 0.5rem;
+}
+
+.team-swiper .swiper-button-next {
+  right: 0.5rem;
+}
+
+.team-swiper .swiper-button-next:after,
+.team-swiper .swiper-button-prev:after {
   font-size: 1.25rem;
   font-weight: 700;
 }
 
-.swiper-button-next:hover,
-.swiper-button-prev:hover {
+.team-swiper .swiper-button-next:hover,
+.team-swiper .swiper-button-prev:hover {
   background: #0ea5e9;
   color: white;
-  transform: scale(1.1);
+  transform: translateY(-50%) scale(1.1);
   box-shadow: 0 10px 15px -3px rgba(14, 165, 233, 0.3);
+}
+
+@media (max-width: 640px) {
+  .team-swiper .swiper-button-next,
+  .team-swiper .swiper-button-prev {
+    width: 2.25rem;
+    height: 2.25rem;
+  }
+  .team-swiper .swiper-button-prev {
+    left: 0.25rem;
+  }
+  .team-swiper .swiper-button-next {
+    right: 0.25rem;
+  }
+  .team-swiper .swiper-button-next:after,
+  .team-swiper .swiper-button-prev:after {
+    font-size: 0.875rem;
+  }
 }
