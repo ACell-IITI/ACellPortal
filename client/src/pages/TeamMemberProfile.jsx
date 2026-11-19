@@ -65,11 +65,9 @@ export default function TeamMemberProfile() {
           ...found,
           year: 2025,
           branch: found.branch || "Indian Institute of Technology Indore",
-          whyJoin:
-            found.whyJoin ||
-            "I wanted to contribute to strengthening the connection between students and the alumni network, learning from industry leaders and giving back to the IIT Indore community.",
+          whyJoin: found.whyJoin || "",
           por: found.por || "",
-          hobbies: found.hobbies || "Reading, Technology, Networking",
+          hobbies: found.hobbies || "",
         });
         setAllTenures([found]);
       } else {
@@ -260,16 +258,21 @@ export default function TeamMemberProfile() {
                   Why I Joined Alumni Cell
                 </h3>
                 <div className="py-2">
-                  <p className="text-slate-700 text-base sm:text-lg italic leading-relaxed">
-                    <span className="text-5xl sm:text-6xl font-serif text-black select-none leading-none relative top-3 mr-1">
-                      &ldquo;
-                    </span>
-                    {member.whyJoin ||
-                      "I wanted to contribute to strengthening the connection between students and the alumni network, learning from industry leaders and giving back to the IIT Indore community."}
-                    <span className="text-5xl sm:text-6xl font-serif text-black select-none leading-none relative top-3 ml-1">
-                      &rdquo;
-                    </span>
-                  </p>
+                  {member.whyJoin && member.whyJoin.trim() !== "" ? (
+                    <p className="text-slate-700 text-base sm:text-lg italic leading-relaxed">
+                      <span className="text-5xl sm:text-6xl font-serif text-black select-none leading-none relative top-3 mr-1">
+                        &ldquo;
+                      </span>
+                      {member.whyJoin}
+                      <span className="text-5xl sm:text-6xl font-serif text-black select-none leading-none relative top-3 ml-1">
+                        &rdquo;
+                      </span>
+                    </p>
+                  ) : (
+                    <p className="text-slate-700 text-base leading-relaxed">
+                      Not Specified
+                    </p>
+                  )}
                 </div>
               </div>
 
@@ -289,7 +292,9 @@ export default function TeamMemberProfile() {
                   Hobbies & Interests
                 </h3>
                 <p className="text-slate-700 text-base leading-relaxed">
-                  {member.hobbies || "Not specified"}
+                  {member.hobbies && member.hobbies.trim() !== ""
+                    ? member.hobbies
+                    : "Not Specified"}
                 </p>
               </div>
             </div>
