@@ -20,8 +20,10 @@ export default function TeamComponent({ title, members = [] }) {
   const navigate = useNavigate();
 
   const handleCardClick = (member) => {
-    if (member.rollNo) {
+    if (member.rollNo && String(member.rollNo).trim() !== "") {
       navigate(`/team/${member.rollNo}`);
+    } else if (member._id) {
+      navigate(`/team/${member._id}`);
     } else if (member.id) {
       navigate(`/team/${member.id}`);
     }

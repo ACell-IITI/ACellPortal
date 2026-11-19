@@ -2,7 +2,7 @@ export const teamMembers = [
   {
     "_id": "6aff55a3868064e6c85def79",
     "name": "Veer Doria",
-    "rollNo": "240041039",
+    "rollNo": "",
     "year": 2025,
     "team": "Web Dev",
     "role": "Back-End Developer",
@@ -19,12 +19,12 @@ export const teamMembers = [
     "hobbies": "",
     "__v": 0,
     "createdAt": "2026-11-19T20:01:39.772Z",
-    "updatedAt": "2026-11-19T20:01:39.772Z"
+    "updatedAt": "2026-11-19T20:06:09.380Z"
   },
   {
     "_id": "6aff55a3868064e6c85def7a",
     "name": "Aviral Sharma",
-    "rollNo": "2",
+    "rollNo": "",
     "year": 2025,
     "team": "Web Dev",
     "role": "Team Lead",
@@ -41,12 +41,12 @@ export const teamMembers = [
     "hobbies": "",
     "__v": 0,
     "createdAt": "2026-11-19T20:01:39.774Z",
-    "updatedAt": "2026-11-19T20:01:39.774Z"
+    "updatedAt": "2026-11-19T20:06:09.380Z"
   },
   {
     "_id": "6aff55a3868064e6c85def7b",
     "name": "Vaatsalya Sahu",
-    "rollNo": "3",
+    "rollNo": "",
     "year": 2025,
     "team": "Web Dev",
     "role": "Front-End Developer",
@@ -63,12 +63,12 @@ export const teamMembers = [
     "hobbies": "",
     "__v": 0,
     "createdAt": "2026-11-19T20:01:39.774Z",
-    "updatedAt": "2026-11-19T20:01:39.774Z"
+    "updatedAt": "2026-11-19T20:06:09.380Z"
   },
   {
     "_id": "6aff55a3868064e6c85def7c",
     "name": "Ansh Kyal",
-    "rollNo": "10",
+    "rollNo": "",
     "year": 2025,
     "team": "Alumni Cell Head",
     "role": "Head",
@@ -85,12 +85,12 @@ export const teamMembers = [
     "hobbies": "",
     "__v": 0,
     "createdAt": "2026-11-19T20:01:39.774Z",
-    "updatedAt": "2026-11-19T20:01:39.774Z"
+    "updatedAt": "2026-11-19T20:06:09.380Z"
   },
   {
     "_id": "6aff55a3868064e6c85def7d",
     "name": "Yashasvi Shukla",
-    "rollNo": "1",
+    "rollNo": "",
     "year": 2025,
     "team": "Web Dev",
     "role": "Head",
@@ -107,12 +107,12 @@ export const teamMembers = [
     "hobbies": "",
     "__v": 0,
     "createdAt": "2026-11-19T20:01:39.774Z",
-    "updatedAt": "2026-11-19T20:01:39.774Z"
+    "updatedAt": "2026-11-19T20:06:09.380Z"
   },
   {
     "_id": "6aff55a3868064e6c85def7e",
     "name": "Sahiba Joshi",
-    "rollNo": "8",
+    "rollNo": "",
     "year": 2025,
     "team": "Web Dev",
     "role": "Front-End Developer",
@@ -129,12 +129,12 @@ export const teamMembers = [
     "hobbies": "",
     "__v": 0,
     "createdAt": "2026-11-19T20:01:39.774Z",
-    "updatedAt": "2026-11-19T20:01:39.774Z"
+    "updatedAt": "2026-11-19T20:06:09.380Z"
   },
   {
     "_id": "6aff55a3868064e6c85def7f",
     "name": "Chetan Verma",
-    "rollNo": "5",
+    "rollNo": "",
     "year": 2025,
     "team": "Web Dev",
     "role": "Full-Stack Developer",
@@ -151,12 +151,12 @@ export const teamMembers = [
     "hobbies": "",
     "__v": 0,
     "createdAt": "2026-11-19T20:01:39.774Z",
-    "updatedAt": "2026-11-19T20:01:39.774Z"
+    "updatedAt": "2026-11-19T20:06:09.380Z"
   },
   {
     "_id": "6aff55a3868064e6c85def80",
     "name": "Sarang Thakare",
-    "rollNo": "6",
+    "rollNo": "",
     "year": 2025,
     "team": "Web Dev",
     "role": "Full-Stack Developer",
@@ -173,12 +173,12 @@ export const teamMembers = [
     "hobbies": "",
     "__v": 0,
     "createdAt": "2026-11-19T20:01:39.774Z",
-    "updatedAt": "2026-11-19T20:01:39.774Z"
+    "updatedAt": "2026-11-19T20:06:09.380Z"
   },
   {
     "_id": "6aff55a3868064e6c85def81",
     "name": "Anish De",
-    "rollNo": "9",
+    "rollNo": "",
     "year": 2025,
     "team": "Web Dev",
     "role": "Backend Developer",
@@ -195,12 +195,12 @@ export const teamMembers = [
     "hobbies": "",
     "__v": 0,
     "createdAt": "2026-11-19T20:01:39.774Z",
-    "updatedAt": "2026-11-19T20:01:39.774Z"
+    "updatedAt": "2026-11-19T20:06:09.380Z"
   },
   {
     "_id": "6aff55a3868064e6c85def82",
     "name": "Sethumadhav Naik",
-    "rollNo": "7",
+    "rollNo": "",
     "year": 2025,
     "team": "Web Dev",
     "role": "Front-End Developer",
@@ -217,12 +217,12 @@ export const teamMembers = [
     "hobbies": "",
     "__v": 0,
     "createdAt": "2026-11-19T20:01:39.775Z",
-    "updatedAt": "2026-11-19T20:01:39.775Z"
+    "updatedAt": "2026-11-19T20:06:09.380Z"
   },
   {
     "_id": "6aff55a3868064e6c85def83",
     "name": "Vedansh Shrivastava",
-    "rollNo": "15",
+    "rollNo": "",
     "year": 2025,
     "team": "ARAM",
     "role": "Head",
@@ -239,12 +239,12 @@ export const teamMembers = [
     "hobbies": "",
     "__v": 0,
     "createdAt": "2026-11-19T20:01:39.775Z",
-    "updatedAt": "2026-11-19T20:01:39.775Z"
+    "updatedAt": "2026-11-19T20:06:09.380Z"
   },
   {
     "_id": "6aff55a3868064e6c85def84",
     "name": "Anushka Krishan",
-    "rollNo": "16",
+    "rollNo": "",
     "year": 2025,
     "team": "Content",
     "role": "Head",
@@ -261,12 +261,12 @@ export const teamMembers = [
     "hobbies": "",
     "__v": 0,
     "createdAt": "2026-11-19T20:01:39.775Z",
-    "updatedAt": "2026-11-19T20:01:39.775Z"
+    "updatedAt": "2026-11-19T20:06:09.380Z"
   },
   {
     "_id": "6aff55a3868064e6c85def85",
     "name": "Kavyansh Raj Singh",
-    "rollNo": "13",
+    "rollNo": "",
     "year": 2025,
     "team": "Newsletter",
     "role": "Newsletter Coordinator",
@@ -283,12 +283,12 @@ export const teamMembers = [
     "hobbies": "",
     "__v": 0,
     "createdAt": "2026-11-19T20:01:39.775Z",
-    "updatedAt": "2026-11-19T20:01:39.775Z"
+    "updatedAt": "2026-11-19T20:06:09.380Z"
   },
   {
     "_id": "6aff55a3868064e6c85def86",
     "name": "Garvit Mathur",
-    "rollNo": "240008012",
+    "rollNo": "",
     "year": 2025,
     "team": "Design",
     "role": "Head",
@@ -305,12 +305,12 @@ export const teamMembers = [
     "hobbies": "",
     "__v": 0,
     "createdAt": "2026-11-19T20:01:39.775Z",
-    "updatedAt": "2026-11-19T20:01:39.775Z"
+    "updatedAt": "2026-11-19T20:06:09.380Z"
   },
   {
     "_id": "6aff55a3868064e6c85def87",
     "name": "Keshvi Lakhotia",
-    "rollNo": "240008015",
+    "rollNo": "",
     "year": 2025,
     "team": "Logistics",
     "role": "Head",
@@ -327,12 +327,12 @@ export const teamMembers = [
     "hobbies": "",
     "__v": 0,
     "createdAt": "2026-11-19T20:01:39.775Z",
-    "updatedAt": "2026-11-19T20:01:39.775Z"
+    "updatedAt": "2026-11-19T20:06:09.380Z"
   },
   {
     "_id": "6aff55a3868064e6c85def88",
     "name": "Mayank Bisaria",
-    "rollNo": "20",
+    "rollNo": "",
     "year": 2025,
     "team": "Design",
     "role": "Member",
@@ -349,12 +349,12 @@ export const teamMembers = [
     "hobbies": "",
     "__v": 0,
     "createdAt": "2026-11-19T20:01:39.775Z",
-    "updatedAt": "2026-11-19T20:01:39.775Z"
+    "updatedAt": "2026-11-19T20:06:09.380Z"
   },
   {
     "_id": "6aff55a3868064e6c85def89",
     "name": "Aryama Singh",
-    "rollNo": "240005013",
+    "rollNo": "",
     "year": 2025,
     "team": "Content",
     "role": "Member",
@@ -371,12 +371,12 @@ export const teamMembers = [
     "hobbies": "",
     "__v": 0,
     "createdAt": "2026-11-19T20:01:39.775Z",
-    "updatedAt": "2026-11-19T20:01:39.775Z"
+    "updatedAt": "2026-11-19T20:06:09.380Z"
   },
   {
     "_id": "6aff55a3868064e6c85def8a",
     "name": "Gopesh Srinivasan",
-    "rollNo": "18",
+    "rollNo": "",
     "year": 2025,
     "team": "Content",
     "role": "Member",
@@ -393,12 +393,12 @@ export const teamMembers = [
     "hobbies": "",
     "__v": 0,
     "createdAt": "2026-11-19T20:01:39.775Z",
-    "updatedAt": "2026-11-19T20:01:39.775Z"
+    "updatedAt": "2026-11-19T20:06:09.380Z"
   },
   {
     "_id": "6aff55a3868064e6c85def8b",
     "name": "Paawni Gulati",
-    "rollNo": "19",
+    "rollNo": "",
     "year": 2025,
     "team": "Content",
     "role": "Member",
@@ -415,12 +415,12 @@ export const teamMembers = [
     "hobbies": "",
     "__v": 0,
     "createdAt": "2026-11-19T20:01:39.775Z",
-    "updatedAt": "2026-11-19T20:01:39.775Z"
+    "updatedAt": "2026-11-19T20:06:09.380Z"
   },
   {
     "_id": "6aff55a3868064e6c85def8c",
     "name": "Md Hassan Ansari",
-    "rollNo": "21",
+    "rollNo": "",
     "year": 2025,
     "team": "Design",
     "role": "Member",
@@ -437,12 +437,12 @@ export const teamMembers = [
     "hobbies": "",
     "__v": 0,
     "createdAt": "2026-11-19T20:01:39.775Z",
-    "updatedAt": "2026-11-19T20:01:39.775Z"
+    "updatedAt": "2026-11-19T20:06:09.380Z"
   },
   {
     "_id": "6aff55a3868064e6c85def8d",
     "name": "Anwesh Mal",
-    "rollNo": "22",
+    "rollNo": "",
     "year": 2025,
     "team": "Design",
     "role": "Member",
@@ -459,12 +459,12 @@ export const teamMembers = [
     "hobbies": "",
     "__v": 0,
     "createdAt": "2026-11-19T20:01:39.775Z",
-    "updatedAt": "2026-11-19T20:01:39.775Z"
+    "updatedAt": "2026-11-19T20:06:09.380Z"
   },
   {
     "_id": "6aff55a3868064e6c85def8e",
     "name": "Ankita Yadav",
-    "rollNo": "24",
+    "rollNo": "",
     "year": 2025,
     "team": "Design",
     "role": "Member",
@@ -481,12 +481,12 @@ export const teamMembers = [
     "hobbies": "",
     "__v": 0,
     "createdAt": "2026-11-19T20:01:39.775Z",
-    "updatedAt": "2026-11-19T20:01:39.775Z"
+    "updatedAt": "2026-11-19T20:06:09.380Z"
   },
   {
     "_id": "6aff55a3868064e6c85def8f",
     "name": "Atiharsh Bhatt",
-    "rollNo": "26",
+    "rollNo": "",
     "year": 2025,
     "team": "Design",
     "role": "Member",
@@ -503,12 +503,12 @@ export const teamMembers = [
     "hobbies": "",
     "__v": 0,
     "createdAt": "2026-11-19T20:01:39.775Z",
-    "updatedAt": "2026-11-19T20:01:39.775Z"
+    "updatedAt": "2026-11-19T20:06:09.380Z"
   },
   {
     "_id": "6aff55a3868064e6c85def90",
     "name": "Kanishk Singh",
-    "rollNo": "23",
+    "rollNo": "",
     "year": 2025,
     "team": "Design",
     "role": "Member",
@@ -525,12 +525,12 @@ export const teamMembers = [
     "hobbies": "",
     "__v": 0,
     "createdAt": "2026-11-19T20:01:39.775Z",
-    "updatedAt": "2026-11-19T20:01:39.775Z"
+    "updatedAt": "2026-11-19T20:06:09.380Z"
   },
   {
     "_id": "6aff55a3868064e6c85def91",
     "name": "Anushka Jain",
-    "rollNo": "25",
+    "rollNo": "",
     "year": 2025,
     "team": "Design",
     "role": "Member",
@@ -547,12 +547,12 @@ export const teamMembers = [
     "hobbies": "",
     "__v": 0,
     "createdAt": "2026-11-19T20:01:39.775Z",
-    "updatedAt": "2026-11-19T20:01:39.775Z"
+    "updatedAt": "2026-11-19T20:06:09.380Z"
   },
   {
     "_id": "6aff55a3868064e6c85def92",
     "name": "Pratul Pan",
-    "rollNo": "31",
+    "rollNo": "",
     "year": 2025,
     "team": "ARAM",
     "role": "Member",
@@ -569,12 +569,12 @@ export const teamMembers = [
     "hobbies": "",
     "__v": 0,
     "createdAt": "2026-11-19T20:01:39.775Z",
-    "updatedAt": "2026-11-19T20:01:39.775Z"
+    "updatedAt": "2026-11-19T20:06:09.380Z"
   },
   {
     "_id": "6aff55a3868064e6c85def93",
     "name": "Bhasuru Nikhil",
-    "rollNo": "28",
+    "rollNo": "",
     "year": 2025,
     "team": "ARAM",
     "role": "Member",
@@ -591,12 +591,12 @@ export const teamMembers = [
     "hobbies": "",
     "__v": 0,
     "createdAt": "2026-11-19T20:01:39.775Z",
-    "updatedAt": "2026-11-19T20:01:39.775Z"
+    "updatedAt": "2026-11-19T20:06:09.380Z"
   },
   {
     "_id": "6aff55a3868064e6c85def94",
     "name": "Arnav Verma",
-    "rollNo": "29",
+    "rollNo": "",
     "year": 2025,
     "team": "Logistics",
     "role": "Member",
@@ -613,12 +613,12 @@ export const teamMembers = [
     "hobbies": "",
     "__v": 0,
     "createdAt": "2026-11-19T20:01:39.775Z",
-    "updatedAt": "2026-11-19T20:01:39.775Z"
+    "updatedAt": "2026-11-19T20:06:09.380Z"
   },
   {
     "_id": "6aff55a3868064e6c85def95",
     "name": "Yagyaparna Mandwale",
-    "rollNo": "27",
+    "rollNo": "",
     "year": 2025,
     "team": "Logistics",
     "role": "Core",
@@ -635,12 +635,12 @@ export const teamMembers = [
     "hobbies": "",
     "__v": 0,
     "createdAt": "2026-11-19T20:01:39.775Z",
-    "updatedAt": "2026-11-19T20:01:39.775Z"
+    "updatedAt": "2026-11-19T20:06:09.380Z"
   },
   {
     "_id": "6aff55a3868064e6c85def96",
     "name": "Moksh Tyagi",
-    "rollNo": "30",
+    "rollNo": "",
     "year": 2025,
     "team": "ARAM",
     "role": "Member",
@@ -657,12 +657,12 @@ export const teamMembers = [
     "hobbies": "",
     "__v": 0,
     "createdAt": "2026-11-19T20:01:39.775Z",
-    "updatedAt": "2026-11-19T20:01:39.775Z"
+    "updatedAt": "2026-11-19T20:06:09.380Z"
   },
   {
     "_id": "6aff55a3868064e6c85def97",
     "name": "Vishal Shakya",
-    "rollNo": "32",
+    "rollNo": "",
     "year": 2025,
     "team": "Newsletter",
     "role": "Member",
@@ -679,12 +679,12 @@ export const teamMembers = [
     "hobbies": "",
     "__v": 0,
     "createdAt": "2026-11-19T20:01:39.775Z",
-    "updatedAt": "2026-11-19T20:01:39.775Z"
+    "updatedAt": "2026-11-19T20:06:09.380Z"
   },
   {
     "_id": "6aff55a3868064e6c85def98",
     "name": "Arham Aneeq",
-    "rollNo": "34",
+    "rollNo": "",
     "year": 2025,
     "team": "Newsletter",
     "role": "Member",
@@ -701,12 +701,12 @@ export const teamMembers = [
     "hobbies": "",
     "__v": 0,
     "createdAt": "2026-11-19T20:01:39.775Z",
-    "updatedAt": "2026-11-19T20:01:39.775Z"
+    "updatedAt": "2026-11-19T20:06:09.380Z"
   },
   {
     "_id": "6aff55a3868064e6c85def99",
     "name": "Mohit Patil",
-    "rollNo": "36",
+    "rollNo": "",
     "year": 2025,
     "team": "ARAM",
     "role": "Member",
@@ -723,12 +723,12 @@ export const teamMembers = [
     "hobbies": "",
     "__v": 0,
     "createdAt": "2026-11-19T20:01:39.776Z",
-    "updatedAt": "2026-11-19T20:01:39.776Z"
+    "updatedAt": "2026-11-19T20:06:09.380Z"
   },
   {
     "_id": "6aff55a3868064e6c85def9a",
     "name": "Ayush Varun",
-    "rollNo": "33",
+    "rollNo": "",
     "year": 2025,
     "team": "Design",
     "role": "Member",
@@ -745,12 +745,12 @@ export const teamMembers = [
     "hobbies": "",
     "__v": 0,
     "createdAt": "2026-11-19T20:01:39.776Z",
-    "updatedAt": "2026-11-19T20:01:39.776Z"
+    "updatedAt": "2026-11-19T20:06:09.380Z"
   },
   {
     "_id": "6aff55a3868064e6c85def9b",
     "name": "Samruddhee Jadhav",
-    "rollNo": "35",
+    "rollNo": "",
     "year": 2025,
     "team": "ARAM",
     "role": "Member",
@@ -767,6 +767,6 @@ export const teamMembers = [
     "hobbies": "",
     "__v": 0,
     "createdAt": "2026-11-19T20:01:39.776Z",
-    "updatedAt": "2026-11-19T20:01:39.776Z"
+    "updatedAt": "2026-11-19T20:06:09.380Z"
   }
 ];

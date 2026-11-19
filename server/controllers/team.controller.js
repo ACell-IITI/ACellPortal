@@ -1,3 +1,4 @@
+import mongoose from "mongoose";
 import TeamMember from "../models/TeamMember_model.js";
 import TeamEdition from "../models/TeamEdition_model.js";
 import { uploadToR2, processAndUploadImageUrl, deleteFromR2 } from "../utils/s3.js";
@@ -257,7 +258,7 @@ export const deleteTeamEdition = async (req, res) => {
   }
 };
 
-// Get single team member by roll number (fetches latest profile + all tenures)
+// Get single team member by roll number or ID (fetches latest profile + all tenures)
 export const getTeamMemberByRollNo = async (req, res) => {
   try {
     const { rollNo } = req.params;
@@ -265,9 +266,13 @@ export const getTeamMemberByRollNo = async (req, res) => {
       return res.status(400).json({ success: false, message: "Roll number is required" });
     }
 
-    const members = await TeamMember.find({
-      rollNo: { $regex: new RegExp(`^${rollNo.trim()}$`, "i") },
-    }).sort({ year: -1 });
+    const trimmed = rollNo.trim();
+    const queryConditions = [{ rollNo: { $regex: new RegExp(`^${trimmed}$`, "i") } }];
+    if (mongoose.Types.ObjectId.isValid(trimmed)) {
+      queryConditions.push({ _id: trimmed });
+    }
+
+    const members = await TeamMember.find({ $or: queryConditions }).sort({ year: -1 });
 
     if (!members || members.length === 0) {
       return res.status(404).json({ success: false, message: "Team member not found" });

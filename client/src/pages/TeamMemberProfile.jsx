@@ -179,14 +179,16 @@ export default function TeamMemberProfile() {
               </p>
 
               <div className="mt-5 pt-4 border-t border-slate-100 space-y-3 text-left text-sm text-slate-700">
-                <div className="flex items-center gap-2.5">
-                  <span className="font-semibold text-slate-500 w-20 shrink-0">
-                    Roll No:
-                  </span>
-                  <span className="font-mono font-bold text-black">
-                    {member.rollNo || rollNo}
-                  </span>
-                </div>
+                {member.rollNo && String(member.rollNo).trim() !== "" && (
+                  <div className="flex items-center gap-2.5">
+                    <span className="font-semibold text-slate-500 w-20 shrink-0">
+                      Roll No:
+                    </span>
+                    <span className="font-mono font-bold text-black">
+                      {member.rollNo}
+                    </span>
+                  </div>
+                )}
                 {member.branch && (
                   <div className="flex items-start gap-2.5">
                     <span className="font-semibold text-slate-500 w-20 shrink-0">
